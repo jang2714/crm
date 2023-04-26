@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/board">게시판</a>
+                </li>
+            </ul>
+
+            <span class="navbar-text" style="margin-right:10px;">
+               <a href="javascript:void(0);" onclick="logOut();" th:style="${session.userInfo != null ? 'display:block' : 'display:none'}">로그아웃</a>
+               <a href="/login" th:style="${session.userInfo == null ? 'display:block' : 'display:none'}">로그인</a>
+           </span>
+           <span class="navbar-text" style="margin-right:10px;">
+                <a href="/mem/join" th:style="${session.userInfo == null ? 'display:block' : 'display:none'}">회원가입</a>
+           </span>
+        </div>
+    </nav>
+
+    <script>
+        function logOut(){
+            const isConfirm = confirm('로그아웃 하시겠습니까?');
+            if(isConfirm) {
+                location.href = '/logout';
+            }
+        }
+    </script>
+</div>
+</html>

@@ -1,0 +1,55 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mariadb://211.110.229.7:3306/final01?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: root
+    password: ehdduf922
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 50
+      minimum-idle: 20
+      idle-timeout: 10000
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+
+  thymeleaf:
+    cache: false
+    check-template-location: true
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    prefix: file:src/main/resources/templates/
+    suffix: .html
+    
+  devtools:
+    livereload:
+      enabled: true
+    remote:
+      restart:
+        enabled: true
+    restart:
+      enabled: true
+
+
+
+#로그 설정
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure: OFF
+      thymeleaf: OFF
+      hibernate:
+        SQL: info
+        type:
+          descriptor:
+            sql: trace
+  
+  config: classpath:logback-local.xml

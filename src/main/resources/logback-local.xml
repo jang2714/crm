@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds">
+    <include resource="logback-common.xml" />
+
+   <logger name="jdbc.sqlonly" level="info"/>
+    <logger name="jdbc.sqltiming" level="info"/>
+    <logger name="jdbc.resultsettable" level="info"/>
+    <logger name="jdbc.audit" level="OFF"/>
+    <logger name="jdbc.resultset" level="OFF"/>
+    <logger name="jdbc.connection" level="OFF"/>
+    
+
+    <root level="info">
+        <appender-ref ref="ASYNC_STDOUT"/>
+        <appender-ref ref="ASYNC_FILE_LOGGING"/>
+        <appender-ref ref="ASYNC_FILE_ERROR_LOGGING"/>
+    </root>
+
+
+</configuration>

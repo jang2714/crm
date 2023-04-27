@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.code.main.customer.mapper.CustomerMapper">
+
+    <select id="getAllCustomer" resultType="kr.code.main.customer.domain.CustomerNamecardVO" parameterType="java.util.Map">
+
+        select cust_name, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code
+        from tbl_customer
+
+    </select>
+</mapper>

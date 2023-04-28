@@ -5,8 +5,19 @@
 
     <select id="getAllCustomer" resultType="kr.code.main.customer.domain.CustomerNamecardVO" parameterType="java.util.Map">
 
-        select cust_name, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code
-        from tbl_customer
+    select cust_name, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code
+    from tbl_customer
 
     </select>
+
+
+    <insert id="createCustomer" parameterType="kr.code.main.customer.domain.CustomerVO">
+
+    insert into tbl_customer
+            (cust_uid, cust_name, cust_gender, cust_birth, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code)
+        values(#{customerUid}, #{customerName}, #{customerGender}, #{customerBirth}, #{address}, #{postcode}, #{customerEmail}, #{phoneNumber}, #{companyName}, #{posCode}, #{deptCode})
+
+
+    </insert>
+
 </mapper>

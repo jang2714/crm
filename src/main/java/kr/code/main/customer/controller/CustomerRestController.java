@@ -51,8 +51,20 @@ public class CustomerRestController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createCustomer(@RequestBody CreateCustomerRequest request) {
+    public ResponseEntity<String> createCustomer(@RequestBody CreateCustomerRequest customerReq) {
 
-        return ResponseEntity.ok().body("구현중");
+        HttpStatus httpStatus;
+
+        boolean result = false;
+        CustomerVO customer = customerService.findByName(customerReq.getName());
+        if(customer == null) {
+            result = customerService.createCustomer(customerReq);
+
+        }
+
+        httpStatus = result ? HttpStatus.OK : HttpStatus.CONFLICT;
+        String msg = result ? "success" : "fail";
+
+        return new ResponseEntity<>(msg, httpStatus);
     }
 }

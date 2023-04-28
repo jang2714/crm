@@ -1,8 +1,12 @@
 package kr.code.main.customer.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 @Getter
+@AllArgsConstructor
 public class CustomerVO {
 
     private String customerUid;

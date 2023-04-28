@@ -30,4 +30,6 @@ public interface CustomerMapper {
     Optional<CustomerVO> findByName(String name);
 
     List<CustomerNamecardVO> getAllCustomer();
+
+    int createCustomer(CustomerVO customer);
 }

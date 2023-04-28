@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main_layout}">
+
+
+<div layout:fragment="content">
+
+ <!-- ***** home Area ***** -->
+ <section class="blog-area section_padding_100">
+  <div class="container">
+   <div class="row">
+
+       <!-- index page Start -->
+       <div class="col-12">
+        <div class="single-blog wow fadeInUp" data-wow-delay="0.2s">
+
+         <div class="input-group input-group-lg">
+          <div class="input-group-prepend">
+           <span class="input-group-text" id="addon-wrapping"><i class="fa fa-lg fa-search" aria-hidden="true" style="padding-top: 17px;padding-right: 17px;"></i></span>
+          </div>
+          <input type="text" class="form-control rounded" placeholder="Search customer's information" aria-label="Unified search" aria-describedby="addon-wrapping">
+          <div class="input-group-append">
+           <button class="btn btn-outline-secondary btn-lg" type="button">검색</button>
+          </div>
+         </div>
+
+      </div>
+     </div>
+
+   </div>
+  </div>
+ </section>
+ <!-- ***** Home Area ***** -->
+
+ <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+ <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
+ <script>
+  $(document).ready(function() {
+    $('.bradcumbTitle').text('통합검색');
+  });
+ </script>
+</div>
+
+</html>

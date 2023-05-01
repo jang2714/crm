@@ -3,41 +3,40 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/main_layout}">
 
-
 <div layout:fragment="content">
 
- <!-- ***** home Area ***** -->
- <section class="blog-area section_padding_100">
+ <section class="subscribe-newsletter-content section_padding_50_200">
   <div class="container">
    <div class="row">
-
-       <!-- index page Start -->
-       <div class="col-12">
-        <div class="single-blog wow fadeInUp" data-wow-delay="0.2s">
-
-         <div class="input-group input-group-lg">
-          <div class="input-group-prepend">
-           <span class="input-group-text" id="addon-wrapping"><i class="fa fa-lg fa-search" aria-hidden="true" style="padding-top: 17px;padding-right: 17px;"></i></span>
-          </div>
-          <input type="text" class="form-control rounded" placeholder="Search customer's information" aria-label="Unified search" aria-describedby="addon-wrapping">
-          <div class="input-group-append">
-           <button class="btn btn-outline-secondary btn-lg" type="button">검색</button>
-          </div>
-         </div>
-
-      </div>
+    <div class="col-12">
+     <div class="subscribe-newsletter-content text-center wow fadeIn" data-wow-delay="0.5s">
+      <h2>고객 정보를 검색해보세요.</h2>
+      <form id="search-form" action="#">
+       <input type="text" name="search" id="search" placeholder="Enter the search term you want to find." style="color: black;">
+       <button type="submit"><i class="fa fa-lg fa-search" aria-hidden="true"></i></button>
+      </form>
      </div>
-
+    </div>
    </div>
   </div>
  </section>
- <!-- ***** Home Area ***** -->
+
 
  <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
  <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
  <script>
   $(document).ready(function() {
-    $('.bradcumbTitle').text('통합검색');
+    $('.bradcumbTitle').text('Welcome');
+
+   // 고객 정보 비동기 통신
+   $('#search-form').submit(function(e) {
+    e.preventDefault();
+
+    let searchKey = $('#search-form').serialize();
+    let url = '/customer/search';
+    location.href= url + `?${searchKey}`;
+   });
+
   });
  </script>
 </div>

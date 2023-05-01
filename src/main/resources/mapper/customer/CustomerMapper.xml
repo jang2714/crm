@@ -3,10 +3,17 @@
 
 <mapper namespace="kr.code.main.customer.mapper.CustomerMapper">
 
+    <select id="getTotalCustomerCount" parameterType="java.util.Map" resultType="int">
+        select count(*) as cnt
+        from tbl_customer
+    </select>
+
     <select id="getAllCustomer" resultType="kr.code.main.customer.domain.CustomerNamecardVO" parameterType="java.util.Map">
 
-    select cust_name, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code
+    select cust_uid, cust_name, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code
     from tbl_customer
+    ORDER BY create_date DESC
+    LIMIT #{current}, #{count}
 
     </select>
 
@@ -14,10 +21,17 @@
     <insert id="createCustomer" parameterType="kr.code.main.customer.domain.CustomerVO">
 
     insert into tbl_customer
-            (cust_uid, cust_name, cust_gender, cust_birth, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code)
-        values(#{customerUid}, #{customerName}, #{customerGender}, #{customerBirth}, #{address}, #{postcode}, #{customerEmail}, #{phoneNumber}, #{companyName}, #{posCode}, #{deptCode})
+            (cust_uid, cust_name, cust_gender, cust_birth, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code, attached_cnt)
+        values(#{customerUid}, #{customerName}, #{customerGender}, #{customerBirth}, #{address}, #{postcode}, #{customerEmail}, #{phoneNumber}, #{companyName}, #{posCode}, #{deptCode}, #{attachedCnt})
 
 
     </insert>
+
+<!--    <select id="getAllCustomer" resultType="kr.code.main.customer.domain.CustomerNamecardVO" parameterType="java.util.Map">-->
+
+<!--        select cust_name, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code-->
+<!--        from tbl_customer-->
+
+<!--    </select>-->
 
 </mapper>

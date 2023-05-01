@@ -4,18 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateCustomerRequest {
+public class CreateRequestDTO {
 
     private String name;
     private int gender;
     private String birth;
     private String address;
-    private String postCode;
+    private String address2;
+    private String postcode;
     private String email;
     private String phone;
     private String company;

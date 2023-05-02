@@ -53,3 +53,7 @@ logging:
             sql: off
   
   config: classpath:logback-product.xml
+
+file:
+  upload:
+    path: /Users/timeless/WebApp/Upload/

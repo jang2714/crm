@@ -53,3 +53,7 @@ logging:
             sql: trace
   
   config: classpath:logback-local.xml
+
+file:
+  upload:
+    path: /Users/timeless/WebApp/Upload/

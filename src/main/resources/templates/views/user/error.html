@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>error</title>
+<Style>
+	h1 > span {
+		color: red;
+		font-size: 20px;
+	}
+</Style>
+</head>
+<body>
+	<h1>
+		<span>로그인이 필요한 페이지 입니다.</span><br>
+		<span><span id="second">5</span>초후 로인인 페이지로 이동합니다.</span>
+	</h1>
+</body>
+<script th:src="@{/webjars/jquery/3.6.4/jquery.js}"></script>
+<script>
+
+	//익명 함수(변수에 함수를 선언) : 1회용, 단발성 함수
+	let pageMove = function() {
+		location.href = "/login";
+	}
+	
+	$(document).ready(function() {
+		//정해진 시간마다 실행되는 함수 ; 반복
+		setInterval(function() {
+			let time = Number($('#second').text()) - 1;
+			$('#second').text(time);
+		}, 1000);
+		
+		//정해진 시간 후 실행되는 함수 ; 1번
+		setTimeout(pageMove, 5000);
+	})
+	
+</script>
+</html>

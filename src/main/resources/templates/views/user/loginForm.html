@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insert title here</title>
+</head>
+<body>
+	<!-- 서버로부터 받은 공개키를 저장해 둔다 -->
+	<form id="publicFrm">
+		<input type="hidden" id="publicKeyModulues" name="publicKeyModulues">
+		<input type="hidden" id="publicKeyExponent" name="publicKeyExponent">
+	</form>
+	<form id="securedFrm">
+		<input type="hidden" id="securedId" name="securedId">
+		<input type="hidden" id="securedPasswd" name="securedPasswd">
+	</form>
+	<form onsubmit="return false;">
+		<div>
+			<div>
+				<label for="userId">아이디 :</label>
+				<input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요.">
+			</div>
+			<div>
+				<label for="userPasswd">패스워드 :</label>
+				<input type="text" id="userPasswd" name="userPasswd" placeholder="패스워드를 입력하세요.">
+			</div>
+			<div>
+				<button id="login">로그인</button>
+			</div>
+		</div>
+	</form>
+
+</body>
+
+	<script th:src="@{/webjars/jquery/3.6.4/jquery.js}"></script>
+	<!-- rsa 암호화를 위한 js import -->
+	<script th:src="@{/js/security/jsbn.js}"></script>
+	<script th:src="@{/js/security/rsa.js}"></script>
+	<script th:src="@{/js/security/prng4.js}"></script>
+	<script th:src="@{/js/security/rng.js}"></script>
+	<script type="text/javascript">
+		
+		function initEvt() {
+			const inputIds = ['userId', 'userPasswd'];
+			
+			for(let id of inputIds) {
+				$('#'+id).on('keyup', function(evt){
+					//evt.preventDefault();
+					if(evt.keyCode === 13){
+						login();
+					}
+				
+				});
+			}
+			
+			$('#login').on('click', function(evt){
+				login();
+			});
+		}
+		
+		function validated(){
+			//jquery 선택자를 통해 html 객체 가져오기
+			const userId = $('#userId');
+			const userPasswd = $('#userPasswd');
+			
+			//trim 은 공백 제거
+			//     한글  --> 한글
+			// 한글      --> 한글
+			// 한     글 --> 한글
+			//          --> 공백만 있을 경우 처리 위해서 씀
+			if($.trim(userId.val()).length === 0) {
+				alert('아이디를 입력하십시오.');
+				userId.focus();
+				return false;
+			}
+			
+			if($.trim(userPasswd.val()).length === 0) {
+				alert('패스워드를 입력하십시오.');
+				userPasswd.focus();
+				return false;
+			}
+			return true;
+		}
+		
+		function encryptLoginInfo(){
+			const publicKeyModulues = $('#publicKeyModulues').val();
+			const publicKeyExponent = $('#publicKeyExponent').val();
+			
+			const rasObj = new RSAKey();
+			
+			//객체에 공개키 삽입
+			rasObj.setPublic(publicKeyModulues, publicKeyExponent);
+			//id 암호화
+			let secureId = rsaObj.encrypt($('#userId').val());
+			let securePw = rsaObj.encrypt($('#userPasswd').val());
+			
+			//암호화된 아이디, 패스워드 저장
+			$('#securedId').val(secureId);
+			$('#securedPasswd').val(securePw);
+			
+		}
+		
+		
+		function login() {
+			
+			if(validated()) {
+				//ajax 통해서 로그인 처리 ; 비동기 통신 사용 
+				// 1. 페이지 이동없이 client - server 간 통신
+				
+				encryptLoginInfo();  //암호화
+				
+				const dataParam = {
+						userId : $('#securedId').val(),
+						userPasswd : $('#securedPasswd').val()
+				}
+				
+				$.ajax({
+					url: '/login',
+					type: 'post',
+					dataType: 'json',
+					data: dataParam
+				}).done(function(resp){
+					if(resp.resultCode === 200) {
+						//console.log('로그인 성공')
+						location.href="/";
+					}else{
+						alert('아이디 또는 패스워드를 확인하십시오.');
+					}
+				}).fail(function(xhr, status, error){
+					console.log(status);
+				});
+
+				
+			}
+		}
+		
+		//key 가져오기
+		function getRSAKey() {
+			
+			$.ajax({
+				url: '/rsa/key',
+				type: 'get',
+				dataType: 'json'
+			}).done(function(resp){
+
+				$('#publicKeyModulues').val(resp.publicKeyModulues);
+				$('#publicKeyExponent').val(resp.publicKeyExponent);
+				
+			}).fail(function(xhr, status, error){
+				console.log(status);
+			});
+		}
+	
+		//html 준비가 되면 자동으로 실행
+		$(document).ready(function(){
+			initEvt();
+			getRSAKey();
+		});
+	
+	</script>
+</html>

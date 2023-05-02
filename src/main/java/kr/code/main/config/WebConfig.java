@@ -27,11 +27,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-      registry.addResourceHandler(imgPath +"**")
-              .addResourceLocations("file:///" + outFilePath)
-              .setCachePeriod(0)
-              .resourceChain(true)
-              .addResolver(new PathResourceResolver());
+        registry.addResourceHandler(imgPath +"**")
+                .addResourceLocations("file:///" + outFilePath)
+                .setCachePeriod(0)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
     }
 
 

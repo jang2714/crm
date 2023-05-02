@@ -54,6 +54,6 @@ logging:
   
   config: classpath:logback-product.xml
 
-file :
+file:
   upload:
-    path: C:/downloads/files/upload
+    path: /Users/timeless/WebApp/Upload/

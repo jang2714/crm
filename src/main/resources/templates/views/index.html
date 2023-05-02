@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main_layout}">
+
+<div layout:fragment="content">
+
+ <section class="subscribe-newsletter-content section_padding_50_200">
+  <div class="container">
+   <div class="row">
+    <div class="col-12">
+     <div class="subscribe-newsletter-content text-center wow fadeIn" data-wow-delay="0.5s">
+      <h2>고객 정보를 검색해보세요.</h2>
+      <form id="search-form" action="#">
+       <input type="text" name="search" id="search" placeholder="Enter the search term you want to find." style="color: black;">
+       <button type="submit"><i class="fa fa-lg fa-search" aria-hidden="true"></i></button>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+ </section>
+
+
+ <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+ <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
+ <script>
+  $(document).ready(function() {
+    $('.bradcumbTitle').text('Welcome');
+
+   // 고객 정보 비동기 통신
+   $('#search-form').submit(function(e) {
+    e.preventDefault();
+
+    let searchKey = $('#search-form').serialize();
+    let url = '/customer/search';
+    location.href= url + `?${searchKey}`;
+   });
+
+  });
+ </script>
+</div>
+
+</html>

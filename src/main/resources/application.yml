@@ -1,11 +1,15 @@
 server:
   port: 9090
 
-
 spring:
   main:
     allow-bean-definition-overriding: true
-  
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://211.110.229.7:3306/final01?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul

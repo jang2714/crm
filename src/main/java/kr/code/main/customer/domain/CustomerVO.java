@@ -1,8 +1,14 @@
 package kr.code.main.customer.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Date;
+
+@Builder
 @Getter
+@AllArgsConstructor
 public class CustomerVO {
 
     private String customerUid;
@@ -16,5 +22,7 @@ public class CustomerVO {
     private String companyName;
     private int posCode;
     private int deptCode;
+    private int attachedCnt;
+    private String createDate;
 
 }

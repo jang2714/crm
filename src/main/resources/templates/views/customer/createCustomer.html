@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main_layout}">
+
+
+<div layout:fragment="content">
+
+  <!-- 모달창 -->
+  <div class="modal fade" id="create-result" tabindex="-1" role="dialog" aria-labelledby="createResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createResultModalLabel">고객 정보 생성 결과</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- 모달창 내용 -->
+          <p id="create-result-text"></p>
+        </div>
+        <div class="modal-footer">
+          <!-- 모달창 버튼 -->
+          <button type="button" class="btn btn-primary" data-dismiss="modal" th:onclick="closeModal(${uid})">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ***** home Area ***** -->
+  <section class="section_padding_100">
+    <div class="container">
+      <div class="row">
+
+        <!-- index page Start -->
+          <div class="row single-blog wow fadeInUp" data-wow-delay="0.2s">
+
+            <!-- Contact Form Area -->
+            <div class="col-12 col-md-8">
+              <div class="contact-form-area">
+                <h2>고객 정보를 입력해주세요.</h2>
+                <form id="create-form">
+<!--                  th:action="@{/api/v1/customer/create}" method="post">-->
+                  <div class="row">
+                    <div class="col-12 col-md-8">
+                      <input type="text" class="form-control" id="name" name="name" placeholder="Name" required
+                             data-toggle="tooltip" title="성함을 입력해주세요" data-placement="bottom">
+                    </div>
+                    <div class="col-12 col-md-4">
+                      <select id="gender" name="gender" class="form-control" style="height: calc(3rem + 2px);color: #868e96;" required>
+                        <option value="1" selected>Man</option>
+                        <option value="2">Woman</option>
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <input type="email" class="form-control" id="email" name="email" placeholder="E-mail" required
+                             data-toggle="tooltip" title="예시: hong@korea.com" data-placement="bottom">
+                    </div>
+                    <div class="col-12">
+                      <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone" pattern="[0-9]{10,11}" required
+                             data-toggle="tooltip" title="예시: 01012345678" data-placement="bottom">
+                    </div>
+                    <div class="col-12">
+                      <input type="date" class="form-control" id="birth" name="birth" placeholder="Birthday"
+                             data-toggle="tooltip" title="생년월일을 입력해주세요" data-placement="bottom">
+                    </div>
+                    <div class="col-12">
+                      <input type="text" class="form-control" id="address" name="address" aria-describedby="address" placeholder="Address" readonly
+                             data-toggle="tooltip" title="주소 검색으로 입력이 가능합니다" data-placement="bottom">
+                    </div>
+                    <div class="col-12 col-md-8">
+                      <input type="text" class="form-control" id="address2" name="address2" aria-describedby="address2" placeholder="Address2"
+                             data-toggle="tooltip" title="상세 주소를 입력해주세요" data-placement="bottom">
+                    </div>
+                    <div class="col-12 col-md-2">
+                      <input type="text" class="form-control" id="postcode" name="postcode" aria-describedby="postcode" placeholder="PostCode" readonly>
+                    </div>
+                    <div class="col-12 col-md-2">
+                      <button type="button" class="form-control btn" onclick="searchAddr();"><i class="fa fa-search" style="color: black;"></i></button>
+                    </div>
+                    <div class="col-12">
+                      <input type="text" class="form-control" id="company" name="company" placeholder="CompanyName" required
+                             data-toggle="tooltip" title="회사명을 입력해주세요" data-placement="bottom">
+                    </div>
+                    <div class="col-12 col-md-6">
+
+                      <select id="position" name="position" class="form-control" style="height: calc(3rem + 2px);color: #868e96;" required>
+                        <option value="" selected>직급 선택</option>
+                        <th:block th:each="pos : ${positions}">
+                          <option th:value="${pos.posCode}">[[${pos.posName}]]</option>
+                        </th:block>
+                      </select>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <select id="department" name="department" class="form-control" style="height: calc(3rem + 2px);color: #868e96;" required>
+                          <option value="" selected>부서 선택</option>
+                          <th:block th:each="depart : ${departments}">
+                            <option th:value="${depart.deptCode}">[[${depart.deptName}]]</option>
+                          </th:block>
+                        </select>
+                      </select>
+                    </div>
+                    <button class="btn mosh-btn mt-50" type="submit">고객 정보 등록</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="col-12 col-md-4">
+              <div class="contact-information">
+                <h2>Contact</h2>
+                <div class="single-contact-info d-flex">
+                  <div class="contact-icon mr-15">
+                    <img th:src="@{/img/core-img/map.png}" alt="">
+                  </div>
+                  <p>4127/ 5B-C Mislane Road,<br> Gibraltar, UK</p>
+                </div>
+                <div class="single-contact-info d-flex">
+                  <div class="contact-icon mr-15">
+                    <img th:src="@{/img/core-img/call.png}" alt="">
+                  </div>
+                  <p>Main: 203-808-8613 <br> Office: 203-808-8648</p>
+                </div>
+                <div class="single-contact-info d-flex">
+                  <div class="contact-icon mr-15">
+                    <img th:src="@{/img/core-img/message.png}" alt="">
+                  </div>
+                  <p>office@yourbusiness.com</p>
+                </div>
+              </div>
+            </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- ***** Home Area ***** -->
+
+  <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+  <script th:src="@{/js/popper.min.js}"></script>
+  <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
+  <script th:src="@{/dist/js/adminlte.min.js}"></script>
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script>
+    function searchAddr() {
+
+      daum.postcode.load(function(){
+        new daum.Postcode({
+          oncomplete: function(data) {
+            console.log(data);
+            let fullAddr = '';
+            let extraAddr = '';
+
+            // 사용자가 도로명 주소를 선택한 경우
+            if (data.userSelectedType === 'R') {
+              fullAddr = data.roadAddress;
+              // 법정동이 있는 경우
+              if ($.trim(data.bname).length > 0) {
+                extraAddr += data.bname;
+              }
+            }else {
+              // 지번으로 검색했을 경우
+              fullAddr = data.jibunAddress;
+            }
+            // 빌딩 이름이 있을 경우
+            if(data.buildingName !== '') {
+              // 추가 주소에 내요잉 있는 경우는 쉼표처리하고 붙이고, 없으면 그냥 쓴다.
+              extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+            }
+            // 조합형 주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+            fullAddr += (extraAddr !== '' ? ' (' + extraAddr + ')' : '');
+            //우편번호
+            $('#postcode').val(data.zonecode);
+
+            //주소
+            $('#address').val(fullAddr);
+          }
+        }).open();
+      });
+    }
+
+    function closeModal() {
+      location.href="/index";
+    }
+
+    $(document).ready(function() {
+      $('[data-toggle="tooltip"]').tooltip();
+      $('.bradcumbTitle').text('고객 정보 생성');
+
+
+      // 고객 정보 비동기 통신
+      $('#create-form').submit(function(e) {
+        e.preventDefault();
+
+        let formData = $(this).serialize();
+        let url = '/api/v1/customer/create';//$(this).attr('action');
+
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: formData,
+          success: function(response) {
+            console.log(response);
+            // 모달 창에 결과 출력
+            if (response !== null) {
+              $('#create-result .modal-body').html('고객 정보 생성을 완료하였습니다.');
+              $('#create-result .model-footer>button').attr('th:with', `uid=${response}`);
+            } else {
+              alert('고객 정보 생성 실패');
+            }
+            $('#create-result').modal('show');
+          },
+          error: function(xhr, status, error) {
+            console.log('Error:', error);
+          }
+        });
+      });
+
+
+    });
+  </script>
+</div>
+
+</html>

@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CustomerNamecardVO {
 
+    private String uid;
     private String name;
     private String address;
     private String postCode;

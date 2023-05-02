@@ -1,11 +1,15 @@
 server:
   port: 9090
 
-
 spring:
   main:
     allow-bean-definition-overriding: true
-  
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://211.110.229.7:3306/final01?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
@@ -22,6 +26,24 @@ spring:
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    database: mysql
+    generate-ddl: false
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        generate_statistics: false
+        format_sql: false
+        use_sql_comments: false
+        cache:
+          use_second_level_cache: false
+          use_query_cache: false
+          region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
 
   thymeleaf:
     cache: false

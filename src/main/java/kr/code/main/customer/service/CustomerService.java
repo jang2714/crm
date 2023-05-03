@@ -1,16 +1,17 @@
 package kr.code.main.customer.service;
 
-import kr.code.main.customer.domain.CustomerNamecardVO;
-import kr.code.main.customer.domain.CustomerVO;
-import kr.code.main.customer.domain.DepartmentVO;
-import kr.code.main.customer.domain.PositionVO;
+import kr.code.main.common.department.domain.DepartmentVO;
+import kr.code.main.common.position.domain.PositionVO;
+import kr.code.main.customer.domain.*;
 import kr.code.main.customer.domain.dto.CreateRequestDTO;
 import kr.code.main.customer.mapper.CustomerMapper;
-import kr.code.main.utils.UploadFileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +42,15 @@ public class CustomerService {
                 .orElse(null);
     }
 
-    public boolean createCustomer(CreateRequestDTO customerReq) {
+    public List<CustomerTagVO> getAllCustomerTagById(String customerId) {
+        return customerMapper.getCustomerTagsById(customerId);
+    }
+
+    public int insertCustomerAndTag(Map<String, Object> params) {
+        return customerMapper.insertCustomerAndTag(params);
+    }
+
+    public CustomerVO createCustomer(CreateRequestDTO customerReq) {
 
         // 고객 정보 생성
         CustomerVO newCustomer = CustomerVO.builder()
@@ -60,7 +69,15 @@ public class CustomerService {
                 .build();
 
         int result = customerMapper.createCustomer(newCustomer);
-        return result > 0;
+        if (result > 0) {
+            System.out.println("고객 정보 생성 완료 -> " + newCustomer.getCustomerName() + " : " + newCustomer.getCustomerUid());
+        } else {
+            System.out.println("고객 정보 생성 실패!");
+
+            // throws RuntimeException
+        }
+
+        return newCustomer;
     }
 
     public List<PositionVO> getPositionMap() {

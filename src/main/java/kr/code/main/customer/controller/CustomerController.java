@@ -2,20 +2,18 @@ package kr.code.main.customer.controller;
 
 import kr.code.main.customer.domain.CustomerNamecardVO;
 import kr.code.main.customer.domain.CustomerVO;
-import kr.code.main.customer.domain.DepartmentVO;
-import kr.code.main.customer.domain.PositionVO;
+import kr.code.main.common.department.domain.DepartmentVO;
+import kr.code.main.common.position.domain.PositionVO;
 import kr.code.main.customer.service.CustomerService;
 import kr.code.main.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/customer")
@@ -90,20 +88,25 @@ public class CustomerController {
         ModelAndView mav = new ModelAndView("views/customer/listupCustomer");
 
         // 서치 없이 목록을 출력 할때
-        if (search == null) {
+        if (search.isBlank() || search.isEmpty()) {
             int totalCustomerCount = customerService.getTotalCustomerCount();
             int rowsPerPage = 8;
             int pageNo = 1;
 
             PaginationUtils pagination = new PaginationUtils(totalCustomerCount, rowsPerPage, pageNo);
             int startRow = pagination.getStartRow();
+            int endRow = pagination.getEndRow();
 
             List<CustomerNamecardVO> list = customerService.getAllCustomers(startRow, rowsPerPage);
 
             mav.addObject("cardList", list);
             mav.addObject("totalCustomerCount", totalCustomerCount);
-            mav.addObject("currentPage", startRow);
+            mav.addObject("currentPage", pageNo);
+            mav.addObject("startRow", startRow);
+            mav.addObject("endRow", endRow);
             mav.addObject("countPerPage", rowsPerPage);
+            mav.addObject("hasNextPage", pagination.hasNextPage() ? "true" : "false");
+            mav.addObject("hasPrevPage", pagination.hasPreviousPage() ? "true" : "false");
 
         } else {
 

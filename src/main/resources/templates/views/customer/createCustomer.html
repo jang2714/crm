@@ -59,8 +59,8 @@
                              data-toggle="tooltip" title="예시: hong@korea.com" data-placement="bottom">
                     </div>
                     <div class="col-12">
-                      <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone" pattern="[0-9]{10,11}" required
-                             data-toggle="tooltip" title="예시: 01012345678" data-placement="bottom">
+                      <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone" required
+                             data-toggle="tooltip" title="예시: 01012345678" data-placement="bottom" oninput="addHyphen(this)">
                     </div>
                     <div class="col-12">
                       <input type="date" class="form-control" id="birth" name="birth" placeholder="Birthday"
@@ -140,10 +140,6 @@
   </section>
   <!-- ***** Home Area ***** -->
 
-  <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-  <script th:src="@{/js/popper.min.js}"></script>
-  <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
-  <script th:src="@{/dist/js/adminlte.min.js}"></script>
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   <script>
     function searchAddr() {
@@ -183,9 +179,25 @@
       });
     }
 
-    function closeModal() {
-      location.href="/index";
+    function closeModal(customerUid) {
+      location.href="/customer/details?uid="+customerUid;
     }
+
+    function addHyphen(element) {
+      let phone = element.value;
+      // 입력된 값에서 하이픈(-)을 제거합니다.
+      phone = phone.replace(/-/g, "");
+
+      // 핸드폰 번호가 11자리인 경우 하이픈을 추가합니다.
+      if (phone.length === 11) {
+        phone = phone.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+      } else {
+        // 핸드폰 번호가 10자리인 경우 하이픈을 추가합니다.
+        phone = phone.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+      }
+      element.value = phone;
+    }
+
 
     $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();

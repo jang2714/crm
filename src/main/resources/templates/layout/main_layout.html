@@ -9,9 +9,15 @@
 
     <title>CRM - Creative Relationship Marketing | Home</title>
 
+    <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{/dist/js/adminlte.min.js}"></script>
+
     <th:block th:replace="fragments/config::config"></th:block>
 </head>
 <body>
+
     <div th:replace="fragments/header::header"></div>
     <div layout:fragment="content" class="content"></div>
 <!--                     style="height: calc(100vh - 107px);"></div>-->
@@ -19,14 +25,15 @@
     <div th:replace="fragments/footer::footer"></div>
 
 <!--    &lt;!&ndash; jQuery-2.2.4 js &ndash;&gt;-->
-<!--    <script th:src="@{/js/jquery-2.2.4.min.js}"></script>-->
+    <script th:src="@{/js/jquery-2.2.4.min.js}"></script>
 <!--    &lt;!&ndash; Popper js &ndash;&gt;-->
-<!--    <script th:src="@{/js/popper.min.js}"></script>-->
+    <script th:src="@{/js/popper.min.js}"></script>
 <!--    &lt;!&ndash; Bootstrap js &ndash;&gt;-->
-<!--    <script th:src="@{/js/bootstrap.min.js}"></script>-->
-<!--    &lt;!&ndash; All Plugins js &ndash;&gt;-->
-<!--    <script th:src="@{/js/plugins.js}"></script>-->
-<!--    &lt;!&ndash; Active js &ndash;&gt;-->
-<!--    <script th:src="@{/js/active.js}"></script>-->
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <!-- All Plugins js -->
+    <script th:src="@{/js/plugins.js}"></script>
+    <!-- Active js -->
+    <script th:src="@{/js/active.js}"></script>
+
 </body>
 </html>

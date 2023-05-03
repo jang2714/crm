@@ -214,10 +214,10 @@
   <script id="fileTemplate" type="text/x-handlebars-template">
     <li>
         <span class="mailbox-attachment-icon has-img">
-            <img src="" alt="Attachment">
+            <img src="{{imgSrc}}" alt="Attachment">
         </span>
       <div class="mailbox-attachment-info">
-        <a href="" class="mailbox-attachment-name">
+        <a href="{{originalFileUrl}}" class="mailbox-attachment-name">
           <i class="fa fa-paperclip"></i>
         </a>
         <a href="" class="btn btn-default btn-xs pull-right delBtn">
@@ -228,11 +228,7 @@
   </script>
 
 <!--  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>-->
-  <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-  <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
-<!--  <script th:src="@{/dist/js/adminlte.min.js}"></script>-->
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-
   <script th:src="@{/dist/js/lightbox.js}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
   <script th:src="@{/js/customer_file_upload.js}"></script>

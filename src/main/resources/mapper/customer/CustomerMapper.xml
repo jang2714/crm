@@ -17,6 +17,15 @@
 
     </select>
 
+    <select id="getCustomersByTag" resultType="kr.code.main.customer.domain.CustomerNamecardVO" parameterType="java.util.Map">
+
+        select c.cust_uid, c.cust_name, c.cust_addr, c.addr_post, c.cust_email, c.phone_number, c.company_name, c.pos_code, c.dept_code
+        FROM tbl_customer c
+                 INNER JOIN tbl_customer_tag ct ON c.cust_uid = ct.customer_id
+                 INNER JOIN tbl_tags t ON t.tag_id = ct.tag_id
+        WHERE t.tag_title = #{tagTitle}
+
+    </select>
 
     <insert id="createCustomer" parameterType="kr.code.main.customer.domain.CustomerVO">
 
@@ -27,11 +36,26 @@
 
     </insert>
 
-<!--    <select id="getAllCustomer" resultType="kr.code.main.customer.domain.CustomerNamecardVO" parameterType="java.util.Map">-->
+    <resultMap id="customerMap" type="kr.code.main.customer.domain.CustomerTagVO">
+        <id property="customerUid" column="cust_uid"/>
+        <result property="customerName" column="cust_name"/>
+        <collection property="tags" ofType="kr.code.main.common.tag.domain.Tag">
+            <id property="tagId" column="tag_id"/>
+            <result property="tagTitle" column="tag_title"/>
+        </collection>
+    </resultMap>
 
-<!--        select cust_name, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code-->
-<!--        from tbl_customer-->
+    <select id="getCustomerTagsById" resultMap="customerMap">
+        SELECT c.cust_uid, c.cust_name, t.tag_id, t.tag_title
+        FROM tbl_customer c
+                 LEFT OUTER JOIN tbl_customer_tag ct ON c.cust_uid = ct.customer_id
+                 LEFT OUTER JOIN tbl_tags t ON ct.tag_id = t.tag_id
+        WHERE c.cust_uid = #{customerId}
+    </select>
 
-<!--    </select>-->
+    <insert id="insertCustomerAndTag" parameterType="java.util.Map">
+        INSERT INTO tbl_customer_tag (customer_id, tag_id)
+        VALUES (#{customerId}, #{tagId})
+    </insert>
 
 </mapper>

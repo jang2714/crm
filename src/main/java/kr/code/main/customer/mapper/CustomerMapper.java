@@ -1,9 +1,8 @@
 package kr.code.main.customer.mapper;
 
-import kr.code.main.customer.domain.CustomerNamecardVO;
-import kr.code.main.customer.domain.CustomerVO;
-import kr.code.main.customer.domain.DepartmentVO;
-import kr.code.main.customer.domain.PositionVO;
+import kr.code.main.common.department.domain.DepartmentVO;
+import kr.code.main.common.position.domain.PositionVO;
+import kr.code.main.customer.domain.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -56,7 +55,13 @@ public interface CustomerMapper {
 
     List<CustomerNamecardVO> getAllCustomer(Map<String, Object> params);
 
+    List<CustomerNamecardVO> getCustomersByTag(Map<String, Object> params);
+
     int createCustomer(CustomerVO customer);
+
+    List<CustomerTagVO> getCustomerTagsById(String customerId);
+
+    int insertCustomerAndTag(Map<String, Object> params);
 
     @Select("SELECT * FROM tbl_position")
     List<PositionVO> getPositionMap();

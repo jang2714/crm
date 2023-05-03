@@ -1,5 +1,7 @@
 package kr.code.main.customer.controller;
 
+import kr.code.main.common.tag.domain.Tag;
+import kr.code.main.common.tag.service.TagService;
 import kr.code.main.customer.domain.CustomerNamecardVO;
 import kr.code.main.customer.domain.CustomerVO;
 import kr.code.main.customer.domain.dto.CreateRequestDTO;
@@ -7,11 +9,11 @@ import kr.code.main.customer.service.CustomerService;
 import kr.code.main.utils.UploadFileUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +32,7 @@ import java.util.Map;
 public class CustomerRestController {
 
     private final CustomerService customerService;
+    private final TagService tagService;
 
     @GetMapping("/namecards")
     public ResponseEntity<List<CustomerNamecardVO>> getCustomers() {
@@ -61,27 +64,38 @@ public class CustomerRestController {
         return new ResponseEntity<>(resultMap, httpStatus);
     }
 
+    @Transactional
     @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE})
     public ResponseEntity<String> createCustomer(CreateRequestDTO customerReq,
                                                  HttpServletRequest req,
                                                  HttpServletResponse res) throws IOException {
         CustomerVO customer = null;
-        HttpStatus httpStatus;
-        boolean result = false;
 
         try{
             customer = customerService.findByName(customerReq.getName());
             if(customer == null) {
-                result = customerService.createCustomer(customerReq);
+                // 고객 정보 동록
+                customer = customerService.createCustomer(customerReq);
+
+                // tag 정보를 생성 및 등록
+                List<Tag> tags = tagService.saveTagsFromCustomerInfo(customer);
+
+                // 고객 정보 와 tag의 연관관계 등록 (N vs N)
+                String customerId = customer.getCustomerUid();
+                tags.forEach(tag -> {
+                    Map<String, Object> linkParams = new HashMap<>();
+                    linkParams.put("customerId", customerId);
+                    linkParams.put("tagId", tag.getTagId());
+
+                    customerService.insertCustomerAndTag(linkParams);
+                });
             }
+
         } catch(Exception e) {
             e.printStackTrace();
         }
 
-        httpStatus = result ? HttpStatus.OK : HttpStatus.CONFLICT;
-        String msg = result ? customer.getCustomerUid() : null;
-
-        return new ResponseEntity<>(msg, httpStatus);
+        return ResponseEntity.ok(customer.getCustomerUid());
     }
 
 

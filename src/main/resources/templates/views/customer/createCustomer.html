@@ -6,29 +6,6 @@
 
 <div layout:fragment="content">
 
-  <!-- 모달창 -->
-  <div class="modal fade" id="create-result" tabindex="-1" role="dialog" aria-labelledby="createResultModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="createResultModalLabel">고객 정보 생성 결과</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- 모달창 내용 -->
-          <p id="create-result-text"></p>
-        </div>
-        <div class="modal-footer">
-          <!-- 모달창 버튼 -->
-          <button type="button" class="btn btn-primary" data-dismiss="modal" th:onclick="closeModal(${uid})">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
   <!-- ***** home Area ***** -->
   <section class="section_padding_100">
     <div class="container">
@@ -179,10 +156,6 @@
       });
     }
 
-    function closeModal(customerUid) {
-      location.href="/customer/details?uid="+customerUid;
-    }
-
     function addHyphen(element) {
       let phone = element.value;
       // 입력된 값에서 하이픈(-)을 제거합니다.
@@ -219,8 +192,10 @@
             console.log(response);
             // 모달 창에 결과 출력
             if (response !== null) {
-              $('#create-result .modal-body').html('고객 정보 생성을 완료하였습니다.');
-              $('#create-result .model-footer>button').attr('th:with', `uid=${response}`);
+              // $('#create-result .modal-body').html('고객 정보 생성을 완료하였습니다.');
+              // $('#create-result .model-footer>button').attr('th:with', `uid=${response}`);
+              alert('고객 정보 생성을 완료하였습니다.');
+              location.href="/customer/details?uid="+response;
             } else {
               alert('고객 정보 생성 실패');
             }

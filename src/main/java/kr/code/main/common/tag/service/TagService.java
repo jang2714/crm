@@ -22,10 +22,19 @@ public class TagService {
         List<Tag> tags = analyzeCustomerInfo(customer);
         Set<Tag> uniqueTags = new HashSet<>(tags); // 중복 제거
 
-        // 태그 엔티티 리스트를 한 번에 저장
-        List<Tag> savedTags = tagRepository.saveAll(uniqueTags);
-
-        return savedTags.stream().toList();
+        return tagRepository.saveAll(uniqueTags);
+//        // 중복된 태그 처리 로직
+//        List<Tag> existingTags = tagRepository.findAll();
+//        List<String> tagTitleList = existingTags.stream()
+//                .map(Tag::getTagTitle)
+//                .collect(Collectors.toList());
+//
+//        List<Tag> toAddTags = uniqueTags.stream()
+//                .filter(tag -> !tagTitleList.contains(tag.getTagTitle()))
+//                .collect(Collectors.toList());
+//        tagRepository.saveAll(toAddTags);
+//
+//        return toAddTags.stream().toList();
     }
 
     private List<Tag> analyzeCustomerInfo(CustomerVO customer) {
@@ -42,7 +51,8 @@ public class TagService {
 
         // address tag
         // 고객 주소를 공백으로 분리하여 단어 단위로 배열에 저장
-        Arrays.stream(customer.getAddress().split("[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s]+")).forEach( val -> {
+        Arrays.stream(customer.getAddress().split("\\s+")).forEach( val -> {
+            val = val.replaceAll("[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]", "");
             tags.add(Tag.builder().title(val).build());
         });
 

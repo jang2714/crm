@@ -16,7 +16,7 @@ public class Tag implements Serializable {
     @Column(name = "tag_id", nullable = false)
     private Long tagId;
 
-    @Column(name = "tag_title", nullable = false, length = 50, unique = true)
+    @Column(name = "tag_title", nullable = false, length = 50)
     private String tagTitle;
 
     @Builder

@@ -19,7 +19,7 @@ import javax.servlet.MultipartConfigElement;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${file.upload.path}")
+    //@Value("${file.upload.path}")
     private String outFilePath;
 
     @Value("/istatic/images/")

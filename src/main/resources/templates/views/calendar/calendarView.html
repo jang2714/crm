@@ -17,8 +17,12 @@
 <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/index.global.js}"></script>
 
-<div id="calendar"></div>
+<form id="frm" name="frm" method="post">
+    <input type="hidden" id="meetId" name="meetId" value="" />
+    <input type="hidden" id="curPage" name="curPage" value="" />
 
+    <div id="calendar"></div>
+</form>
 <script>
 $(document).ready(function () {
     let d = new Date();
@@ -33,94 +37,92 @@ $(document).ready(function () {
     dataType: "json"
     });
 
-request.done(function (data) {
-console.log(data);
-let jsonData = data.resultList;
-let calendarEl = document.getElementById('calendar');
+    request.done(function (data) {
+    console.log(data);
+    let jsonData = data.resultList;
+    let calendarEl = document.getElementById('calendar');
 
-let calendar = new FullCalendar.Calendar(calendarEl, {
-headerToolbar: {
-left: 'prev,next today',
-center: 'title',
-//right: 'dayGridMonth,timeGridWeek,timeGridDay'
-right: ''
-},
-initialDate: today,
-navLinks: true, // can click day/week names to navigate views
-selectable: true,
-selectMirror: true,
-select: function(arg) {
-console.log(arg);
-/* 추가 삭제
-let title = prompt('Event Title:');
-if (title) {
-calendar.addEvent({
-title: title,
-start: arg.start,
-end: arg.end,
-allDay: arg.allDay
-})
-}
-calendar.unselect()
-*/
-fn_insert(arg.startStr);
-},
-eventClick: function(arg) {
-console.log(arg.event._def.publicId);
-//console.log(arg.event._def.extendedProps.meetId);
-fn_update(arg.event._def.publicId);
+    let calendar = new FullCalendar.Calendar(calendarEl, {
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            //right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            right: ''
+        },
+        initialDate: today,
+        navLinks: true, // can click day/week names to navigate views
+        selectable: true,
+        selectMirror: true,
+        select: function(arg) {
+            console.log(arg);
+            /* 추가 삭제
+            let title = prompt('Event Title:');
+            if (title) {
+                calendar.addEvent({
+                    title: title,
+                    start: arg.start,
+                    end: arg.end,
+                    allDay: arg.allDay
+                })
+            }
+            calendar.unselect()
+            */
+            fn_insert(arg.startStr);
+        },
+        eventClick: function(arg) {
+            console.log(arg.event._def.publicId);
+            //console.log(arg.event._def.extendedProps.meetId);
+            fn_update(arg.event._def.publicId);
+            /*
+            if (confirm('Are you sure you want to delete this event?')) {
+            arg.event.remove()
+            }
+            */
+        },
+        editable: true,
+        dayMaxEvents: true, // allow "more" link when too many events
+        locale: 'ko',
+        events:jsonData
+            /*
+            events:
+            [
+            {
+            id: '11111111',
+            title: 'All Day Event',
+            start: '20230504'
+            }
 
+            ]
+            */
+    });
 
-/*
-if (confirm('Are you sure you want to delete this event?')) {
-arg.event.remove()
-}
-*/
-},
-editable: true,
-dayMaxEvents: true, // allow "more" link when too many events
-locale: 'ko',
-events:jsonData
-/*
-events:
-[
-{
-id: '11111111',
-title: 'All Day Event',
-start: '20230504'
-}
-
-]
-*/
-});
-
-calendar.render();
-});
+    calendar.render();
+    });
 });
 
 //일정 등록
 function fn_insert(secDate) {
-if(!isEmpty(secDate)) {
+    if(!isEmpty(secDate)) {
 
-}
+    }
 
 }
 
 //일정 수정
 function fn_update(seq) {
-if(!isEmpty(seq)) {
+    if(!isEmpty(seq)) {
 
-}
+    }
 
 }
 
 //10일미만, 10월미만 '0' 추가
 function addZero(date) {
-if (date < 10) {
-let zeroDate = ('00' + date).slice(-2);
-return zeroDate;
-}
-return date;
+    if (date < 10) {
+        let zeroDate = ('00' + date).slice(-2);
+        return zeroDate;
+    }
+    return date;
 }
 </script>
 </body>

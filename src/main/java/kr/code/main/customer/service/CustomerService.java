@@ -23,13 +23,20 @@ public class CustomerService {
         return customerMapper.getTotalCustomerCount(new HashMap<String, Object>());
     }
 
-    public List<CustomerNamecardVO>  getAllCustomers(int startPage, int showCount) {
+    public List<CustomerNamecardVO>  getAllCustomers(int start, int showCount) {
 
         Map<String, Object> params = new HashMap<>();
-        params.put("current", startPage);
+        params.put("current", start);
         params.put("count", showCount);
 
         return customerMapper.getAllCustomer(params);
+    }
+
+    public List<CustomerNamecardVO> getCustomersByTag(String tagTitle) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("tagTitle", tagTitle);
+
+        return customerMapper.getCustomersByTag(params);
     }
 
     public CustomerVO findByName(String name) {

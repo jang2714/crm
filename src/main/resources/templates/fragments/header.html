@@ -104,8 +104,7 @@
             e.preventDefault();
 
             let searchKey = $('#search-mini-form').serialize();
-            let url = '/customer/search';
-            location.href= url + `?${searchKey}`;
+            location.href= `/customer/search?${searchKey}`;
         });
     </script>
 </div>

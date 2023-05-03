@@ -70,6 +70,12 @@ public class CustomerController {
 
         List<CustomerNamecardVO> list = customerService.getAllCustomers(startRow, rowsPerPage);
 
+        attachObjectsToModel(currentPage, mav, totalCustomerCount, rowsPerPage, pagination, startRow, endRow, list);
+
+        return mav;
+    }
+
+    private void attachObjectsToModel(@RequestParam(value = "currentPage", required = false) int currentPage, ModelAndView mav, int totalCustomerCount, int rowsPerPage, PaginationUtils pagination, int startRow, int endRow, List<CustomerNamecardVO> list) {
         mav.addObject("cardList", list);
         mav.addObject("totalCustomerCount", totalCustomerCount);
         mav.addObject("currentPage", currentPage);
@@ -78,18 +84,18 @@ public class CustomerController {
         mav.addObject("countPerPage", rowsPerPage);
         mav.addObject("hasNextPage", pagination.hasNextPage() ? "true" : "false");
         mav.addObject("hasPrevPage", pagination.hasPreviousPage() ? "true" : "false");
-
-        return mav;
     }
 
     @GetMapping("/search")
-    public ModelAndView viewCustomerSearch(@RequestParam(value = "search", required = false) String search) {
+    public ModelAndView viewCustomerSearch(@RequestParam(value = "search") String search) {
 
         ModelAndView mav = new ModelAndView("views/customer/listupCustomer");
 
         // 서치 없이 목록을 출력 할때
-        if (search.isBlank() || search.isEmpty()) {
-            int totalCustomerCount = customerService.getTotalCustomerCount();
+        if (!search.isEmpty()) {
+
+            List<CustomerNamecardVO> list = customerService.getCustomersByTag(search);
+            int totalCustomerCount = list.size();
             int rowsPerPage = 8;
             int pageNo = 1;
 
@@ -97,19 +103,20 @@ public class CustomerController {
             int startRow = pagination.getStartRow();
             int endRow = pagination.getEndRow();
 
-            List<CustomerNamecardVO> list = customerService.getAllCustomers(startRow, rowsPerPage);
-
-            mav.addObject("cardList", list);
-            mav.addObject("totalCustomerCount", totalCustomerCount);
-            mav.addObject("currentPage", pageNo);
-            mav.addObject("startRow", startRow);
-            mav.addObject("endRow", endRow);
-            mav.addObject("countPerPage", rowsPerPage);
-            mav.addObject("hasNextPage", pagination.hasNextPage() ? "true" : "false");
-            mav.addObject("hasPrevPage", pagination.hasPreviousPage() ? "true" : "false");
+            attachObjectsToModel(pageNo, mav, totalCustomerCount, rowsPerPage, pagination, startRow, endRow, list);
 
         } else {
 
+            int totalCustomerCount = customerService.getTotalCustomerCount();
+            int rowsPerPage = 8;
+
+            PaginationUtils pagination = new PaginationUtils(totalCustomerCount, rowsPerPage, 1);
+            int startRow = pagination.getStartRow();
+            int endRow = pagination.getEndRow();
+
+            List<CustomerNamecardVO> list = customerService.getAllCustomers(startRow, rowsPerPage);
+
+            attachObjectsToModel(1, mav, totalCustomerCount, rowsPerPage, pagination, startRow, endRow, list);
         }
 
         return mav;

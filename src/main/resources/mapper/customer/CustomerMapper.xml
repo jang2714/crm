@@ -17,6 +17,16 @@
 
     </select>
 
+    <select id="getCustomersByTag" resultType="kr.code.main.customer.domain.CustomerNamecardVO" parameterType="java.util.Map">
+
+        select c.cust_uid, c.cust_name, c.cust_addr, c.addr_post, c.cust_email, c.phone_number, c.company_name, c.pos_code, c.dept_code
+        FROM tbl_customer c
+                 INNER JOIN tbl_customer_tag ct ON c.cust_uid = ct.customer_id
+                 INNER JOIN tbl_tags t ON t.tag_id = ct.tag_id
+        WHERE t.tag_title = #{tagTitle}
+
+    </select>
+
     <insert id="createCustomer" parameterType="kr.code.main.customer.domain.CustomerVO">
 
     insert into tbl_customer

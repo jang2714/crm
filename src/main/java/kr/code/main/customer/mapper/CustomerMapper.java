@@ -55,6 +55,8 @@ public interface CustomerMapper {
 
     List<CustomerNamecardVO> getAllCustomer(Map<String, Object> params);
 
+    List<CustomerNamecardVO> getCustomersByTag(Map<String, Object> params);
+
     int createCustomer(CustomerVO customer);
 
     List<CustomerTagVO> getCustomerTagsById(String customerId);

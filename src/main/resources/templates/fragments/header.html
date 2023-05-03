@@ -40,7 +40,7 @@
                                     <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
                                     <li class="nav-item"><a class="nav-link" href="#">Services</a></li>
                                     <li class="nav-item"><a class="nav-link" href="#">Portfolio</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="javascript:menuView('/calendar/calendarView.do');">Calendar(작업중)</a></li>
                                     <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
                                 </ul>
                                 <!-- Search Form Area Start -->
@@ -102,6 +102,22 @@
                 location.href = '/logout';
             }
         }
+
+        function menuView(url) {
+            $.ajax({
+                type : "POST",
+                url : url,
+                data : "",
+                dataType : "json",
+                success : function(data) {
+                    alert("11111111111111111111111111");
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert("통신 실패")
+                }
+            });
+        }
+
     </script>
 </div>
 </html>

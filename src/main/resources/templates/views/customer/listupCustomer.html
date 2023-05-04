@@ -53,73 +53,87 @@
       </div>
       <div class="col-md-6">
         <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
-            <div><p class="mb-sm-0">Showing [[${startRow + 1}]] to [[${endRow}]] of [[${currentPage}]] Page</p></div>
+            <div><p class="mb-sm-0">Showing <span th:text=" ${startRow + 1} "></span> to <span th:text="${endRow}"></span> of <span th:text=" ${currentPage} "></span> Page</p></div>
         </div>
       </div>
     </div>
-    <div class="row">
-
-        <div class="col-xl-3 col-sm-6" th:each="card : ${cardList}">
-        <div class="card" style="height: 360px;">
-          <div class="card-body">
-            <div class="d-flex align-items-center">
-<!--              <div><img th:src="@{https://bootdey.com/img/Content/avatar/avatar1.png}" alt="" class="avatar-md rounded-circle img-thumbnail" /></div>-->
-              <div class="avatar-md">
-                <div class="avatar-title bg-soft-primary text-primary display-6 m-0 rounded-circle"><i class="bx bxs-user-circle bx-lg"></i></div>
-              </div>
-              <div class="flex-1 ms-3 ml-15">
-                <h5 class="font-size-16 mb-1"><a href="#" class="text-dark">[[${card.name}]]</a></h5>
-                <th:block th:if="${card.company != null}"><div class="badge badge-soft-success mb-0">[[${card.company}]]</div></th:block>
-                <th:block th:if="${card.company == null}"><div class="badge badge-soft-success mb-0">회사정보 없음</div></th:block>
-              </div>
+    <div th:if="${totalCustomerCount > 0}">
+        <div class="row">
+            <div class="col-xl-3 col-sm-6" th:each="card : ${cardList}">
+                <div class="card" style="height: 360px;">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+            <!--              <div><img th:src="@{https://bootdey.com/img/Content/avatar/avatar1.png}" alt="" class="avatar-md rounded-circle img-thumbnail" /></div>-->
+                            <div class="avatar-md">
+                                <div class="avatar-title bg-soft-primary text-primary display-6 m-0 rounded-circle">
+                                    <i class="bx bxs-user-circle bx-lg"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1 ms-3 ml-15">
+                                <h5 class="font-size-16 mb-1"><a href="#" class="text-dark">[[${card.name}]]</a></h5>
+                                <th:block th:if="${card.company != null}"><div class="badge badge-soft-success mb-0">[[${card.company}]]</div></th:block>
+                                <th:block th:if="${card.company == null}"><div class="badge badge-soft-success mb-0">회사정보 없음</div></th:block>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 pt-4">
+                            <button type="button" class="btn btn-soft-primary btn-sm w-50"
+                                    th:if="${ card.uid != null  }" th:onclick="showProfile([[${card.uid}]])">
+                                <i class="fa fa-user me-1"></i>
+                                Profile
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm w-50"
+                                    th:if="${ card.email != null }" th:onclick="writeEmail([[${card.email}]])">
+                                <i class="fa fa-mail-reply me-1"></i>
+                                Contact
+                            </button>
+                        </div>
+                        <div class="mt-3 pt-1">
+                            <p class="text-muted mb-0 pr-2"><i class="mdi mdi-phone font-size-20 align-middle pe-2 text-primary"></i> [[${card.phone}]]</p>
+                            <p class="text-muted mb-0 mt-2"><i class="mdi mdi-email font-size-20 align-middle pe-2 text-primary"></i> [[${card.email}]]</p>
+                            <p class="text-muted mb-0 mt-2"><i class="mdi mdi-google-maps font-size-20 align-middle pe-2 text-primary"></i> [[${card.address}]]</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="d-flex gap-2 pt-4">
-              <button type="button" class="btn btn-soft-primary btn-sm w-50"
-                      th:if="${ card.uid != null  }" th:onclick="showProfile([[${card.uid}]])">
-                  <i class="fa fa-user me-1"></i> Profile
-              </button>
-              <button type="button" class="btn btn-primary btn-sm w-50"
-                        th:if="${ card.email != null }" th:onclick="writeEmail([[${card.email}]])">
-                  <i class="fa fa-mail-reply me-1"></i> Contact
-              </button>
-            </div>
-            <div class="mt-3 pt-1">
-              <p class="text-muted mb-0 pr-2"><i class="mdi mdi-phone font-size-20 align-middle pe-2 text-primary"></i> [[${card.phone}]]</p>
-              <p class="text-muted mb-0 mt-2"><i class="mdi mdi-email font-size-20 align-middle pe-2 text-primary"></i> [[${card.email}]]</p>
-              <p class="text-muted mb-0 mt-2"><i class="mdi mdi-google-maps font-size-20 align-middle pe-2 text-primary"></i> [[${card.address}]]</p>
-            </div>
-          </div>
         </div>
-      </div>
-
+        <div class="row g-0 align-items-center pb-4">
+            <div class="col-12">
+                <!--          pagination을 중앙 정렬하게 만든다.-->
+                <div class="d-flex justify-content-center">
+                    <ul class="pagination mb-sm-0">
+                        <li class="page-item">
+                            <th:block th:with="nextPage = ${currentPage + 1}" th:if="${hasNextPage eq 'true' }">
+                                <a th:href="@{/customer/list(currentPage=${nextPage})}" class="page-link"><i class="mdi mdi-chevron-left"></i></a>
+                            </th:block>
+                        </li>
+                        <li class="page-item active"><a href="#" class="page-link">[[${currentPage}]]</a></li>
+                        <li class="page-item">
+                            <th:block th:with="prevPage = ${currentPage - 1}" th:if="${hasPrevPage eq 'true' }">
+                                <a th:href="@{/customer/list(currentPage=${prevPage})}" class="page-link"><i class="mdi mdi-chevron-right"></i></a>
+                            </th:block>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="row g-0 align-items-center pb-4">
+    <div th:unless="${totalCustomerCount > 0}">
         <div class="col-12">
-<!--          pagination을 중앙 정렬하게 만든다.-->
-          <div class="d-flex justify-content-center">
-            <ul class="pagination mb-sm-0">
-              <li class="page-item">
-                  <th:block th:with="nextPage = ${currentPage + 1}" th:if="${hasNextPage eq 'true' }">
-                    <a th:href="@{'/customer/list?currentPage=' + ${nextPage}}" class="page-link"><i class="mdi mdi-chevron-left"></i></a>
-                  </th:block>
-              </li>
-              <li class="page-item active"><a href="#" class="page-link">[[${currentPage}]]</a></li>
-              <li class="page-item">
-                  <th:block th:with="prevPage = ${currentPage - 1}" th:if="${hasPrevPage eq 'true' }">
-                    <a th:href="@{'/customer/list?currentPage=' + ${prevPage}}" class="page-link"><i class="mdi mdi-chevron-right"></i></a>
-                  </th:block>
-              </li>
-            </ul>
-          </div>
+            <section class="subscribe-newsletter-content section_padding_50_200">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="subscribe-newsletter-content text-center wow fadeIn" data-wow-delay="0.5s">
+                                <h2>데이타가 존재하지 않습니다.</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-
     </div>
   </div>
 
-
-  <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-  <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
-  <script th:src="@{/dist/js/adminlte.min.js}"></script>
   <script>
 
     function closeModal() {

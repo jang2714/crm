@@ -1,11 +1,13 @@
 package kr.code.main.utils;
 
+import lombok.RequiredArgsConstructor;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.util.FileCopyUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -16,15 +18,18 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.UUID;
 
+@Component
+@RequiredArgsConstructor
 public class UploadFileUtils {
 
     // 파일이 저장되는 경로
-    private static final String FILE_PATH = "/Users/timeless/WebApp/Upload";
+    @Value("${file.upload.path}")
+    private String FILE_PATH;
 
     private static final Logger logger = LoggerFactory.getLogger(UploadFileUtils.class);
 
     // 파일 업로드 처리
-    public static String uploadFile(MultipartFile file, HttpServletRequest request) throws Exception {
+    public String uploadFile(MultipartFile file, HttpServletRequest request) throws Exception {
 
         String originalFileName = file.getOriginalFilename(); // 파일명
         byte[] fileData = file.getBytes();  // 파일 데이터
@@ -55,7 +60,7 @@ public class UploadFileUtils {
     }
 
     // 파일 삭제 처리
-    public static void deleteFile(String fileName, HttpServletRequest request) {
+    public void deleteFile(String fileName, HttpServletRequest request) {
 
         String rootPath = getRootPath(fileName, request); // 기본경로 추출(이미지 or 일반파일)
 
@@ -71,7 +76,7 @@ public class UploadFileUtils {
     }
 
     // 파일 출력을 위한 HttpHeader 설정
-    public static HttpHeaders getHttpHeaders(String fileName) throws Exception {
+    public HttpHeaders getHttpHeaders(String fileName) throws Exception {
 
         MediaType mediaType = MediaUtils.getMediaType(fileName); // 파일타입 확인
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -94,7 +99,7 @@ public class UploadFileUtils {
     }
 
     // 기본 경로 추출
-    public static String getRootPath(String fileName, HttpServletRequest request) {
+    public String getRootPath(String fileName, HttpServletRequest request) {
 
         MediaType mediaType = MediaUtils.getMediaType(fileName); // 파일타입 확인
         if (mediaType != null)
@@ -106,7 +111,7 @@ public class UploadFileUtils {
     }
 
     // 날짜 폴더명 추출
-    private static String getDatePath(String uploadPath) {
+    private String getDatePath(String uploadPath) {
 
         Calendar calendar = Calendar.getInstance();
         String yearPath = File.separator + calendar.get(Calendar.YEAR);
@@ -119,7 +124,7 @@ public class UploadFileUtils {
     }
 
     // 날짜별 폴더 생성
-    private static void makeDateDir(String uploadPath, String... paths) {
+    private void makeDateDir(String uploadPath, String... paths) {
 
         // 날짜별 폴더가 이미 존재하면 메서드 종료
         if (new File(uploadPath + paths[paths.length - 1]).exists())
@@ -127,7 +132,8 @@ public class UploadFileUtils {
 
         uploadPath = uploadPath + paths[paths.length - 1];
         File dirPath = new File(uploadPath);
-        boolean test = dirPath.mkdirs();
+        Boolean test = dirPath.mkdirs();
+        System.out.println("경로 생성 : " + dirPath + " --> " + test.toString());
 
 //        for (String path :  paths) {
 //            File dirPath = new File(uploadPath + path);
@@ -139,18 +145,18 @@ public class UploadFileUtils {
     }
 
     // 파일 저장 경로 치환
-    private static String replaceSavedFilePath(String datePath, String fileName) {
+    private String replaceSavedFilePath(String datePath, String fileName) {
         String savedFilePath = datePath + File.separator + fileName;
         return savedFilePath.replace(File.separatorChar, '/');
     }
 
     // 파일명 중복방지 처리
-    private static String getUuidFileName(String originalFileName) {
+    private String getUuidFileName(String originalFileName) {
         return UUID.randomUUID().toString() + "_" + originalFileName;
     }
 
     // 썸네일 이미지 생성
-    private static String makeThumbnail(String uploadRootPath, String datePath, String fileName) throws Exception {
+    private String makeThumbnail(String uploadRootPath, String datePath, String fileName) throws Exception {
 
         // 원본이미지를 메모리상에 로딩
         BufferedImage originalImg = ImageIO.read(new File(uploadRootPath + datePath, fileName));

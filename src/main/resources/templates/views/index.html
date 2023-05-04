@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/main_layout}">
 
@@ -21,9 +21,6 @@
   </div>
  </section>
 
-
- <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
- <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
  <script>
   $(document).ready(function() {
     $('.bradcumbTitle').text('Welcome');
@@ -33,8 +30,7 @@
     e.preventDefault();
 
     let searchKey = $('#search-form').serialize();
-    let url = '/customer/search';
-    location.href= url + `?${searchKey}`;
+    location.href= `/customer/search?${searchKey}`;
    });
 
   });

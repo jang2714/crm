@@ -1,4 +1,4 @@
-package kr.code.main.customer.domain;
+package kr.code.main.common.department.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.code.main.calendar.mapper.CalendarMapper">
+    <select id="selectCalendarList" resultType="hashMap" parameterType="kr.code.main.calendar.vo.CalendarVO">
+    SELECT
+        meet_id
+        ,meet_id AS id
+        ,meet_se
+        ,meet_title
+        ,meet_title AS title
+        ,meet_cn
+        ,CONCAT(CONCAT(DATE_FORMAT(MEET_DATE, '%Y%m%d'),'T'), DATE_FORMAT(MEET_DATE, '%H%i')) AS "start"
+        ,meet_loc
+     FROM tbl_meet
+   ORDER BY meet_date
+   </select>
+
+
+</mapper>

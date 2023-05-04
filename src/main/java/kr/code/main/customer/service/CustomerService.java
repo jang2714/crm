@@ -1,34 +1,46 @@
 package kr.code.main.customer.service;
 
+import kr.code.main.common.File.service.FileService;
 import kr.code.main.customer.domain.CustomerNamecardVO;
+import kr.code.main.customer.domain.CustomerTagVO;
 import kr.code.main.customer.domain.CustomerVO;
-import kr.code.main.customer.domain.DepartmentVO;
-import kr.code.main.customer.domain.PositionVO;
 import kr.code.main.customer.domain.dto.CreateRequestDTO;
+import kr.code.main.customer.domain.dto.UpdateRequestDTO;
 import kr.code.main.customer.mapper.CustomerMapper;
-import kr.code.main.utils.UploadFileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
 
     private final CustomerMapper customerMapper;
+    private final FileService fileService;
 
     public int getTotalCustomerCount() {
         return customerMapper.getTotalCustomerCount(new HashMap<String, Object>());
     }
 
-    public List<CustomerNamecardVO>  getAllCustomers(int startPage, int showCount) {
+    public List<CustomerNamecardVO>  getAllCustomers(int start, int showCount) {
 
         Map<String, Object> params = new HashMap<>();
-        params.put("current", startPage);
+        params.put("current", start);
         params.put("count", showCount);
 
         return customerMapper.getAllCustomer(params);
+    }
+
+    public List<CustomerNamecardVO> getCustomersByTag(String tagTitle) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("tagTitle", tagTitle);
+
+        return customerMapper.getCustomersByTag(params);
     }
 
     public CustomerVO findByName(String name) {
@@ -41,7 +53,15 @@ public class CustomerService {
                 .orElse(null);
     }
 
-    public boolean createCustomer(CreateRequestDTO customerReq) {
+    public List<CustomerTagVO> getAllCustomerTagById(String customerId) {
+        return customerMapper.getCustomerTagsById(customerId);
+    }
+
+    public int insertCustomerAndTag(Map<String, Object> params) {
+        return customerMapper.insertCustomerAndTag(params);
+    }
+
+    public CustomerVO createCustomer(CreateRequestDTO customerReq) {
 
         // 고객 정보 생성
         CustomerVO newCustomer = CustomerVO.builder()
@@ -60,14 +80,47 @@ public class CustomerService {
                 .build();
 
         int result = customerMapper.createCustomer(newCustomer);
-        return result > 0;
+        if (result > 0) {
+            System.out.println("고객 정보 생성 완료 -> " + newCustomer.getCustomerName() + " : " + newCustomer.getCustomerUid());
+        } else {
+            System.out.println("고객 정보 생성 실패!");
+
+            // throws RuntimeException
+        }
+
+        return newCustomer;
     }
 
-    public List<PositionVO> getPositionMap() {
-        return customerMapper.getPositionMap();
-    }
+    @Transactional
+    public CustomerVO updateCustomerInfo(UpdateRequestDTO customerReq) {
 
-    public List<DepartmentVO> getDepartmentList() {
-        return customerMapper.getDepartmentList();
+        String[] files = customerReq.getFiles();
+        int savedFileCnt = fileService.AddManagedFile(customerReq.getUid(), files, customerReq.getFileCnt());
+
+        // 고객 정보 생성
+        CustomerVO customer = CustomerVO.builder()
+                .customerName(customerReq.getName())
+                .customerGender(customerReq.getGender())
+                .customerBirth(customerReq.getBirth())
+                .address(customerReq.getAddress() + " " + customerReq.getAddress2())
+                .postcode(customerReq.getPostcode())
+                .customerEmail(customerReq.getEmail())
+                .phoneNumber(customerReq.getPhone())
+                .companyName(customerReq.getCompany())
+                .posCode(customerReq.getPosition())
+                .deptCode(customerReq.getDepartment())
+                .attachedCnt(savedFileCnt)
+                .build();
+
+        int result = customerMapper.updateCustomer(customer);
+        if (result > 0) {
+            System.out.println("고객 정보 수정 완료 -> " + customer.getCustomerName() + " : " + customer.getCustomerUid());
+        } else {
+            System.out.println("고객 정보 수정 실패!");
+
+            // throws RuntimeException
+        }
+
+        return customer;
     }
 }

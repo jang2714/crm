@@ -55,7 +55,8 @@
             <div class="card mb-4">
               <div class="card-header">Account Details</div>
               <div class="card-body">
-                <form>
+                <form role="form" id="writeForm" method="post" action="/api/v1/customer/update">
+                  <input id="customerId", name="uid", type="hidden" th:value="${customer.customerUid}">
                   <!-- Form Group (username, gender)-->
                   <div class="row gx-3 mb-3">
                     <div class="col-md-9">
@@ -115,7 +116,6 @@
                     <input class="form-control" id="inputCompany" name="company" type="text" style="color: black;"
                            th:value="${customer.companyName} == null ? 'Enter your company' : ${customer.companyName}">
                   </div>
-
                   <!-- Form Row-->
                   <div class="row gx-3 mb-3">
                     <!-- Form Group (position)-->
@@ -151,8 +151,9 @@
                     </div>
                   </div>
                   <div class="box-footer">
-                    <ul class="mailbox-attachments clearfix uploadedFileList"></ul>
+                    <ul class="mailbox-attachments clearfix uploadedFileList nav"></ul>
                   </div>
+                  <hr/>
                   <div class="box-footer">
                     <button type="button" class="btn btn-primary listBtn"><i class="fa fa-list"></i> 목록</button>
                     <div class="pull-right">
@@ -212,25 +213,31 @@
   </div>
 
   <script id="fileTemplate" type="text/x-handlebars-template">
-    <li>
-        <span class="mailbox-attachment-icon has-img">
-            <img src="{{imgSrc}}" alt="Attachment">
-        </span>
-      <div class="mailbox-attachment-info">
-        <a href="{{originalFileUrl}}" class="mailbox-attachment-name">
-          <i class="fa fa-paperclip"></i>
-        </a>
-        <a href="" class="btn btn-default btn-xs pull-right delBtn">
-          <i class="fa fa-fw fa-remove"></i>
-        </a>
+    <li class="card nav-item" style="height: 100px; width: 100px;">
+      <div class="card-body" style="height: 100%;" >
+        <div class="d-flex align-items-center">
+          <span class="mailbox-attachment-icon has-img">
+            <img src="{{imgSrc}}" alt="Attachment" width="58" height="58">
+          </span>
+        </div>
+        <div class="d-flex gap-2" style="height: 20%;">
+          <div class="mailbox-attachment-info">
+            <a href="{{originalFileUrl}}" class="mailbox-attachment-name w-50">
+              <i class="fa fa-paperclip"></i>
+            </a>
+            <a href="" class="btn btn-default pull-right delBtn w-50" style="padding-top: 0px;">
+              <i class="fa fa-fw fa-remove"></i>
+            </a>
+          </div>
+        </div>
       </div>
     </li>
   </script>
 
 <!--  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>-->
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-  <script th:src="@{/dist/js/lightbox.js}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+  <script th:src="@{/dist/js/lightbox.js}"></script>
   <script th:src="@{/js/customer_file_upload.js}"></script>
 
   <script>
@@ -286,6 +293,13 @@
         e.preventDefault();
         let that = $(this);
         filesSubmit(that);
+      });
+
+      // 파일 삭제 버튼 클릭 이벤트
+      $(document).on("click", ".delBtn", function (event) {
+        event.preventDefault();
+        const that = $(this);
+        deleteFileWrtPage(that);
       });
 
 

@@ -58,4 +58,40 @@
         VALUES (#{customerId}, #{tagId})
     </insert>
 
+    <update id="updateCustomer" parameterType="kr.code.main.customer.domain.CustomerVO">
+
+        UPDATE tbl_customer
+        <set>
+            <if test="customerBirth neq null and customerBirth neq ''">
+                cust_birth = #{customerBirth},
+            </if>
+            <if test="address neq null and address neq ''">
+                cust_addr = #{address},
+            </if>
+            <if test="postcode neq null and postcode neq ''">
+                addr_post = #{postcode},
+            </if>
+            <if test="customerEmail neq null and customerEmail neq ''">
+                cust_email = #{customerEmail},
+            </if>
+            <if test="phoneNumber neq null and phoneNumber neq ''">
+                phone_number = #{phoneNumber},
+            </if>
+            <if test="companyName neq null and companyName neq ''">
+                company_name = #{companyName},
+            </if>
+            <if test="posCode neq null and posCode neq ''">
+                pos_code = #{posCode},
+            </if>
+            <if test="deptCode neq null and deptCode neq ''">
+                dept_code = #{deptCode},
+            </if>
+            <if test="attachedCnt neq null and attachedCnt neq ''">
+                attached_cnt = #{attachedCnt},
+            </if>
+        </set>
+        WHERE cust_uid = #{customerId}
+
+    </update>
+
 </mapper>

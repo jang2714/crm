@@ -1,12 +1,15 @@
 package kr.code.main.customer.service;
 
-import kr.code.main.common.department.domain.DepartmentVO;
-import kr.code.main.common.position.domain.PositionVO;
-import kr.code.main.customer.domain.*;
+import kr.code.main.common.File.service.FileService;
+import kr.code.main.customer.domain.CustomerNamecardVO;
+import kr.code.main.customer.domain.CustomerTagVO;
+import kr.code.main.customer.domain.CustomerVO;
 import kr.code.main.customer.domain.dto.CreateRequestDTO;
+import kr.code.main.customer.domain.dto.UpdateRequestDTO;
 import kr.code.main.customer.mapper.CustomerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.UUID;
 public class CustomerService {
 
     private final CustomerMapper customerMapper;
+    private final FileService fileService;
 
     public int getTotalCustomerCount() {
         return customerMapper.getTotalCustomerCount(new HashMap<String, Object>());
@@ -87,11 +91,36 @@ public class CustomerService {
         return newCustomer;
     }
 
-    public List<PositionVO> getPositionMap() {
-        return customerMapper.getPositionMap();
-    }
+    @Transactional
+    public CustomerVO updateCustomerInfo(UpdateRequestDTO customerReq) {
 
-    public List<DepartmentVO> getDepartmentList() {
-        return customerMapper.getDepartmentList();
+        String[] files = customerReq.getFiles();
+        int savedFileCnt = fileService.AddManagedFile(customerReq.getUid(), files, customerReq.getFileCnt());
+
+        // 고객 정보 생성
+        CustomerVO customer = CustomerVO.builder()
+                .customerName(customerReq.getName())
+                .customerGender(customerReq.getGender())
+                .customerBirth(customerReq.getBirth())
+                .address(customerReq.getAddress() + " " + customerReq.getAddress2())
+                .postcode(customerReq.getPostcode())
+                .customerEmail(customerReq.getEmail())
+                .phoneNumber(customerReq.getPhone())
+                .companyName(customerReq.getCompany())
+                .posCode(customerReq.getPosition())
+                .deptCode(customerReq.getDepartment())
+                .attachedCnt(savedFileCnt)
+                .build();
+
+        int result = customerMapper.updateCustomer(customer);
+        if (result > 0) {
+            System.out.println("고객 정보 수정 완료 -> " + customer.getCustomerName() + " : " + customer.getCustomerUid());
+        } else {
+            System.out.println("고객 정보 수정 실패!");
+
+            // throws RuntimeException
+        }
+
+        return customer;
     }
 }

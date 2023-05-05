@@ -90,7 +90,7 @@
                 attached_cnt = #{attachedCnt},
             </if>
         </set>
-        WHERE cust_uid = #{customerId}
+        WHERE cust_uid = #{customerUid}
 
     </update>
 

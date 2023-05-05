@@ -63,13 +63,21 @@ public class CustomerService {
 
     public CustomerVO createCustomer(CreateRequestDTO customerReq) {
 
+        String completeAddress = "no address";
+        if (customerReq.getAddress() != null) {
+            completeAddress = customerReq.getAddress();
+        }
+        if (customerReq.getAddress2() != null) {
+            completeAddress += " " + customerReq.getAddress2();
+        }
+
         // 고객 정보 생성
         CustomerVO newCustomer = CustomerVO.builder()
                 .customerUid(UUID.randomUUID().toString())
                 .customerName(customerReq.getName())
                 .customerGender(customerReq.getGender())
                 .customerBirth(customerReq.getBirth())
-                .address(customerReq.getAddress() + " " + customerReq.getAddress2())
+                .address(completeAddress)
                 .postcode(customerReq.getPostcode())
                 .customerEmail(customerReq.getEmail())
                 .phoneNumber(customerReq.getPhone())
@@ -94,15 +102,44 @@ public class CustomerService {
     @Transactional
     public CustomerVO updateCustomerInfo(UpdateRequestDTO customerReq) {
 
+        int savedFileCnt = 0;
         String[] files = customerReq.getFiles();
-        int savedFileCnt = fileService.AddManagedFile(customerReq.getUid(), files, customerReq.getFileCnt());
+        if ( files!= null && files.length > 0 ) {
+
+            fileService.RemoveAll(customerReq.getUid());
+            savedFileCnt = fileService.AddManagedFile(customerReq.getUid(), files, customerReq.getFileCnt());
+
+/*            // 일일히 비교하는 것은 비효율적.
+            List<String> alreadyHasFiles = fileService.GetManagedFileList(customerReq.getUid());
+            files = Arrays.stream(files).filter( file -> {
+                String fullpath = file.substring( file.lastIndexOf("=") + 1 );
+                String filepath = fullpath.substring(0, 12);
+                String filename = fullpath.substring(12);
+                String diffVal = filepath + (MediaUtils.getMediaType(filename) != null ? "s_" : "") + filename;
+                return !alreadyHasFiles.contains(diffVal);
+            } ).toArray(String[]::new);
+
+            if (files.length > 0) {
+                savedFileCnt = fileService.AddManagedFile(customerReq.getUid(), files, customerReq.getFileCnt());
+            }
+*/
+        }
+
+        String completeAddress = "no address";
+        if (customerReq.getAddress() != null) {
+            completeAddress = customerReq.getAddress();
+        }
+        if (customerReq.getAddress2() != null) {
+            completeAddress += " " + customerReq.getAddress2();
+        }
 
         // 고객 정보 생성
         CustomerVO customer = CustomerVO.builder()
+                .customerUid(customerReq.getUid())
                 .customerName(customerReq.getName())
                 .customerGender(customerReq.getGender())
                 .customerBirth(customerReq.getBirth())
-                .address(customerReq.getAddress() + " " + customerReq.getAddress2())
+                .address(completeAddress)
                 .postcode(customerReq.getPostcode())
                 .customerEmail(customerReq.getEmail())
                 .phoneNumber(customerReq.getPhone())

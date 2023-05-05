@@ -74,13 +74,16 @@ function printFiles(data) {
 }
 
 // 게시글 입력/수정 submit 처리시에 첨부파일 정보도 함께 처리
-function filesSubmit(that) {
+function filesSubmit(that, doSubmit = true) {
     let str = "";
     $(".uploadedFileList .delBtn").each(function (index) {
         str += "<input type='hidden' name='files[" + index + "]' value='" + $(this).attr("href") + "'>"
     });
     that.append(str);
-    that.get(0).submit();
+
+    if (doSubmit) {
+        that.get(0).submit();
+    }
 }
 
 // 파일 삭제(입력페이지) : 첨부파일만 삭제처리

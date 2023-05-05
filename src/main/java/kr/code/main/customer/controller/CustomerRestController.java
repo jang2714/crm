@@ -1,5 +1,6 @@
 package kr.code.main.customer.controller;
 
+import kr.code.main.common.File.service.FileService;
 import kr.code.main.common.tag.domain.Tag;
 import kr.code.main.common.tag.service.TagService;
 import kr.code.main.customer.domain.CustomerNamecardVO;
@@ -28,6 +29,7 @@ public class CustomerRestController {
 
     private final CustomerService customerService;
     private final TagService tagService;
+    private final FileService fileService;
 
     @GetMapping("/namecards")
     public ResponseEntity<List<CustomerNamecardVO>> getCustomers() {
@@ -100,6 +102,15 @@ public class CustomerRestController {
         CustomerVO customer = customerService.updateCustomerInfo(customerReq);
 
         return ResponseEntity.ok(customer.getCustomerUid());
+    }
+
+    @GetMapping(value="attached")
+    public ResponseEntity<String[]> retrieveFiles(@RequestParam(name="customerUid", required=false) String customerUid) {
+        List<String> hasFiles = fileService.GetManagedFileList(customerUid);
+
+        String[] toJs = hasFiles.toArray(new String[0]);
+
+        return ResponseEntity.ok(toJs);
     }
 
 }

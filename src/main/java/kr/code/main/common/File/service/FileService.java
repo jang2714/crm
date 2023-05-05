@@ -27,12 +27,18 @@ public class FileService {
 
         AtomicInteger index = new AtomicInteger();
         Arrays.stream(files).forEach( file -> {
+
             MediaType mediaType = MediaUtils.getMediaType(file);
+            if (mediaType == null) {
+                mediaType = MediaType.APPLICATION_OCTET_STREAM;
+            }
 
             String extsn = file.substring(file.lastIndexOf(".") + 1 );
             String origin = file.substring( file.lastIndexOf("_") + 1 );
-            String path = file.substring( file.lastIndexOf(File.separator) + 1 );
+            String stored = file.substring( file.lastIndexOf(File.separator) + 1 );
             String order = String.valueOf(index.getAndIncrement());
+            String path = file.substring(0, file.lastIndexOf(File.separator));
+            path = path.substring(file.lastIndexOf("=") + 1);
 
             ManagedFile managedFile = ManagedFile.builder()
                     .fileId(customerUid)
@@ -41,7 +47,7 @@ public class FileService {
                     .fileOriginName(origin)
                     .filePath(path)
                     .fileOrder(order)
-                    .fileStoredName(file)
+                    .fileStoredName(stored)
                     .build();
 
             toAddFiles.add(managedFile);
@@ -53,12 +59,21 @@ public class FileService {
         return savedFiles.size();
     }
 
-    public String[] GetManagedFileList(String customerUid) {
+    public List<String> GetManagedFileList(String customerUid) {
 
         List<ManagedFile> findedList = fileRepository.findAllByFileId(customerUid);
 
         return findedList.stream().map( file -> {
-            return file.getFilePath() + file.getFileStoredName() + file.getFileExtsn();
-        } ).toArray(String[]::new);
+
+            MediaType mediaType = MediaUtils.getMediaType(file.getFileOriginName());
+            if (mediaType != null) {
+                return file.getFilePath() + File.separator + "s_" + file.getFileStoredName();
+            }
+            return file.getFilePath() + File.separator + file.getFileStoredName();
+        } ).toList();
+    }
+
+    public void RemoveAll(String customerUid) {
+        fileRepository.deleteAllByFileId(customerUid);
     }
 }

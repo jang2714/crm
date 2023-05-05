@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -13,6 +12,10 @@ import java.util.Date;
 public class ManagedFile implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    private Long id;
+
     @Column(nullable = false)
     private String fileId;
 
@@ -30,8 +33,6 @@ public class ManagedFile implements Serializable {
 
     @Column(length = 10)
     private String fileExtsn;
-
-    private Date uploadDate;
 
     private int downloadCount;
 

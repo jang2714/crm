@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert title here</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <style>
+        .bg-light{
+            height: 1100px;
+            padding-top: 15px;
+        }
+        .container.py-4 {
+            margin: 0 auto;
+            width: 503px;
+        }
+    </style>
+</head>
+
+<body>
+<section class="bg-light">
+    <div class="container py-4"  >
+        <div align="center" style="margin: 10px auto" >
+            <span class="text-lightblue h4">일정 등록 - [[${paramVO.meetDate}]]</span>
+        </div>
+        <form id="frm" name="frm" method="post" onsubmit="return false;">
+        <input type="hidden" id="meetDate" name="meetDate" th:value="${paramVO.meetDate}">
+
+            <div class="form-group">
+                <label for="meetSe" class="form-label-mt-2">구분</label>
+                <select id="meetSe" name="meetSe" class="form-select" th:field="*{CRM01List}">
+                    <option value="">선택</option>
+                    <option th:each="val : ${CRM01List}"
+                            th:value="${val.codeId}"
+                            th:text="${val.codeNm}">[[${val.codeNm}]]</option>
+
+                    <!--<c:forEach var="list" items="${ES003List}" varStatus="status">
+                        <option value="${list.codeId}">${list.codeNm}</option>
+                    </c:forEach>-->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="meetHhMi" class="form-label-mt-2">시간</label>
+                <select id="meetHhMi" name="meetHhMi" class="form-control">
+                    <option value="">선택</option>
+                    <!--<c:forEach var="list" items="${ES003List}" varStatus="status">
+                        <option value="${list.codeId}">${list.codeNm}</option>
+                    </c:forEach>-->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="meetLoc" class="form-label-mt-4">장소</label>
+                <input type="text" class="form-control" id="meetLoc" name="meetLoc">
+            </div>
+            <div class="form-group">
+                <label for="" class="form-label-mt-4">직원</label>
+                <input type="text" class="form-control" id="" name="">
+            </div>
+            <div class="form-group">
+                <label for="" class="form-label-mt-4">고객</label>
+                <input type="text" class="form-control" id="" name="">
+            </div>
+
+            <div class="form-group">
+                <label for="meetTitle" class="form-label-mt-4">제목</label>
+                <input type="text" class="form-control" id="meetTitle" name="meetTitle">
+            </div>
+            <div class="form-group">
+                <label for="meetCn" class="form-label-mt-4">내용</label>
+                <textarea class="form-control" id="meetCn" name="meetCn" rows="5" cols="80" maxlength="4000"></textarea>
+            </div>
+            <div class="row" style="margin-top: 5rem"align="center">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary" style="margin-right: 5px" onclick="javascript:fn_insert();">등록</button>
+                    <button type="button" class="btn btn-secondary" onclick="javascript:fn_cancel();">취소</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
+
+<script>
+$(document).ready(function () {
+
+});
+
+function isEmpty(str) {
+    if(typeof str == "undefined" || str == null || str == "")
+        return true;
+    else
+        return false;
+}
+
+//유효성 검사
+function validate() {
+    let isResult = true;
+    //회의 구분
+    if(isEmpty($('#frm #meetSe option:selected').val())){
+        alert("회의 구분이 입력되지 않았습니다");
+        $("#meetSe").focus();
+        isResult = false;
+        return isResult;
+    }
+    //시간+분
+    if(isEmpty($('#frm #meetHhMi option:selected').val())){
+        alert("시간이 입력되지 않았습니다");
+        $("#meetHhMi").focus();
+        isResult = false;
+        return isResult;
+    }
+    //장소
+    if(isEmpty($('#meetLoc').val())) {
+        alert("장소를 입력하시오");
+        $('#meetLoc').focus();
+        isResult = false;
+        return isResult;
+    }
+    //직원
+    //고객
+    //일정 제목
+    if(isEmpty($('#meetTitle').val())) {
+        alert("제목을 입력하시오");
+        $('#meetTitle').focus();
+        isResult = false;
+        return isResult;
+    }
+    //일정 내용
+    if($('#meetCn').val().length == 0) {
+        alert("일정내용을 입력하시오");
+        $('#meetCn').focus();
+        isResult = false;
+        return isResult;
+    }
+}
+
+//일정 등록
+function fn_insert() {
+    if (validate()) {
+        if (confirm("정말 등록 하시겠습니까?")) {
+            let params = $('#frm').serialize();
+            let url = '/calendar/calendarProc.do';
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: params,
+                dataType: "json",
+                success: function (data) {
+                    location.href='/calendar/calendarView.do';
+                },
+                error: function (request, status, error) {
+                    console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                }
+            });
+        }
+    }
+}
+
+//일정 등록 취소
+function fn_cancel() {
+    location.href='/calendar/calendarView.do';
+}
+</script>
+</html>

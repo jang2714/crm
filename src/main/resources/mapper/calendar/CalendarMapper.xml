@@ -16,5 +16,4 @@
    ORDER BY meet_date
    </select>
 
-
 </mapper>

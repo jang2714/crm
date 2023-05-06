@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class MediaUtils {
 
-    private static Map<String, MediaType> mediaTypeMap;
+    private static Map<String, MediaType>   mediaTypeMap;
 
     // 클래스 초기화 블럭
     static {

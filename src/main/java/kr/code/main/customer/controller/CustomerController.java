@@ -56,10 +56,7 @@ public class CustomerController {
         mav.addObject("departments", departments);
 
         // file 처리 필요
-        if (customer.getAttachedCnt() > 0) {
-            String files[] = fileService.GetManagedFileList(customerUid);
-        }
-
+        // ajax로 얻어 오는 방식으로 처리 완료.
 
         // comment 처리 필요
 

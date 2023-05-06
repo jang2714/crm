@@ -14,7 +14,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="createResultModalLabel">고객 정보 생성 결과</h5>
+          <h5 class="modal-title" id="createResultModalLabel">고객 정보</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -56,7 +56,7 @@
               <div class="card-header">Account Details</div>
               <div class="card-body">
                 <form role="form" id="writeForm" method="post" action="/api/v1/customer/update">
-                  <input id="customerId", name="uid", type="hidden" th:value="${customer.customerUid}">
+                  <input id="customerId" name="uid" type="hidden" th:value="${customer.customerUid}">
                   <!-- Form Group (username, gender)-->
                   <div class="row gx-3 mb-3">
                     <div class="col-md-9">
@@ -66,8 +66,13 @@
                     </div>
                     <div class="col-md-3">
                       <label class="small mb-1" for="inputGender">Gender</label>
-                      <input class="form-control" id="inputGender" name="gender" type="text" style="color: black;"
-                             th:value="${customer.customerGender} == 1 ? '남자' : '여자'" readonly>
+<!--                      <input class="form-control" id="inputGender" name="gender" type="text" style="color: black;"-->
+<!--                             th:value="${customer.customerGender} == 1 ? '남자' : '여자'" readonly>-->
+                      <select id="inputGender" name="gender" class="form-control"
+                              th:value="${customer.customerGender}" readonly>
+                        <option value="1" th:selected="${customer.customerGender == 1}">Man</option>
+                        <option value="2" th:selected="${customer.customerGender == 2}">Woman</option>
+                      </select>
                     </div>
                   </div>
                   <!-- Form Group (email address)-->
@@ -94,20 +99,20 @@
                   <div class="row gx-3 mb-3">
                     <!-- Form Group (location1)-->
                     <div class="col-md-7">
-                      <label class="small mb-1" for="inputLocation1">Address</label>
-                      <input class="form-control" id="inputLocation1" type="text" readonly style="color: black;"
+                      <label class="small mb-1" for="inputLocation">Address</label>
+                      <input class="form-control" id="inputLocation" name="address" type="text" readonly style="color: black;"
                              th:value="${customer.address}">
                     </div>
-                    <!-- Form Group (location2)-->
-                    <div class="col-md-3">
-                      <label class="small mb-1" for="inputLocation2">Detail</label>
-                      <input class="form-control" id="inputLocation2" type="text" value="...">
-                    </div>
                     <!-- Form Group (postcode)-->
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                       <label class="small mb-1" for="postcode">Postcode</label>
                       <input class="form-control" id="postcode" name="postcode" type="text" style="color: black;"
                              th:value="${customer.postcode} == null ? 'Please find your address' : ${customer.postcode}">
+                    </div>
+                    <!-- Form Group (location2)-->
+                    <div class="col-md-2">
+                      <label class="small mb-1" for="search-addr">주소검색</label>
+                      <input type="button" class="form-control" id="search-addr" value="검색" onclick="searchAddr();">
                     </div>
                   </div>
                   <!-- Form Group (company)-->
@@ -121,7 +126,7 @@
                     <!-- Form Group (position)-->
                     <div class="col-md-6">
                       <label class="small mb-1" for="inputPosition">Position</label>
-                      <select id="inputPosition" name="position" class="form-control" style="height: calc(3rem + 2px);color: black;" required>
+                      <select id="inputPosition" name="position" class="form-control" required>
                         <option value="">직급 선택</option>
                         <th:block th:each="pos : ${positions}">
                           <option th:value="${pos.posCode}" th:selected="${pos.posCode} == ${customer.posCode}">[[${pos.posName}]]</option>
@@ -131,7 +136,7 @@
                     <!-- Form Group (department)-->
                     <div class="col-md-6">
                       <label class="small mb-1" for="inputDepartment">Department</label>
-                      <select id="inputDepartment" name="department" class="form-control" style="height: calc(3rem + 2px);color: black;" required>
+                      <select id="inputDepartment" name="department" class="form-control" required>
                         <option value="" selected>부서 선택</option>
                         <th:block th:each="depart : ${departments}">
                           <option th:value="${depart.deptCode}" th:selected="${depart.deptCode} == ${customer.deptCode}">[[${depart.deptName}]]</option>
@@ -155,10 +160,10 @@
                   </div>
                   <hr/>
                   <div class="box-footer">
-                    <button type="button" class="btn btn-primary listBtn"><i class="fa fa-list"></i> 목록</button>
+                    <button type="button" class="btn btn-primary listBtn" id="cardList"><i class="fa fa-list"></i> 목록</button>
                     <div class="pull-right">
-                      <button type="reset" class="btn btn-warning"><i class="fa fa-reply"></i> 취소</button>
-                      <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> 수정</button>
+                      <button type="reset" class="btn btn-warning" id="cancel"><i class="fa fa-reply"></i> 취소</button>
+                      <button type="submit" class="btn btn-success" id="modify"><i class="fa fa-save"></i> 수정</button>
                     </div>
                   </div>
 
@@ -225,7 +230,7 @@
             <a href="{{originalFileUrl}}" class="mailbox-attachment-name w-50">
               <i class="fa fa-paperclip"></i>
             </a>
-            <a href="" class="btn btn-default pull-right delBtn w-50" style="padding-top: 0px;">
+            <a href="{{originalFileUrl}}" class="btn btn-default pull-right delBtn w-50" style="padding-top: 0px;">
               <i class="fa fa-fw fa-remove"></i>
             </a>
           </div>
@@ -273,27 +278,45 @@
             $('#postcode').val(data.zonecode);
 
             //주소
-            $('#address').val(fullAddr);
+            $('#inputLocation').val(fullAddr);
           }
         }).open();
       });
     }
 
     function closeModal() {
-      location.href="/index";
+      // location.href="/index";
+    }
+
+    function requestFiles() {
+      const dataParams = {
+        customerUid: $('#customerId').val()
+      }
+
+      $.ajax({
+        url: "/api/v1/customer/attached",
+        data: dataParams,
+        dataType: "text",
+        type: "get",
+      }).done(function(data) {
+        // 텍스트 데이터를 JSON 형태로 변환
+        let hasFiles = JSON.parse(data);
+        console.log(hasFiles);
+
+        hasFiles.forEach(file => {
+          printFiles(file); // 첨부파일 출력 메서드 호출
+        })
+
+        $(".noAttach").remove();
+      })
     }
 
     $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();
       $('.bradcumbTitle').text('고객 정보 details');
 
-
-      // 고객 정보 비동기 통신
-      $('#create-form').submit(function(e) {
-        e.preventDefault();
-        let that = $(this);
-        filesSubmit(that);
-      });
+      // 첨부파일 목록 얻어오기
+      requestFiles();
 
       // 파일 삭제 버튼 클릭 이벤트
       $(document).on("click", ".delBtn", function (event) {
@@ -302,7 +325,46 @@
         deleteFileWrtPage(that);
       });
 
+      // 목록 버튼 누를때
+      $(document).on("click", "#cardList", function(e) {
+        e.preventDefault();
+        location.href="/customer/list?currentPage=1";
+      });
 
+      // 취소 버튼 누를때
+      $(document).on("click", "#cancel", function(e) {
+        location.reload();
+      });
+
+      // 수정 버튼 누를때
+      $('#writeForm').submit(function(e) {
+        e.preventDefault();
+        let that = $(this);
+        // 파일 정보 정리 ( hidden 속성 )
+        filesSubmit(that, false);
+
+        // 고객 정보 비동기 통신
+        let url = that.attr('action');
+        let method = that.attr('method');
+        $.ajax({
+          url: url,
+          method: method,
+          data: that.serialize(),
+          success: function(response) {
+            // 요청이 성공한 경우 처리할 코드
+            $('#create-result .modal-body').html('고객 정보를 반영했습니다. ');
+            // $('#create-result .modal-footer>button')
+            $('#create-result').modal('show');
+          },
+          error: function(xhr, status, error) {
+            console.log(xhr, status, error);
+            // 요청이 실패한 경우 처리할 코드
+            $('#create-result .modal-body').html(error);
+            // $('#create-result .modal-footer>button')
+            $('#create-result').modal('show');
+          }
+        });
+      });
     });
   </script>
 </div>

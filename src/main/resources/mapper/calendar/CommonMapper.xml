@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.code.main.calendar.mapper.CommonMapper">
-    <select id="selectCommonCodeList" parameterType="String" resultType="hashMap">
+    <select id="selectCommonCodeList" parameterType="String" resultType="kr.code.main.calendar.vo.CommonVO">
         SELECT
-            upper_code_id AS upperCodeId
-             ,code_id       AS codeId
-             ,code_nm       AS codeNm
-             ,code_dc       AS codeDc
-             ,code_ord      AS codeOrd
-             ,code_se       AS codeSe
+            upper_code_id
+             ,code_id
+             ,code_nm
+             ,code_dc
+             ,code_ord
+             ,code_se
         FROM
             tbl_cmm_code
         WHERE upper_code_id = #{value}

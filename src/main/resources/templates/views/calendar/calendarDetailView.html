@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert title here</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+    <style>
+        .bg-light{
+            height: 1100px;
+            padding-top: 15px;
+        }
+        .container.py-4 {
+            margin: 0 auto;
+            width: 503px;
+        }
+    </style>
+</head>
+
+<body>
+<section class="bg-light">
+    <div class="container py-4"  >
+        <div align="center" style="margin: 10px auto" >
+            <span class="text-lightblue h4">일정 등록 * [[${paramVO.meetDate}]]</span>
+        </div>
+        <form id="frm" name="frm" method="post" onsubmit="return false;">
+            <input type="hidden" id="meetId" name="meetId" th:value="${paramVO.meetId}">
+
+            <div class="form-group">
+                <label for="meetSe" class="form-label-mt-2">구분</label>
+                <select id="meetSe" name="meetSe" class="form-control">
+                    <option value="">선택</option>
+                    <option th:each="list : ${CRM01List}" th:value="${list.codeId}" th:text="${list.codeNm}" th:selected="${list} == ${paramVO.meetSe}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="meetHhMi" class="form-label-mt-2">시간</label>
+                <select id="meetHhMi" name="meetHhMi" class="form-control">
+                    <option value="">선택</option>
+                    <option th:each="list: ${CRM04List}" th:value="${list.codeId}" th:text="${list.codeNm}" th:selected="${list} == ${paramVO.meetHhMi}">
+                    </option>
+                </select>
+            </div>
+            <div class="form">
+                <label class="form-label-mt-4">직원</label>
+            </div>
+            <div class="row" style="margin-bottom: 1rem">
+                <div class="col-md-8" align="left">
+                    [[${paramVO.userName}]]
+                    <input type="text" class="form-control" id="userName" name="userName" th:value="${paramVO.userName}">
+                    <div style="margin-bottom: 30px"></div>
+                    <span id="appendUser"></span>
+                </div>
+                <div class="col-md-4" align="right">
+                    <button type="button" class="btn btn-secondary" onclick="fn_deleteUser();">직원삭제</button>
+                </div>
+            </div>
+            <div class="form">
+                <label class="form-label-mt-4">고객</label>
+            </div>
+            <div class="row" style="margin-bottom: 1rem">
+                <div class="col-md-8" align="left">
+                    <input type="text" class="form-control" id="custName" name="custName" th:value="${paramVO.custName}">
+                    <div style="margin-bottom: 30px"></div>
+                    <span id="appendCust"></span>
+                </div>
+                <div class="col-md-4" align="right">
+                    <button type = "button" class="btn btn-secondary" onclick="fn_deleteCust();">고객삭제</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="meetTitle" class="form-label-mt-4">제목</label>
+                <input type="text" class="form-control" id="meetTitle" name="meetTitle" th:value="${paramVO.meetTitle}">
+            </div>
+            <div class="form-group">
+                <label for="meetCn" class="form-label-mt-4">내용</label>
+                <textarea class="form-control" id="meetCn" name="meetCn" rows="5" cols="80" maxlength="4000" th:text="${paramVO.meetCn}"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="meetLoc" class="form-label-mt-4">장소</label>
+                <input type="text" class="form-control" id="meetLoc" name="meetLoc" th:value="${paramVO.meetLoc}">
+            </div>
+            <div class="row" style="margin-top: 5rem" align="center">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-primary" style="margin-right: 5px" onclick="javascript:fn_update();">수정</button>
+                    <button type="button" class="btn btn-secondary" onclick="javascript:fn_cancel();">삭제</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
+<script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
+
+<script>
+    $(document).ready(function () {
+
+
+    });
+
+    //일정 수정 화면(으로 이동)
+    function fn_update() {
+        if (validate()) {
+            if (confirm("정말 수정 하시겠습니까?")) {
+                $('#userSeqs').val(userArr);
+                $('#custSeqs').val(custArr);
+                let params = $('#frm').serialize();
+                let url = '/calendar/calendarRegistProc.do';
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    traditional: true,	//ajax 배열 넘기기 옵션
+                    data: params,
+                    dataType: "json",
+                    success: function (data) {
+                        $('#frm').attr({
+                            action: '/calendar/calendarView.do'
+                            ,method: 'post'
+                            ,target: '_self'
+                        }).submit();
+                    },
+                    error: function (request, status, error) {
+                        console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                    }
+                });
+            }
+        }
+    }
+    //일정 등록 삭제
+    function fn_cancel() {
+        location.href='/calendar/calendarView.do';
+    }
+</script>
+</html>

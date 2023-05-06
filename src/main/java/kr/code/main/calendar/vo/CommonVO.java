@@ -3,19 +3,22 @@ package kr.code.main.calendar.vo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
+@NoArgsConstructor
 public class CommonVO {
     private String useYn;                           //사용 여부
     private String firstRstId;                      //최초등록 사용자ID
-    private Date firstRstDate;                      //최초등록 일시
+    //private Date firstRstDate;                      //최초등록 일시
     private String rgstrDt;                         //최초등록 일시_YYYY-MM-DD
     private String lastRstId;                       //최종수정 사용자ID
-    private Date lastRstDate;                       //최종수정일시
+    //private Date lastRstDate;                       //최종수정일시
     private String modDt;                           //최종수정일시_YYYY-MM-DD
 
     /* 검색 */

@@ -25,46 +25,55 @@
 <section class="bg-light">
     <div class="container py-4"  >
         <div align="center" style="margin: 10px auto" >
-            <span class="text-lightblue h4">일정 등록 - [[${paramVO.meetDate}]]</span>
+            <span class="text-lightblue h4">일정 등록 * [[${paramVO.meetDate}]]</span>
         </div>
         <form id="frm" name="frm" method="post" onsubmit="return false;">
         <input type="hidden" id="meetDate" name="meetDate" th:value="${paramVO.meetDate}">
+        <input type="hidden" id="userSeqs" name="userSeqs">
+        <input type="hidden" id="custSeqs" name="custSeqs">
 
             <div class="form-group">
                 <label for="meetSe" class="form-label-mt-2">구분</label>
-                <select id="meetSe" name="meetSe" class="form-select" th:field="*{CRM01List}">
+                <select id="meetSe" name="meetSe" class="form-control">
                     <option value="">선택</option>
-                    <option th:each="val : ${CRM01List}"
-                            th:value="${val.codeId}"
-                            th:text="${val.codeNm}">[[${val.codeNm}]]</option>
-
-                    <!--<c:forEach var="list" items="${ES003List}" varStatus="status">
-                        <option value="${list.codeId}">${list.codeNm}</option>
-                    </c:forEach>-->
+                    <option th:each="list : ${CRM01List}" th:value="${list.codeId}" th:text="${list.codeNm}">
+                    </option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="meetHhMi" class="form-label-mt-2">시간</label>
                 <select id="meetHhMi" name="meetHhMi" class="form-control">
                     <option value="">선택</option>
-                    <!--<c:forEach var="list" items="${ES003List}" varStatus="status">
-                        <option value="${list.codeId}">${list.codeNm}</option>
-                    </c:forEach>-->
+                    <option th:each="list : ${CRM04List}" th:value="${list.codeId}" th:text="${list.codeNm}">
+                    </option>
                 </select>
             </div>
-            <div class="form-group">
-                <label for="meetLoc" class="form-label-mt-4">장소</label>
-                <input type="text" class="form-control" id="meetLoc" name="meetLoc">
+            <div class="form">
+                <label class="form-label-mt-4">직원</label>
             </div>
-            <div class="form-group">
-                <label for="" class="form-label-mt-4">직원</label>
-                <input type="text" class="form-control" id="" name="">
+            <div class="row" style="margin-bottom: 1rem">
+                <div class="col-md-8" align="left">
+                    <input type="text" class="form-control" id="paramUserNm" name="paramUserNm" >
+                    <div style="margin-bottom: 30px"></div>
+                    <span id="appendUser"></span>
+                </div>
+                <div class="col-md-4" align="right">
+                    <button type = "button" class="btn btn-secondary" onclick="fn_deleteUser();">직원삭제</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="" class="form-label-mt-4">고객</label>
-                <input type="text" class="form-control" id="" name="">
+            <div class="form">
+                <label class="form-label-mt-4">고객</label>
             </div>
-
+            <div class="row" style="margin-bottom: 1rem">
+                <div class="col-md-8" align="left">
+                    <input type="text" class="form-control" id="paramCustNm" name="paramCustNm" >
+                    <div style="margin-bottom: 30px"></div>
+                    <span id="appendCust"></span>
+                </div>
+                <div class="col-md-4" align="right">
+                    <button type = "button" class="btn btn-secondary" onclick="fn_deleteCust();">고객삭제</button>
+                </div>
+            </div>
             <div class="form-group">
                 <label for="meetTitle" class="form-label-mt-4">제목</label>
                 <input type="text" class="form-control" id="meetTitle" name="meetTitle">
@@ -73,7 +82,11 @@
                 <label for="meetCn" class="form-label-mt-4">내용</label>
                 <textarea class="form-control" id="meetCn" name="meetCn" rows="5" cols="80" maxlength="4000"></textarea>
             </div>
-            <div class="row" style="margin-top: 5rem"align="center">
+            <div class="form-group">
+                <label for="meetLoc" class="form-label-mt-4">장소</label>
+                <input type="text" class="form-control" id="meetLoc" name="meetLoc">
+            </div>
+            <div class="row" style="margin-top: 5rem" align="center">
                 <div class="col-md-12">
                     <button type="button" class="btn btn-primary" style="margin-right: 5px" onclick="javascript:fn_insert();">등록</button>
                     <button type="button" class="btn btn-secondary" onclick="javascript:fn_cancel();">취소</button>
@@ -84,13 +97,140 @@
 </section>
 </body>
 <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
 <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
 
 <script>
-$(document).ready(function () {
+    $(document).ready(function () {
+        //자동화 기능_user(직원)
+        $("#paramUserNm").autocomplete({
+            source: function(request, response){
+                $.ajax({
+                    type: "post",
+                    dataType: "json", //data를 json으로 return 받음
+                    url: "/calendar/selectUserList.do", //json으로 데이터를 반환해야함
+                    data: {userName: $("#paramUserNm").val()},
+                    success: function(data){
+                        console.log(data);
+                        response($.map(data.resultList, function(item){ //function의 item에 data가 바인딩됨
+                            console.log(item);
+                            return {
+                                label: item.userName+' <'+ item.userId +'>',
+                                value: item.userUid
+                            }
+                        }));
+                    },
+                    error: function(jqxhr, status, error){
+                        alert('문제가 발생하여 작업을 완료하지 못하였습니다');
+                    }
+                })
+            },
+            autoFocus: true, //첫번째 값을 자동 focus
+            matchContains: true,
+            minLength: 1, //1글자 이상 입력해야 autocomplete 작동
+            delay: 100, //milliseconds
+            scroll: true,
+            select: function(event, ui) { //ui에는 선택된 item이 들어가 있음(custom 변수 포함)
+                $("#paramUserNm").val('');
+                createUser(ui.item.label, ui.item.value);
+                return false;
+            },
+            focus:function(event, ui){return false;} //한글입력시 포커스 이동하면 서제스트가 삭제되므로 focus처리
+        });
 
-});
+        //자동화 기능_cust(고객)
+        $("#paramCustNm").autocomplete({
+            source: function(request, response){
+                $.ajax({
+                    type: "post",
+                    dataType: "json", //data를 json으로 return 받음
+                    url: "/calendar/selectCustList.do", //json으로 데이터를 반환해야함
+                    data: {custName: $("#paramCustNm").val()},
+                    success: function(data){
+                        console.log(data);
+                        response($.map(data.resultList, function(item){ //function의 item에 data가 바인딩됨
+                            console.log(item);
+                            return {
+                                label: item.custName+' <'+ item.companyName +'>',
+                                value: item.custUid
+                            }
+                        }));
+                    },
+                    error: function(jqxhr, status, error){
+                        alert('문제가 발생하여 작업을 완료하지 못하였습니다');
+                    }
+                })
+            },
+            autoFocus: true, //첫번째 값을 자동 focus
+            matchContains: true,
+            minLength: 1, //1글자 이상 입력해야 autocomplete 작동
+            delay: 100, //milliseconds
+            scroll: true,
+            select: function(event, ui) { //ui에는 선택된 item이 들어가 있음(custom 변수 포함)
+                $("#paramCustNm").val('');
+                createCust(ui.item.label, ui.item.value);
+                return false;
+            },
+            focus:function(event, ui){return false;} //한글입력시 포커스 이동하면 서제스트가 삭제되므로 focus처리
+        });
+    });
+    //자동화 기능_user(직원)_유효성
+    let userArr = [];
+    function createUser(lab,val) {
+        let isResult = false;
+        //중복 확인
+        $.each(userArr,function(i,value){
+            if(value == val) {
+                isResult = true;
+                alert("중복 되었습니다");
+                return;
+            }
+        });
+        if(!isResult) {
+            let appendUser = $('#appendUser');
+            if(!isEmpty($('#appendUser').text())) {
+                lab = ', '+lab;
+            }
+            appendUser.append(lab);
+            userArr.push(val);
+            console.log(userArr);
+        }
+    }
+    //user(직원) 삭제 버튼
+    function fn_deleteUser() {
+        $('#appendUser').empty();
+        userArr = [];
+    }
 
+    //자동화 기능_cust(고객)_유효성
+    let custArr = [];
+    function createCust(lab,val) {
+        let isResult = false;
+        //중복 확인
+        $.each(custArr,function(i,value){
+            if(value == val) {
+                isResult = true;
+                alert("중복 되었습니다");
+                return;
+            }
+        });
+        if(!isResult) {
+            let appendCust = $('#appendCust');
+            if(!isEmpty($('#appendCust').text())) {
+                lab = ', '+lab;
+            }
+            appendCust.append(lab);
+            custArr.push(val);
+            console.log(custArr);
+        }
+    }
+    //cust(고객) 삭제 버튼
+    function fn_deleteCust() {
+        $('#appendCust').empty();
+        custArr = [];
+    }
+
+//validate 공통
 function isEmpty(str) {
     if(typeof str == "undefined" || str == null || str == "")
         return true;
@@ -115,15 +255,20 @@ function validate() {
         isResult = false;
         return isResult;
     }
-    //장소
-    if(isEmpty($('#meetLoc').val())) {
-        alert("장소를 입력하시오");
-        $('#meetLoc').focus();
+    //직원
+    if(userArr.length < 1) {
+        alert("직원을 입력하시오");
+        $('#paramUserNm').focus();
         isResult = false;
         return isResult;
     }
-    //직원
     //고객
+    if(custArr.length < 1) {
+        alert("고객을 입력하시오");
+        $('#paramCustNm').focus();
+        isResult = false;
+        return isResult;
+    }
     //일정 제목
     if(isEmpty($('#meetTitle').val())) {
         alert("제목을 입력하시오");
@@ -138,22 +283,38 @@ function validate() {
         isResult = false;
         return isResult;
     }
+    //장소
+    if(isEmpty($('#meetLoc').val())) {
+        alert("장소를 입력하시오");
+        $('#meetLoc').focus();
+        isResult = false;
+        return isResult;
+    }
+    if(!isResult) {
+        isResult = true;
+    }
+    return isResult;
 }
-
 //일정 등록
 function fn_insert() {
     if (validate()) {
         if (confirm("정말 등록 하시겠습니까?")) {
+            $('#userSeqs').val(userArr);
+            $('#custSeqs').val(custArr);
             let params = $('#frm').serialize();
-            let url = '/calendar/calendarProc.do';
-
+            let url = '/calendar/calendarRegistProc.do';
             $.ajax({
                 type: "POST",
                 url: url,
+                traditional: true,	//ajax 배열 넘기기 옵션
                 data: params,
                 dataType: "json",
                 success: function (data) {
-                    location.href='/calendar/calendarView.do';
+                    $('#frm').attr({
+                        action: '/calendar/calendarView.do'
+                        ,method: 'post'
+                        ,target: '_self'
+                    }).submit();
                 },
                 error: function (request, status, error) {
                     console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -162,7 +323,6 @@ function fn_insert() {
         }
     }
 }
-
 //일정 등록 취소
 function fn_cancel() {
     location.href='/calendar/calendarView.do';

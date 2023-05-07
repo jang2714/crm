@@ -16,7 +16,8 @@
                     <div class="menu_area h-100">
                         <nav class="navbar h-100 navbar-expand-lg align-items-center">
                             <!-- Logo -->
-                            <a class="navbar-brand" href="/index"><img th:src="@{/img/core-img/logo.png}" alt="logo"></a>
+<!--                            <a class="navbar-brand" href="/index"><img th:src="@{/img/core-img/logo.png}" alt="logo"></a>-->
+                            <span class="navbar-brand section-heading"><h2>CRM</h2></span>
 
                             <!-- Menu Area -->
                             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mosh-navbar" aria-controls="mosh-navbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -37,7 +38,7 @@
                                     <li class="nav-item"><a class="nav-link" th:href="@{/customer/create}">고객 관리</a></li>
                                     <li class="nav-item"><a class="nav-link" th:href="@{/meet}">회의 관리</a></li>
                                     <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="javascript:menuView('/calendar/calendarView.do');">Calendar(작업중)</a></li>
-                                    <li class="nav-item"><a class="nav-link" th:href="@{/adminPage}">관리자 페이지</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/user/admin}">관리자 페이지</a></li>
                                 </ul>
                                 <!-- Search Form Area Start -->
                                 <div class="search-form-area animated">
@@ -77,7 +78,7 @@
             <div class="row h-100 align-items-center">
                 <div class="col-12">
                     <div class="bradcumbContent">
-                        <h2 class="bradcumbTitle">Blog</h2>
+                        <h2 class="bradcumbTitle" style="color: white;text-shadow: 4px 2px 2px #3a4456;">Blog</h2>
                         <nav aria-label="breadcrumb">
 <!--                            <ol class="breadcrumb">-->
 <!--                                <li class="breadcrumb-item"><a href="#">Home</a></li>-->

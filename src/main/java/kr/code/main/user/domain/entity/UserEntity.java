@@ -3,13 +3,13 @@ package kr.code.main.user.domain.entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @NoArgsConstructor
 @Getter
-@Entity
+@Entity @Setter
 @Table(name="tbl_user")
 public class UserEntity {
 
@@ -19,9 +19,10 @@ public class UserEntity {
     private String userId;
     private String userPw;
     private String userName;
-    private String userGender;
+    private int userGender;
     private int userBirth;
     private int userDepart;
+    @Column(name="user_posi")
     private int userPosition;
     private String addrPost;
     private String userAddrs;
@@ -32,7 +33,7 @@ public class UserEntity {
 
     @Builder
     public UserEntity(String userUid, String userId, String userPw, String userName,
-                       String userGender, int userBirth, int userDepart, int userPosition, String addrPost,
+                       int userGender, int userBirth, int userDepart, int userPosition, String addrPost,
                        String userAddrs, String userPhone, String userTele, String userEmail, int userAuth) {
 
         this.userUid = userUid;

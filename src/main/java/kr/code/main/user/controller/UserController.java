@@ -1,14 +1,20 @@
 package kr.code.main.user.controller;
 
+import kr.code.main.common.department.domain.DepartmentVO;
+import kr.code.main.common.department.service.DepartmentService;
+import kr.code.main.common.position.domain.PositionVO;
+import kr.code.main.common.position.service.PositionService;
+import kr.code.main.user.domain.entity.UserEntity;
 import kr.code.main.user.dto.UserDto;
 import kr.code.main.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,6 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class UserController {
 
     private final UserService userService;
+    private final PositionService positionService;
+    private final DepartmentService departmentService;
 
     //유저(직원)가입
     @GetMapping("/join")
@@ -58,7 +66,52 @@ public class UserController {
     // 권한 페이지
     @GetMapping("/admin")
     public ModelAndView dispAdmin() {
-        return new ModelAndView("/views/user/admin");
+        ModelAndView mav = new ModelAndView("/views/user/admin");
+
+        List<UserEntity> users = userService.findAllUser();
+        if (users.size() > 0) {
+
+            List<UserDto> savedUsers = users.stream().map( user -> {
+                return UserDto.builder()
+                        .userUid(user.getUserUid())
+                        .userId(user.getUserId())
+                        .userBirth(user.getUserBirth())
+                        .userPhone(user.getUserPhone())
+                        .userEmail(user.getUserEmail())
+                        .userPosition(user.getUserPosition())
+                        .userTele(user.getUserTele())
+                        .userName(user.getUserName())
+                        .userDepart(user.getUserDepart())
+                        .userGender(user.getUserGender())
+                        .userAuth(user.getUserAuth())
+                        .userAddrs(user.getUserAddrs())
+                        .build();
+            }).toList();
+
+            mav.addObject("userList", savedUsers);
+
+            List<PositionVO> positions = positionService.GetAllPosition();
+            mav.addObject("positions", positions);
+
+            List<DepartmentVO> departments = departmentService.GetAllDepartment();
+            mav.addObject("departments", departments);
+        }
+
+        return mav;
+    }
+
+    @GetMapping("/authModify")
+    @ResponseBody
+    public ResponseEntity<String> canModifiedAttribute(@RequestParam(name="loginUser") String loginUser,
+                                                        @RequestParam(name="targetUser") String targetUser,
+                                                        @RequestParam(name="wantAuth") int wantAuth) {
+        boolean modified = false;
+        //if (userService.CanUserModifiedAuth(loginUser)) {
+            modified = userService.updateUserAuth(targetUser, wantAuth);
+        //}
+
+        return modified ? ResponseEntity.ok("success") :
+                ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
 
 }

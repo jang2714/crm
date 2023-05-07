@@ -77,7 +77,17 @@ public class CalendarService {
     }
 
     /* 일정관리_ meet 등록 조회 (상세, 수정 위한) */
-    public List<CalendarVO> selectMeetList(CalendarVO vo) throws Exception {
-        return mapper.selectMeetList(vo);
+    public CalendarVO selectMeetDetailView(CalendarVO vo) throws Exception {
+        return mapper.selectMeetDetailView(vo);
     }
+
+    /* 일정관리_ 상세삭제 처리 (meet, meet_join 합침)*/
+    public void calendarMeetDeleteProc(CalendarVO vo) throws Exception {
+        vo.setUseYn("N");
+        mapper.calendarMeetJoinDelete(vo);
+        mapper.calendarMeetDelete(vo);
+    }
+
+    
+
 }

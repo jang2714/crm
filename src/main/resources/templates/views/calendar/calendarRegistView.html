@@ -27,7 +27,7 @@
         <div align="center" style="margin: 10px auto" >
             <span class="text-lightblue h4">일정 등록 * [[${paramVO.meetDate}]]</span>
         </div>
-        <form id="frm" name="frm" method="post" onsubmit="return false;">
+        <form id="frm" name="frm" method="post">
         <input type="hidden" id="meetDate" name="meetDate" th:value="${paramVO.meetDate}">
         <input type="hidden" id="userSeqs" name="userSeqs">
         <input type="hidden" id="custSeqs" name="custSeqs">

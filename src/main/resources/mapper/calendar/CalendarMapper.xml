@@ -75,7 +75,7 @@
                 ON ur.user_uid = mj.meet_user_id
     WHERE 1=1
       AND mj.use_yn = 'Y'
-      AND mj.meet_id = #{userName}
+      AND mj.meet_id = #{meetId}
       AND mj.meet_user_se = 'SE01'
     ORDER BY user_name
 </select>
@@ -91,24 +91,26 @@
                 ON cr.cust_uid = mj.meet_user_id
     WHERE 1=1
       AND mj.use_yn = 'Y'
-      AND mj.meet_id = #{custName}
+      AND mj.meet_id = #{meetId}
       AND mj.meet_user_se = 'SE02'
     ORDER BY cust_name
 </select>
 
-<!--일정관리_ meet 등록 조회 (상세, 수정 위한)-->
-<select id="selectMeetList" parameterType="kr.code.main.calendar.vo.CalendarVO" resultType="kr.code.main.calendar.vo.CalendarVO">
+<!-- 일정관리_ meet 등록 조회 (상세, 수정 위한) -->
+<select id="selectMeetDetailView" parameterType="kr.code.main.calendar.vo.CalendarVO" resultType="kr.code.main.calendar.vo.CalendarVO">
     SELECT
         meet_id
          ,meet_se
          ,meet_title
          ,meet_cn
          ,meet_date
+         ,DATE_FORMAT(MEET_DATE, '%Y-%m-%d') AS meet_date_ymd
+         ,DATE_FORMAT(MEET_DATE, '%H%i%s') as meet_date_his
          ,meet_loc
     FROM tbl_meet
     WHERE 1=1
       AND use_yn = 'Y'
-    ORDER BY meet_id
+      AND meet_id = #{meetId}
 </select>
 
 <!-- 일정관리 등록 처리 (tbl_meet) -->
@@ -162,5 +164,28 @@
         ,'eun'
         )
 </insert>
+
+<!--일정관리 삭제 (meet만)-->
+<update id="calendarMeetDelete" parameterType="kr.code.main.calendar.vo.CalendarVO">
+    UPDATE
+        tbl_meet
+    SET
+        use_yn = #{useYn}
+    WHERE 1=1
+    AND meet_id = #{meetId}
+</update>
+
+<!--일정관리 삭제 (meet_join만)-->
+<update id="calendarMeetJoinDelete" parameterType="kr.code.main.calendar.vo.CalendarVO">
+    UPDATE
+        tbl_meet_join
+    SET
+        use_yn = #{useYn}
+    WHERE 1=1
+    AND meet_id = #{meetId}
+</update>
+
+
+
 
 </mapper>

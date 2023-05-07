@@ -34,4 +34,8 @@ public class CalendarVO extends CommonVO{
     private String custName;                    //고객 이름
     private String companyName;                 //고객 회사명
     private String custSeqs[];                  //고객들
+
+    /* 고객조회 일정관리_ meet 조회 (상세, 수정 위한) */
+    private String meetDateYmd;               //일정등록일 y-m-d
+    private String meetDateHis;               //회의시간 his
 }

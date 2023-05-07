@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class CalendarService {
     }
 
     /* 일정관리 등록 처리 */
+    @Transactional
     public void calendarRegistProc(CalendarVO vo) throws Exception {
         String meetDt;
         if(StringUtils.isNotBlank(vo.getMeetDate())) {
@@ -82,6 +84,7 @@ public class CalendarService {
     }
 
     /* 일정관리_ 상세삭제 처리 (meet, meet_join 합침)*/
+    @Transactional
     public void calendarMeetDeleteProc(CalendarVO vo) throws Exception {
         vo.setUseYn("N");
         mapper.calendarMeetJoinDelete(vo);

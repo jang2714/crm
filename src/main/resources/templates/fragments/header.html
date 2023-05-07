@@ -36,7 +36,8 @@
 <!--                                    </li>-->
                                     <li class="nav-item"><a class="nav-link" th:href="@{/customer/create}">고객 관리</a></li>
                                     <li class="nav-item"><a class="nav-link" th:href="@{/meet}">회의 관리</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="javascript:menuView('/calendar/calendarView.do');">Calendar(작업중)</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/calendar/calendarView}">일정 관리</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/stat/statView}">통계(작업중)</a></li>
                                     <li class="nav-item"><a class="nav-link" th:href="@{/adminPage}">관리자 페이지</a></li>
                                 </ul>
                                 <!-- Search Form Area Start -->
@@ -107,21 +108,17 @@
             location.href= `/customer/search?${searchKey}`;
         });
 
-
+/*
         function menuView(url) {
-            $.ajax({
-                type : "POST",
-                url : url,
-                data : "",
-                dataType : "json",
-                success : function(data) {
-                    alert("11111111111111111111111111");
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-                    alert("통신 실패")
-                }
-            });
+            let frmForm = document.createElement('form');
+            frmForm.id = 'frm';
+            frmForm.name = 'frm';
+            frmForm.method = 'post'
+            frmForm.action = url;
+            frmForm.target = '_self';
+            frmForm.submit();
         }
+*/
 
     </script>
 </div>

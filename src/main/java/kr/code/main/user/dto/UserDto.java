@@ -13,7 +13,7 @@ public class UserDto {
     private String userId;
     private String userPw;
     private String userName;
-    private String userGender;
+    private int userGender;
     private int userBirth;
     private int userDepart;
     private int userPosition;
@@ -46,7 +46,7 @@ public class UserDto {
 
     @Builder
     public UserDto(String userUid, String userId, String userPw, String userName,
-                   String userGender, int userBirth, int userDepart, int userPosition, String addrPost,
+                   int userGender, int userBirth, int userDepart, int userPosition, String addrPost,
                    String userAddrs, String userPhone, String userTele, String userEmail, int userAuth) {
 
         this.userUid = userUid;

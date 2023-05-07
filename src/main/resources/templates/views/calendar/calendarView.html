@@ -22,6 +22,17 @@
     <input type="hidden" id="meetDate" name="meetDate" value="" />
 
     <div id="calendar"></div>
+    <!--
+    <div class="container" align="center">
+        <select id="searchType" name="searchType">
+            <option value="">선택</option>
+            <option th:each="list : ${CRM03List}" th:value="${list.codeId}" th:text="${list.codeNm}" th:selected="${list.codeId eq paramVO.searchType}">
+            </option>
+        </select>
+        <input type="text" id="searchKywd" name="searchKywd" th:value="${paramVO.searchKywd}" placeholder="검색어를 입력하세요" />
+        <button type="button" value="" onclick="javascript:fn_search();">검색</button>
+    </div>
+    -->
 </form>
 <script>
 $(document).ready(function () {
@@ -30,10 +41,14 @@ $(document).ready(function () {
     let getMonth = d.getMonth()+1;
     let getDate = d.getDate();
     let today = getFullYear + addZero(getMonth) + addZero(getDate);
+
+    let params = $('#frm').serialize(); //검색기능을 위한 파라미터
+
     let request = $.ajax({
-    url: "/calendar/calendarProc.do",
+    url: "/calendar/calendarProc",
     method: "POST",
-    dataType: "json"
+    dataType: "json",
+    data: params //검색기능을 위한 파라미터
     });
 
     request.done(function (data) {
@@ -93,7 +108,7 @@ function fn_registView(secDate) {
     if(!isEmpty(secDate)) {
         $('#frm #meetDate').val(secDate);
         $('#frm').attr({
-            action: '/calendar/calendarRegistView.do'
+            action: '/calendar/calendarRegistView'
             ,method: 'post'
             ,target: '_self'
         }).submit();
@@ -104,11 +119,16 @@ function fn_detailView(seq) {
     if(!isEmpty(seq)) {
         $('#frm #meetId').val(seq);
         $('#frm').attr({
-            action: '/calendar/calendarDetailView.do'
+            action: '/calendar/calendarDetailView'
             ,method: 'post'
             ,target: '_self'
         }).submit();
     }
+}
+
+//검색 기능
+function fn_search() {
+
 }
 //10일미만, 10월미만 '0' 추가
 function addZero(date) {

@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -25,7 +26,7 @@ public class Comment implements Serializable {
     private String customerUid;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="writer", foreignKey = @ForeignKey(name = "FK_COMMENT_WRITER"))
     private UserEntity writer;
 
@@ -45,5 +46,6 @@ public class Comment implements Serializable {
         this.writer = writer;
         this.title = title;
         this.comment = comment;
+        this.createDate = Date.from(Instant.now());
     }
 }

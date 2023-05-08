@@ -173,7 +173,9 @@
 
             <div class="the-timeline">
               <form id="comment-form" role="comment-form" class="post-to-timeline">
-                <input type="hidden" th:value="${'dfdf'}" id="writer" name="writer">
+                <input type="hidden" th:value="${customer.customerUid}" id="customerUid" name="customerUid">
+                <input type="hidden" th:value="${session.user.userUid}" id="writerUid" name="writerUid">
+                <input type="hidden" th:value="${session.user.userName}" id="writerName" name="writerName">
                 <div class="container-fluid border">
                   <div class="mb-1">
                     <label class="small mb-1" for="commentTitle">Title</label>
@@ -195,29 +197,6 @@
               </form>
               <br><br>
               <ul class="comment the-date">
-                <li>
-                  <div class="the-date">
-                    <span>01</span>
-                    <small>Feb</small>
-                  </div>
-                  <h4>Lorem ipsum dolor!</h4>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-                  </p>
-                </li>
-                <li>
-                  <div class="the-date">
-                    <span>31</span>
-                    <small>Jan</small>
-                  </div>
-                  <h4>Yohoo! you can put video here</h4>
-                  <div class="videoWrapper">
-                    <iframe src="//player.vimeo.com/video/85847275?title=0&amp;byline=0&amp;portrait=0"></iframe>
-                  </div>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-                  </p>
-                </li>
               </ul>
             </div>
           </div>
@@ -304,13 +283,11 @@
       const html = commentList.map(comment => {
         return '<li>' +
                   '<div className="the-date">' +
-                    `<span>${comment.createDate}</span>` +
-                    `<small>${comment.writer}</small>`
+                    `<span>${comment.writer}</span>&nbsp;&nbsp;` +
+                    `<small>${comment.createDate}</small>` +
                   `</div>` +
                   `<h4>${comment.title}</h4>` +
-                  `<p>` +
-                  `${comment.comment}` +
-                  `</p>` +
+                  `<p>${comment.comment}</p>` +
                 `</li>`;
       });
       $('.comment.the-date').html(html);
@@ -432,6 +409,9 @@
             // 요청이 성공한 경우 처리할 코드
             // const commentList = JSON.parse(response);
             printComments(response);
+
+            $('#commentTitle').val('');
+            $('#comment').val('');
           },
           error: function(xhr, status, error) {
             console.log(xhr, status, error);

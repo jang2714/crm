@@ -168,9 +168,11 @@ public class CustomerService {
 
     public List<CommentVO> getCommentByCustomerUid(String customerUid) {
 
-        List<CommentVO> list = commentRepository.findAllByCustomerUidOrderByCreateDateDesc(customerUid);
+        List<Comment> list = commentRepository.findAllByCustomerUidOrderByCreateDateDesc(customerUid);
 
-        return list;
+        return list.stream().map( vo -> { return new CommentVO(
+                vo.getWriter().getUserName(), vo.getTitle(), vo.getComment(), vo.getCreateDate()
+        );}).toList();
     }
 
     @Transactional
@@ -188,6 +190,6 @@ public class CustomerService {
 
         commentRepository.save(newComment);
 
-        return commentRepository.findAllByCustomerUidOrderByCreateDateDesc(commentReq.getCustomerUid());
+        return getCommentByCustomerUid(commentReq.getCustomerUid());
     }
 }

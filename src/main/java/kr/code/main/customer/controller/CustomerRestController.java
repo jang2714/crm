@@ -124,7 +124,7 @@ public class CustomerRestController {
     }
 
     @PostMapping(value="comment")
-    public ResponseEntity<List<CommentVO>> addComment(@RequestBody CommentDTO commentReq) {
+    public ResponseEntity<List<CommentVO>> addComment(CommentDTO commentReq) {
 
         return ResponseEntity.ok(customerService.registerComment(commentReq));
     }

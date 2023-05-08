@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -29,7 +30,7 @@ public class CustomerController {
     private final FileService fileService;
 
     @GetMapping("/create")
-    public ModelAndView viewCreateCustomer() {
+    public ModelAndView viewCreateCustomer(HttpServletRequest req) {
 
         ModelAndView mav = new ModelAndView("views/customer/createCustomer");
 
@@ -54,11 +55,6 @@ public class CustomerController {
 
         List<DepartmentVO> departments = departmentService.GetAllDepartment();
         mav.addObject("departments", departments);
-
-        // file 처리 필요
-        // ajax로 얻어 오는 방식으로 처리 완료.
-
-        // comment 처리 필요
 
         return mav;
     }

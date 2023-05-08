@@ -18,4 +18,6 @@ public class UserVO {
     private int userBirth;
     private int userDepart;
     private int userPosition;
+    private String userTele;
+    private String userEmail;
 }

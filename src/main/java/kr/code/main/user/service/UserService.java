@@ -81,6 +81,8 @@ public class UserService {
                 .userName(foundUser.getUserName())
                 .userUid(foundUser.getUserUid())
                 .userId(foundUser.getUserId())
+                .userTele(foundUser.getUserTele())
+                .userEmail(foundUser.getUserEmail())
                 .build();
 
         return userVO;

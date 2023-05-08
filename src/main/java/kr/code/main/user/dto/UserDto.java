@@ -63,5 +63,7 @@ public class UserDto {
         this.userTele = userTele;
         this.userEmail = userEmail;
         this.userAuth = userAuth;
+
     }
+
 }

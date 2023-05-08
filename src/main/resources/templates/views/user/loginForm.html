@@ -45,7 +45,7 @@
 
 			for(let id of inputIds) {
 				$('#'+id).on('keyup', function(evt){
-					//evt.preventDefault();
+					evt.preventDefault();
 					if(evt.keyCode === 13){
 						login();
 					}
@@ -54,6 +54,7 @@
 			}
 
 			$('#login').on('click', function(evt){
+				evt.preventDefault();
 				login();
 			});
 		}
@@ -87,35 +88,35 @@
 			if(validated()) {
 				//ajax 통해서 로그인 처리 ; 비동기 통신 사용
 				// 1. 페이지 이동없이 client - server 간 통신
-
 				const dataParam = {
-					userId : $('#securedId').val(),
-					userPasswd : $('#securedPasswd').val()
+					userId : $('#userId').val(),
+					userPasswd : $('#userPasswd').val()
 				}
 
 				$.ajax({
-					url: '/login',
+					url: '/user/login',
 					type: 'post',
-					dataType: 'json',
-					data: dataParam
+					contentType: 'application/json',
+					dataType: 'text',
+					data: JSON.stringify(dataParam)
 				}).done(function(resp){
-					if(resp.resultCode === 200) {
-						//console.log('로그인 성공')
-						location.href="/";
-					}else{
-						alert('아이디 또는 패스워드를 확인하십시오.');
-					}
+					console.log(resp);
+					setCookie('bearer', resp);
+
+					alert("로그인완료");
+					location.href="/";
+
 				}).fail(function(xhr, status, error){
 					console.log(status);
+					alert('아이디 또는 패스워드를 확인하십시오.');
 				});
-
-
 			}
 		}
 
 		//html 준비가 되면 자동으로 실행
 		$(document).ready(function(){
-			console.log($('.bradcumbTitle').text('관리자'));
+			$('.bradcumbTitle').text('관리자');
+			// console.log();
 
 			initEvt();
 		});

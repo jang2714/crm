@@ -1,6 +1,8 @@
 package kr.code.main.customer.controller;
 
 import kr.code.main.common.File.service.FileService;
+import kr.code.main.common.comment.domain.CommentVO;
+import kr.code.main.common.comment.domain.dto.CommentDTO;
 import kr.code.main.common.tag.domain.Tag;
 import kr.code.main.common.tag.service.TagService;
 import kr.code.main.customer.domain.CustomerNamecardVO;
@@ -113,4 +115,17 @@ public class CustomerRestController {
         return ResponseEntity.ok(toJs);
     }
 
+    @GetMapping(value="comment")
+    public ResponseEntity<List<CommentVO>> getCommentList(@RequestParam(name="customerUid") String customerUid) {
+
+        List<CommentVO> list = customerService.getCommentByCustomerUid(customerUid);
+
+        return ResponseEntity.ok(list);
+    }
+
+    @PostMapping(value="comment")
+    public ResponseEntity<List<CommentVO>> addComment(@RequestBody CommentDTO commentReq) {
+
+        return ResponseEntity.ok(customerService.registerComment(commentReq));
+    }
 }

@@ -65,6 +65,9 @@ spring:
       enabled: true
 
 
+jwt:
+  token:
+    secret: hello.world.ee.ff
 
 #마이바티스 설정
 mybatis:

@@ -1,20 +1,23 @@
 package kr.code.main.customer.service;
 
 import kr.code.main.common.File.service.FileService;
+import kr.code.main.common.comment.domain.Comment;
+import kr.code.main.common.comment.domain.CommentVO;
+import kr.code.main.common.comment.domain.dto.CommentDTO;
+import kr.code.main.common.comment.repository.CommentRepository;
 import kr.code.main.customer.domain.CustomerNamecardVO;
 import kr.code.main.customer.domain.CustomerTagVO;
 import kr.code.main.customer.domain.CustomerVO;
 import kr.code.main.customer.domain.dto.CreateRequestDTO;
 import kr.code.main.customer.domain.dto.UpdateRequestDTO;
 import kr.code.main.customer.mapper.CustomerMapper;
+import kr.code.main.user.domain.entity.UserEntity;
+import kr.code.main.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,8 @@ public class CustomerService {
 
     private final CustomerMapper customerMapper;
     private final FileService fileService;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     public int getTotalCustomerCount() {
         return customerMapper.getTotalCustomerCount(new HashMap<String, Object>());
@@ -159,5 +164,30 @@ public class CustomerService {
         }
 
         return customer;
+    }
+
+    public List<CommentVO> getCommentByCustomerUid(String customerUid) {
+
+        List<CommentVO> list = commentRepository.findAllByCustomerUidOrderByCreateDateDesc(customerUid);
+
+        return list;
+    }
+
+    @Transactional
+    public List<CommentVO> registerComment(CommentDTO commentReq) {
+
+        UserEntity user = userRepository.findByUserUid(commentReq.getWriterUid())
+                .orElseThrow(() -> new RuntimeException("코멘트 작성자가 존재하지 않습니다."));
+
+        Comment newComment = Comment.builder()
+                .customerUid(commentReq.getCustomerUid())
+                .writer(user)
+                .title(commentReq.getCommentTitle())
+                .comment(commentReq.getContents())
+                .build();
+
+        commentRepository.save(newComment);
+
+        return commentRepository.findAllByCustomerUidOrderByCreateDateDesc(commentReq.getCustomerUid());
     }
 }

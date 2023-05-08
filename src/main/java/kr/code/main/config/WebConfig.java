@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.unit.DataSize;
 import org.springframework.util.unit.DataUnit;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -34,7 +35,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResolver(new PathResourceResolver());
     }
 
-
     @Bean
     public Filter characterEncodingFilter() {
         CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
@@ -42,6 +42,11 @@ public class WebConfig implements WebMvcConfigurer {
         encodingFilter.setForceEncoding(true);
         return encodingFilter;
 
+    }
+
+    @Bean
+    public BCryptPasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean

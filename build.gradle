@@ -59,6 +59,7 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.7.10'
 	implementation "com.querydsl:querydsl-jpa:5.0.0"
 	implementation 'net.sf.json-lib:json-lib:2.4:jdk15'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 
 	annotationProcessor(
 		"org.springframework.boot:spring-boot-configuration-processor",

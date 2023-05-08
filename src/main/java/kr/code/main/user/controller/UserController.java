@@ -6,6 +6,8 @@ import kr.code.main.common.position.domain.PositionVO;
 import kr.code.main.common.position.service.PositionService;
 import kr.code.main.user.domain.entity.UserEntity;
 import kr.code.main.user.dto.UserDto;
+import kr.code.main.user.dto.UserLoginDTO;
+import kr.code.main.user.dto.UserVO;
 import kr.code.main.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -43,6 +46,19 @@ public class UserController {
     @GetMapping("/login")
     public ModelAndView dispLogin() {
         return new ModelAndView("/views/user/loginForm");
+    }
+
+    // 로그인 처리
+    @PostMapping("/login")
+    @ResponseBody
+    public ResponseEntity<String> doLogin(@RequestBody UserLoginDTO dto,
+                                          HttpServletRequest req) {
+        String token = userService.doLogin(dto.getUserId(), dto.getUserPasswd());
+
+        UserVO user = userService.findUser(dto.getUserId());
+        req.getSession().setAttribute("user", user);
+
+        return ResponseEntity.ok().body(token);
     }
 
     // 로그인 결과

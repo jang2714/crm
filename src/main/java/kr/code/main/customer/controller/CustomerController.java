@@ -3,10 +3,11 @@ package kr.code.main.customer.controller;
 import kr.code.main.common.File.service.FileService;
 import kr.code.main.common.department.domain.DepartmentVO;
 import kr.code.main.common.department.service.DepartmentService;
+import kr.code.main.common.exception.AppException;
+import kr.code.main.common.exception.ErrorCode;
 import kr.code.main.common.position.domain.PositionVO;
 import kr.code.main.common.position.service.PositionService;
 import kr.code.main.customer.domain.CustomerNamecardVO;
-import kr.code.main.customer.domain.CustomerVO;
 import kr.code.main.customer.service.CustomerService;
 import kr.code.main.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
@@ -47,14 +48,10 @@ public class CustomerController {
     public ModelAndView viewDetailsCustomer(@RequestParam(value="uid", required = false) String customerUid) {
         ModelAndView mav = new ModelAndView("views/customer/detailCustomer");
 
-        CustomerVO customer = customerService.findByUid(customerUid);
-        mav.addObject("customer", customer);
-
-        List<PositionVO> positions = positionService.GetAllPosition();
-        mav.addObject("positions", positions);
-
-        List<DepartmentVO> departments = departmentService.GetAllDepartment();
-        mav.addObject("departments", departments);
+        mav.addObject("customer", customerService.findByUid(customerUid)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, "고객 정보를 찾을 수 없습니다.")));
+        mav.addObject("positions", positionService.GetAllPosition());
+        mav.addObject("departments", departmentService.GetAllDepartment());
 
         return mav;
     }

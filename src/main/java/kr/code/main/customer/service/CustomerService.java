@@ -5,6 +5,8 @@ import kr.code.main.common.comment.domain.Comment;
 import kr.code.main.common.comment.domain.CommentVO;
 import kr.code.main.common.comment.domain.dto.CommentDTO;
 import kr.code.main.common.comment.repository.CommentRepository;
+import kr.code.main.common.exception.AppException;
+import kr.code.main.common.exception.ErrorCode;
 import kr.code.main.customer.domain.CustomerNamecardVO;
 import kr.code.main.customer.domain.CustomerTagVO;
 import kr.code.main.customer.domain.CustomerVO;
@@ -48,14 +50,12 @@ public class CustomerService {
         return customerMapper.getCustomersByTag(params);
     }
 
-    public CustomerVO findByName(String name) {
-        return customerMapper.findByName(name)
-                .orElse(null);
+    public Optional<CustomerVO> findByName(String name) {
+        return customerMapper.findByName(name);
     }
 
-    public CustomerVO findByUid(String customerUid) {
-        return customerMapper.findByUid(customerUid)
-                .orElse(null);
+    public Optional<CustomerVO> findByUid(String customerUid) {
+        return customerMapper.findByUid(customerUid);
     }
 
     public List<CustomerTagVO> getAllCustomerTagById(String customerId) {
@@ -99,6 +99,7 @@ public class CustomerService {
             System.out.println("고객 정보 생성 실패!");
 
             // throws RuntimeException
+            throw new AppException(ErrorCode.INVALID_REQUEST, "알수없는 이유로 고개정보 등록이 실패하였습니다. 다시 시도해주세요.");
         }
 
         return newCustomer;
@@ -160,7 +161,7 @@ public class CustomerService {
         } else {
             System.out.println("고객 정보 수정 실패!");
 
-            // throws RuntimeException
+            throw new AppException(ErrorCode.INVALID_REQUEST, "고객 정보를 수정 할 수 없습니다.");
         }
 
         return customer;
@@ -179,7 +180,7 @@ public class CustomerService {
     public List<CommentVO> registerComment(CommentDTO commentReq) {
 
         UserEntity user = userRepository.findByUserUid(commentReq.getWriterUid())
-                .orElseThrow(() -> new RuntimeException("코멘트 작성자가 존재하지 않습니다."));
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, "코멘트 작성자가 존재하지 않습니다."));
 
         Comment newComment = Comment.builder()
                 .customerUid(commentReq.getCustomerUid())

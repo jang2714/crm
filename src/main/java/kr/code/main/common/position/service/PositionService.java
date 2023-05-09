@@ -14,11 +14,23 @@ public class PositionService {
 
     private final PositionRepository repository;
 
-    public List<PositionVO> GetAllPosition() {
-        List<Position> positionList = repository.findAll();
+    private List<PositionVO> cachedList = null;
 
-        return positionList.stream().map( pos -> {
+    public List<PositionVO> GetAllPosition() {
+        if (cachedList != null) {
+            if (cachedList.size() == repository.count()) {
+                return cachedList;
+            }
+        }
+
+        List<Position> positionList = repository.findAll();
+        List<PositionVO> result = positionList.stream().map( pos -> {
             return new PositionVO(pos.getPosCode(), pos.getPosName());
         }).toList();
+        if (result.size() > 0 && cachedList == null) {
+            cachedList = result;
+        }
+
+        return result;
     }
 }

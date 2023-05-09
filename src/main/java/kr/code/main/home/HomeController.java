@@ -18,4 +18,9 @@ public class HomeController {
     public ModelAndView entryPoint2() {
         return new ModelAndView("views/index");
     }
+
+    @GetMapping("/404")
+    public ModelAndView entryPoint3() {
+        return new ModelAndView("views/error404");
+    }
 }

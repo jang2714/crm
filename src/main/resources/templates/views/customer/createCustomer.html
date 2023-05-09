@@ -93,7 +93,13 @@
                   <div class="contact-icon mr-15">
                     <img th:src="@{/img/core-img/map.png}" alt="">
                   </div>
-                  <p>[[${session.user.userName}]],<br> [[${session.user.userId}]]</p>
+                  <p> Contact: [[${session.user.userName}]]</p>
+                </div>
+                <div class="single-contact-info d-flex">
+                  <div class="contact-icon mr-15">
+                    <img th:src="@{/img/core-img/map.png}" alt="">
+                  </div>
+                  <p> Gender: [[${session.user.userGender == 1 ? '남자' : '여자'}]]</p>
                 </div>
                 <div class="single-contact-info d-flex">
                   <div class="contact-icon mr-15">

@@ -12,7 +12,7 @@
 
     select cust_uid, cust_name, cust_addr, addr_post, cust_email, phone_number, company_name, pos_code, dept_code
     from tbl_customer
-    ORDER BY create_date DESC
+    ORDER BY create_date ASC
     LIMIT #{current}, #{count}
 
     </select>

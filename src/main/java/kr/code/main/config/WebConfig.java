@@ -10,6 +10,7 @@ import org.springframework.util.unit.DataUnit;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
@@ -34,6 +35,25 @@ public class WebConfig implements WebMvcConfigurer {
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
     }
+
+    @Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new LoginCheckInterceptor())
+			.addPathPatterns("/customer")
+			.addPathPatterns("/customer/create")
+			.addPathPatterns("/customer/details")
+			.addPathPatterns("/customer/list")
+            .addPathPatterns("/customer/search")
+            .addPathPatterns("/customer/namecards")
+
+
+			.addPathPatterns("/board/del/selected");
+	}
+
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new DownloadInterceptor());
+//    }
 
     @Bean
     public Filter characterEncodingFilter() {

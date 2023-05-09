@@ -42,6 +42,12 @@ public class UserController {
         return "redirect:/users/join_result";
     }
 
+    @PostMapping("/checkId")
+    @ResponseBody
+    public String checkUserId(@RequestParam(value="userId") String userId) {
+        return userService.findUser(userId) == null ? "success" : "failed";
+    }
+
     // 로그인 페이지
     @GetMapping("/login")
     public ModelAndView dispLogin() {

@@ -58,8 +58,10 @@ public class UserService {
 
     public String doLogin(String userId, String userPasswd) {
         // userName 없음
-        UserEntity selectedUser = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, userId + "이 없습니다."));
+        UserEntity selectedUser = userRepository.findByUserId(userId);
+        if (selectedUser == null) {
+            throw new AppException(ErrorCode.USERNAME_NOT_FOUND, userId + "이 없습니다.");
+        }
 
         // password 틀림
 //        if (!encoder.matches(userPasswd, selectedUser.getUserPw())) {
@@ -70,8 +72,10 @@ public class UserService {
     }
 
     public UserVO findUser(String userId) {
-        UserEntity foundUser = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, userId + "이 없습니다."));
+        UserEntity foundUser = userRepository.findByUserId(userId);
+        if (foundUser == null) {
+            return null;
+        }
 
         UserVO userVO = UserVO.builder()
                 .userPosition(foundUser.getUserPosition())

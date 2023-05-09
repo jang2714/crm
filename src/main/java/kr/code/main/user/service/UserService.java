@@ -38,7 +38,7 @@ public class UserService {
     public boolean CanUserModifiedAuth(String userUid) {
         AtomicBoolean result = new AtomicBoolean(false);
         userRepository.findByUserUid(userUid).ifPresent( user -> {
-            if (Role.ADMIN.equals(user.getUserAuth())) {
+            if (Role.ADMIN.ordinal() == user.getUserAuth()) {
                 result.set(true);
             }
         });

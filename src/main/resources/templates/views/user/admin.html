@@ -139,7 +139,8 @@
                 prevSelectedAuth = this.value;
             }).change(function() {
                 const changedAuth = this.value;
-                checkRole("login", userUid, changedAuth);
+                let loginUser = [[${session.user.userUid}]];
+                checkRole(loginUser, userUid, changedAuth);
             })
         })
 

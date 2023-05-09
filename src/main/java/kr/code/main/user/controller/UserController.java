@@ -128,9 +128,9 @@ public class UserController {
                                                         @RequestParam(name="targetUser") String targetUser,
                                                         @RequestParam(name="wantAuth") int wantAuth) {
         boolean modified = false;
-        //if (userService.CanUserModifiedAuth(loginUser)) {
+        if (userService.CanUserModifiedAuth(loginUser)) {
             modified = userService.updateUserAuth(targetUser, wantAuth);
-        //}
+        }
 
         return modified ? ResponseEntity.ok("success") :
                 ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();

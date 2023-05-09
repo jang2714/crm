@@ -27,7 +27,7 @@
         <div align="center" style="margin: 10px auto" >
             <span class="text-lightblue h4">일정 등록 * [[${paramVO.meetDate}]]</span>
         </div>
-        <form id="frm" name="frm" method="post" onsubmit="return false;">
+        <form id="frm" name="frm" method="post">
         <input type="hidden" id="meetDate" name="meetDate" th:value="${paramVO.meetDate}">
         <input type="hidden" id="userSeqs" name="userSeqs">
         <input type="hidden" id="custSeqs" name="custSeqs">
@@ -108,7 +108,7 @@
                 $.ajax({
                     type: "post",
                     dataType: "json", //data를 json으로 return 받음
-                    url: "/calendar/selectUserList.do", //json으로 데이터를 반환해야함
+                    url: "/calendar/selectUserList", //json으로 데이터를 반환해야함
                     data: {userName: $("#paramUserNm").val()},
                     success: function(data){
                         console.log(data);
@@ -144,7 +144,7 @@
                 $.ajax({
                     type: "post",
                     dataType: "json", //data를 json으로 return 받음
-                    url: "/calendar/selectCustList.do", //json으로 데이터를 반환해야함
+                    url: "/calendar/selectCustList", //json으로 데이터를 반환해야함
                     data: {custName: $("#paramCustNm").val()},
                     success: function(data){
                         console.log(data);
@@ -302,7 +302,7 @@ function fn_insert() {
             $('#userSeqs').val(userArr);
             $('#custSeqs').val(custArr);
             let params = $('#frm').serialize();
-            let url = '/calendar/calendarRegistProc.do';
+            let url = '/calendar/calendarRegistProc';
             $.ajax({
                 type: "POST",
                 url: url,
@@ -311,7 +311,7 @@ function fn_insert() {
                 dataType: "json",
                 success: function (data) {
                     $('#frm').attr({
-                        action: '/calendar/calendarView.do'
+                        action: '/calendar/calendarView'
                         ,method: 'post'
                         ,target: '_self'
                     }).submit();
@@ -325,7 +325,7 @@ function fn_insert() {
 }
 //일정 등록 취소
 function fn_cancel() {
-    location.href='/calendar/calendarView.do';
+    location.href='/calendar/calendarView';
 }
 </script>
 </html>

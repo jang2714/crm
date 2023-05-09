@@ -3,20 +3,55 @@
 
 <mapper namespace="kr.code.main.calendar.mapper.CalendarMapper">
 
+<sql id="selectCalendar">
+    SELECT DISTINCT
+         mt.meet_id
+        ,mt.meet_id AS id
+        ,mt.meet_se
+        ,mt.meet_title
+        ,mt.meet_title AS title
+        ,mt.meet_cn
+        ,CONCAT(CONCAT(DATE_FORMAT(mt.meet_date, '%Y%m%d'),'T'), DATE_FORMAT(mt.meet_date, '%H%i')) AS "start"
+        ,mt.meet_loc
+        <choose>
+            <when test="searchType != null and searchType != ''">
+                <if test="searchType == '01'.toString()">
+                      FROM tbl_meet mt
+                    INNER JOIN tbl_meet_join mj
+                        ON mt.meet_id = mj.meet_id AND mt.use_yn = 'Y' AND mj.use_yn = 'Y'
+                    INNER JOIN tbl_user ur
+                        ON mj.meet_user_id = ur.user_uid
+                    AND mj.meet_user_se = 'SE01'
+                    AND ur.user_name LIKE CONCAT('%', #{searchKywd}, '%')
+                </if>
+                <if test="searchType == '02'.toString()">
+                      FROM tbl_meet mt
+                    INNER JOIN tbl_meet_join mj
+                        ON mt.meet_id = mj.meet_id AND mt.use_yn = 'Y' AND mj.use_yn = 'Y'
+                    INNER JOIN tbl_customer cr
+                        ON mj.meet_user_id = cr.cust_uid AND mj.meet_user_se = 'SE02'
+                    AND cr.cust_name LIKE CONCAT('%', #{searchKywd}, '%')
+                </if>
+                <if test="searchType == '03'.toString()">
+                      FROM tbl_meet mt
+                    WHERE 1=1
+                    AND mt.use_yn = 'Y'
+                    AND (mt.meet_title LIKE CONCAT('%', #{searchKywd}, '%')
+                        OR mt.meet_cn LIKE CONCAT('%', #{searchKywd}, '%'))
+                </if>
+            </when>
+            <otherwise>
+              FROM tbl_meet mt
+            WHERE 1=1
+                AND mt.use_yn = 'Y'
+            </otherwise>
+        </choose>
+</sql>
+
 <!-- 일정관리 화면 조회 -->
 <select id="selectCalendarList" parameterType="kr.code.main.calendar.vo.CalendarVO" resultType="kr.code.main.calendar.vo.CalendarVO">
-    SELECT
-        meet_id
-        ,meet_id AS id
-        ,meet_se
-        ,meet_title
-        ,meet_title AS title
-        ,meet_cn
-        ,CONCAT(CONCAT(DATE_FORMAT(MEET_DATE, '%Y%m%d'),'T'), DATE_FORMAT(MEET_DATE, '%H%i')) AS "start"
-        ,meet_loc
-     FROM tbl_meet
-     WHERE use_yn = 'Y'
-   ORDER BY meet_date
+    <include refid="selectCalendar" />
+    ORDER BY mt.meet_date
 </select>
 
 <!-- 일정관리_ 직원 등록 (autocomplete) -->
@@ -75,7 +110,7 @@
                 ON ur.user_uid = mj.meet_user_id
     WHERE 1=1
       AND mj.use_yn = 'Y'
-      AND mj.meet_id = #{userName}
+      AND mj.meet_id = #{meetId}
       AND mj.meet_user_se = 'SE01'
     ORDER BY user_name
 </select>
@@ -91,24 +126,26 @@
                 ON cr.cust_uid = mj.meet_user_id
     WHERE 1=1
       AND mj.use_yn = 'Y'
-      AND mj.meet_id = #{custName}
+      AND mj.meet_id = #{meetId}
       AND mj.meet_user_se = 'SE02'
     ORDER BY cust_name
 </select>
 
-<!--일정관리_ meet 등록 조회 (상세, 수정 위한)-->
-<select id="selectMeetList" parameterType="kr.code.main.calendar.vo.CalendarVO" resultType="kr.code.main.calendar.vo.CalendarVO">
+<!-- 일정관리_ meet 등록 조회 (상세, 수정 위한) -->
+<select id="selectMeetDetailView" parameterType="kr.code.main.calendar.vo.CalendarVO" resultType="kr.code.main.calendar.vo.CalendarVO">
     SELECT
         meet_id
          ,meet_se
          ,meet_title
          ,meet_cn
          ,meet_date
+         ,DATE_FORMAT(MEET_DATE, '%Y-%m-%d') AS meet_date_ymd
+         ,DATE_FORMAT(MEET_DATE, '%H%i%s') as meet_date_his
          ,meet_loc
     FROM tbl_meet
     WHERE 1=1
       AND use_yn = 'Y'
-    ORDER BY meet_id
+      AND meet_id = #{meetId}
 </select>
 
 <!-- 일정관리 등록 처리 (tbl_meet) -->
@@ -162,5 +199,28 @@
         ,'eun'
         )
 </insert>
+
+<!--일정관리 삭제 (meet만)-->
+<update id="calendarMeetDelete" parameterType="kr.code.main.calendar.vo.CalendarVO">
+    UPDATE
+        tbl_meet
+    SET
+        use_yn = #{useYn}
+    WHERE 1=1
+    AND meet_id = #{meetId}
+</update>
+
+<!--일정관리 삭제 (meet_join만)-->
+<update id="calendarMeetJoinDelete" parameterType="kr.code.main.calendar.vo.CalendarVO">
+    UPDATE
+        tbl_meet_join
+    SET
+        use_yn = #{useYn}
+    WHERE 1=1
+    AND meet_id = #{meetId}
+</update>
+
+
+
 
 </mapper>

@@ -30,5 +30,11 @@ public interface CalendarMapper {
     List<CalendarVO> selectMeetCustList(CalendarVO vo) throws Exception;
 
     /* 일정관리_ meet 등록 조회 (상세, 수정 위한) */
-    List<CalendarVO> selectMeetList(CalendarVO vo) throws Exception;
+    CalendarVO selectMeetDetailView(CalendarVO vo) throws Exception;
+
+    /* 일정관리_ 상세 삭제 처리 (meet만) */
+    void calendarMeetDelete(CalendarVO vo) throws Exception;
+
+    /* 일정관리_ 상세 삭제 처리 (meet_join만) */
+    void calendarMeetJoinDelete(CalendarVO vo) throws Exception;
 }

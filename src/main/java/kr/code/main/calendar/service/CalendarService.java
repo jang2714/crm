@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,12 +22,12 @@ public class CalendarService {
     }
 
     /* 일정관리 등록 처리 */
+    @Transactional
     public void calendarRegistProc(CalendarVO vo) throws Exception {
         String meetDt;
         if(StringUtils.isNotBlank(vo.getMeetDate())) {
-            meetDt = vo.getMeetDate().replace("-","") + vo.getMeetHhMi();    //202305010900
+            meetDt = vo.getMeetDate().replace("-","") + vo.getMeetHhMi(); //202305010900
             vo.setMeetDate(meetDt);
-            //System.out.println("meetDt: " + meetDt);
         }
         int meetCnt = mapper.calendarMeetInsert(vo);
         if(meetCnt > 0) {
@@ -77,7 +78,18 @@ public class CalendarService {
     }
 
     /* 일정관리_ meet 등록 조회 (상세, 수정 위한) */
-    public List<CalendarVO> selectMeetList(CalendarVO vo) throws Exception {
-        return mapper.selectMeetList(vo);
+    public CalendarVO selectMeetDetailView(CalendarVO vo) throws Exception {
+        return mapper.selectMeetDetailView(vo);
     }
+
+    /* 일정관리_ 상세삭제 처리 (meet, meet_join 합침)*/
+    @Transactional
+    public void calendarMeetDeleteProc(CalendarVO vo) throws Exception {
+        vo.setUseYn("N");
+        mapper.calendarMeetJoinDelete(vo);
+        mapper.calendarMeetDelete(vo);
+    }
+
+    
+
 }

@@ -6,11 +6,12 @@ import kr.code.main.calendar.vo.CalendarVO;
 import kr.code.main.calendar.vo.CommonVO;
 import lombok.RequiredArgsConstructor;
 import net.sf.json.JSONArray;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,17 +33,19 @@ public class CalendarController {
     private final CommonService commonService;
 
     //일정관리 화면
-    @GetMapping("/calendar/calendarView.do")
+    @RequestMapping("/calendar/calendarView")
     public ModelAndView calendarView(CalendarVO paramVO, HttpServletRequest request) throws Exception {
         //log.debug("calendarView" + paramVO == null ? "NULL" : paramVO.toString());
-        ModelAndView mav = new ModelAndView("jsonView");
+        List<CommonVO> CRM03List = commonService.selectCommonCodeList("CRM03");
+        ModelAndView mav = new ModelAndView();
         mav.setViewName("views/calendar/calendarView");
         mav.addObject("paramVO", paramVO);
+        mav.addObject("CRM03List", CRM03List);
         return mav;
     }
 
     //일정관리 화면 처리
-    @PostMapping("/calendar/calendarProc.do")
+    @PostMapping("/calendar/calendarProc")
     public Map<String, Object> calendarProc(CalendarVO paramVO, HttpServletRequest request) throws Exception {
         List<CalendarVO> resultList = calenderService.selectCalendarList(paramVO);
         Map<String, Object> map = new HashMap<>();
@@ -51,11 +54,11 @@ public class CalendarController {
     }
 
     //일정관리 등록 화면
-    @PostMapping("/calendar/calendarRegistView.do")
+    @PostMapping("/calendar/calendarRegistView")
     public ModelAndView calendarRegistView(CalendarVO paramVO, HttpServletRequest request) throws Exception {
         List<CommonVO> CRM01List = commonService.selectCommonCodeList("CRM01");
         List<CommonVO> CRM04List = commonService.selectCommonCodeList("CRM04");
-        ModelAndView mav = new ModelAndView("jsonView");
+        ModelAndView mav = new ModelAndView();
         mav.setViewName("views/calendar/calendarRegistView");
         mav.addObject("paramVO", paramVO);
         mav.addObject("CRM01List", CRM01List);
@@ -64,16 +67,16 @@ public class CalendarController {
     }
 
     //일정관리 등록 처리
-    @PostMapping("/calendar/calendarRegistProc.do")
-    public ModelAndView calendarRegistProc(CalendarVO paramVO, HttpServletRequest request) throws Exception {
+    @PostMapping("/calendar/calendarRegistProc")
+    public Map<String, Object> calendarRegistProc(CalendarVO paramVO, HttpServletRequest request) throws Exception {
         calenderService.calendarRegistProc(paramVO);
-        ModelAndView mav = new ModelAndView("jsonView");
-        mav.addObject("paramVO", paramVO);
-        return mav;
+        Map<String, Object> map = new HashMap<>();
+        map.put("paramVO", paramVO);
+        return map;
     }
 
     //직원 조회
-    @PostMapping(value = "/calendar/selectUserList.do")
+    @PostMapping(value = "/calendar/selectUserList")
     public Map<String, Object>  selectUserList(CalendarVO paramVO, HttpServletRequest request) throws Exception{
         List<CalendarVO> resultList = calenderService.selectUserList(paramVO);
         Map<String, Object> map = new HashMap<>();
@@ -81,7 +84,7 @@ public class CalendarController {
         return map;
     }
     //고객 조회
-    @PostMapping(value = "/calendar/selectCustList.do")
+    @PostMapping(value = "/calendar/selectCustList")
     public Map<String, Object> selectCustList(CalendarVO paramVO, HttpServletRequest request) throws Exception{
         List<CalendarVO> resultList = calenderService.selectCustList(paramVO);
         Map<String, Object> map = new HashMap<>();
@@ -90,24 +93,33 @@ public class CalendarController {
     }
     
     //일정관리 상세 화면
-    @PostMapping("/calendar/calendarDetailView.do")
+    @PostMapping("/calendar/calendarDetailView")
     public ModelAndView calendarDetailView(CalendarVO paramVO, HttpServletRequest request) throws Exception {
         List<CommonVO> CRM01List = commonService.selectCommonCodeList("CRM01");
         List<CommonVO> CRM04List = commonService.selectCommonCodeList("CRM04");
 
         List<CalendarVO> userList = calenderService.selectMeetUserList(paramVO);
         List<CalendarVO> custList = calenderService.selectMeetCustList(paramVO);
-        List<CalendarVO> meetList = calenderService.selectMeetList(paramVO);
+        CalendarVO resultVO = calenderService.selectMeetDetailView(paramVO);
 
-        ModelAndView mav = new ModelAndView("jsonView");
+        ModelAndView mav = new ModelAndView();
         mav.setViewName("views/calendar/calendarDetailView");
         mav.addObject("paramVO", paramVO);
         mav.addObject("CRM01List", CRM01List);
         mav.addObject("CRM04List", CRM04List);
         mav.addObject("userList", userList);
         mav.addObject("custList", custList);
-        mav.addObject("meetList", meetList);
+        mav.addObject("resultVO", resultVO);
         return mav;
+    }
+    
+    //일정관리 상세 삭제 처리
+    @PostMapping(value = "/calendar/calendarDeleteProc")
+    public Map<String, Object> calendarDeleteProc(CalendarVO paramVO, HttpServletRequest request) throws Exception {
+        calenderService.calendarMeetDeleteProc(paramVO);
+        Map<String, Object> map = new HashMap<>();
+        map.put("paramVO", paramVO);
+        return map;
     }
 }
 

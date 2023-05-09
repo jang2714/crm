@@ -26,9 +26,8 @@ public class CalendarService {
     public void calendarRegistProc(CalendarVO vo) throws Exception {
         String meetDt;
         if(StringUtils.isNotBlank(vo.getMeetDate())) {
-            meetDt = vo.getMeetDate().replace("-","") + vo.getMeetHhMi();    //202305010900
+            meetDt = vo.getMeetDate().replace("-","") + vo.getMeetHhMi(); //202305010900
             vo.setMeetDate(meetDt);
-            //System.out.println("meetDt: " + meetDt);
         }
         int meetCnt = mapper.calendarMeetInsert(vo);
         if(meetCnt > 0) {

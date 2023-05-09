@@ -99,7 +99,7 @@
     function fn_delete() {
         if(confirm("정말 삭제 하시겠습니까?")) {
             let params = $('#frm').serialize();
-            let url = '/calendar/calendarDeleteProc.do';
+            let url = '/calendar/calendarDeleteProc';
             $.ajax({
                 type: "POST",
                 url: url,
@@ -107,7 +107,7 @@
                 dataType: "json",
                 success: function(data) {
                     $('#frm').attr({
-                        action: '/calendar/calendarView.do'
+                        action: '/calendar/calendarView'
                         ,method: 'post'
                         ,target: '_self'
                     }).submit();
@@ -120,7 +120,7 @@
 
     //뒤로(목록화면으로)
     function fn_back() {
-        location.href='/calendar/calendarView.do';
+        location.href='/calendar/calendarView';
     }
 </script>
 </html>

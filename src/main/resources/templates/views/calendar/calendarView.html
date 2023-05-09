@@ -22,7 +22,7 @@
     <input type="hidden" id="meetDate" name="meetDate" value="" />
 
     <div id="calendar"></div>
-    <!--
+
     <div class="container" align="center">
         <select id="searchType" name="searchType">
             <option value="">선택</option>
@@ -30,9 +30,9 @@
             </option>
         </select>
         <input type="text" id="searchKywd" name="searchKywd" th:value="${paramVO.searchKywd}" placeholder="검색어를 입력하세요" />
-        <button type="button" value="" onclick="javascript:fn_search();">검색</button>
+        <button type="button" onclick="javascript:fn_search();">검색</button>
     </div>
-    -->
+
 </form>
 <script>
 $(document).ready(function () {
@@ -128,7 +128,11 @@ function fn_detailView(seq) {
 
 //검색 기능
 function fn_search() {
-
+    $('#frm').attr({
+        action: '/calendar/calendarView'
+        ,method: 'post'
+        ,target: '_self'
+    }).submit();
 }
 //10일미만, 10월미만 '0' 추가
 function addZero(date) {

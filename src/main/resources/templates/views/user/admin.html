@@ -6,50 +6,154 @@
 
 <div layout:fragment="content">
     <!-- ***** Blog Area Start ***** -->
-    <section class="blog-area section_padding_100">
+    <section class="blog-area section_padding_50_200">
         <div class="container">
             <div class="row">
-                <div class="col-12 col-md-8">
-                    <div class="mosh-blog-posts">
-                        <div class="row">
-                            <!-- Single Blog Start -->
-                            <div class="col-12">
-                                <div class="single-blog wow fadeInUp" data-wow-delay="0.2s">
-                                    <!-- Post Thumb -->
-                                    <div class="blog-post-thumb">
-                                        <img src="img/blog-img/1.jpg" alt="">
-                                    </div>
-                                    <!-- Post Meta -->
-                                    <div class="post-meta">
-                                        <h6>By <a href="#">Lore Papp,</a><a href="#">October 22, 2017,</a><a href="#">Uncategorized,</a><a
-                                                href="#">3 Comments</a></h6>
-                                    </div>
-                                    <!-- Post Title -->
-                                    <h2>The best November Design Inspiration</h2>
-                                    <!-- Post Excerpt -->
-                                    <p>Nec odio vestibulum est mattis effic iturut magna. Pellentesque sit am. Quisque
-                                        luctus lorem eu massa ornare, ac posuere massa finibus. Pellentesque varius dui
-                                        quis feugiat sodales. Fusce varius arcu sed massa convallis malesuada.
-                                        Pellentesque interdum lorem a leo cursus, non aliquet ante tincidunt.</p>
-                                    <!-- Read More btn -->
-                                    <a href="#">Read More</a>
-                                </div>
+                <div class="col-lg-12">
+                    <div class="main-box no-header clearfix">
+                        <div class="main-box-body clearfix">
+                            <div class="table-responsive">
+                                <table class="table user-list">
+                                    <thead>
+                                    <tr>
+                                        <th><span>User</span></th>
+                                        <th class="text-center"><span>Company</span></th>
+                                        <th class="text-center"><span>Contacts(email)</span></th>
+                                        <th class="text-center"><span>Contacts(tel)</span></th>
+                                        <th class="text-center"><span>Role</span></th>
+                                        <th>&nbsp;</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody th:each="user : ${userList}">
+                                    <tr th:id="${user.userUid}">
+                                        <td>
+                                            <th:block th:if="${user.userGender == 1}">
+                                                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
+                                            </th:block>
+                                            <th:block th:if="${user.userGender == 2}">
+                                                <img src="https://bootdey.com/img/Content/user_2.jpg" alt="">
+                                            </th:block>
+                                            <a href="#" class="user-link" th:utext="${user.userName}">Full name</a>
+                                            <span class="user-subhead" th:utext="${user.userId}">Member</span>
+                                        </td>
+                                        <td id="companyInfo" class="text-center" >
+                                            <select id="userDepartment" name="department" class="form-control form-control-sm" disabled>
+                                                <th:block th:each="depart : ${departments}">
+                                                    <option th:value="${depart.deptCode}" th:selected="${depart.deptCode} == ${user.userDepart}">[[${depart.deptName}]]</option>
+                                                </th:block>
+                                            </select><hr style="margin-top: 0.5rem; margin-bottom: 0.5rem;"/>
+                                            <select id="userPosition" name="position" class="form-control form-control-sm" disabled>
+                                                <option value="">직급 선택</option>
+                                                <th:block th:each="pos : ${positions}">
+                                                    <option th:value="${pos.posCode}" th:selected="${pos.posCode} == ${user.userPosition}">[[${pos.posName}]]</option>
+                                                </th:block>
+                                            </select>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="#" th:text="${user.userEmail}">marlon@brando.com</a><br/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span th:text="${user.userPhone}">010-1234-4321</span><br/>
+                                            <span th:text="${user.userTele}">02-123-1234</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <select th:id="'role_'+${user.userUid}" id="userAuth" name="auth" class="label label-default custom-select">
+                                                <option value="1" th:selected="${user.userAuth == 1}">ADMIN</option>
+                                                <option value="2" th:selected="${user.userAuth == 2}">USER</option>
+                                            </select>
+                                        </td>
+                                        <td style="width: 20%;">
+                                            <a href="#" class="table-link text-warning">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-search-plus fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                            </a>
+                                            <a href="#" class="table-link text-info">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                            </a>
+                                            <a href="#" class="table-link danger">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
-
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </section>
     <!-- ***** Blog Area End ***** -->
 
     <script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-    <script>
+    <script th:inline="javascript">
+        var prevSelectedAuth;
+
+
+        function checkRole(loginUser, targetUserUid, changeAuth) {
+
+            $.ajax({
+                url: "/user/authModify",
+                method: 'get',
+                data: {
+                    "loginUser": loginUser,
+                    "targetUser": targetUserUid,
+                    "wantAuth": changeAuth
+                },
+                success: function (response) {
+                    if (response === "success") {
+                        alert("권한 변경을 적용 했습니다.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr, status, error);
+
+                    $("#userAuth option:selected").val(prevSelectedAuth);
+                    alert('권한을 변경 할 수 없습니다.');
+                }
+            });
+        }
+
         $(document).ready(function() {
-         console.log($('.bradcumbTitle').text('관리자'));
+        console.log($('.bradcumbTitle').text('관리자'));
+
+        /*<![CDATA[*/
+        const userList = [[${userList}]];
+        /*]]>*/
+
+        console.log(userList);
+        userList.forEach(user => {
+            const { userUid, userAuth } = user;
+            console.log(user, " --> ", userUid, userAuth);
+
+            $(`#role_${userUid}`).on('focus', function() {
+                prevSelectedAuth = this.value;
+            }).change(function() {
+                const changedAuth = this.value;
+                checkRole("login", userUid, changedAuth);
+            })
+        })
+
+         // $.ajax({
+         //     url: "/api/v1/user/attributes",
+         //     method: 'get',
+         //     data: {
+         //         column: 'userDepart'
+         //     },
+         //     success: function (response) {
+         //         const userDeparts = JSON.parse(response);
+         //     }
+         // })
+
         });
     </script>
 

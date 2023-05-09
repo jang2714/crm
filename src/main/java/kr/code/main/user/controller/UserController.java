@@ -39,7 +39,7 @@ public class UserController {
     @ResponseBody
     public String execJoin(UserDto userDto) {
         userService.joinUser(userDto);
-        return "redirect:/users/loginForm";
+        return "redirect:/users/join_result";
     }
 
     // 로그인 페이지

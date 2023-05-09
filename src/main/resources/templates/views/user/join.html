@@ -1,44 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>회원가입</title>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/main_layout}">
 
-<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.2/css/bootstrap.min.css}">
-<!-- <link rel="stylesheet" th:href="@{/bower_components/font-awesome/css/font-awesome.min.css}">
-<link rel="stylesheet" th:href="@{/bower_components/Ionicons/css/ionicons.min.css}"> -->
-<link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+<div layout:fragment="content">
 
-<style>
-	.bg-light {
-		/*height: 1100px;*/
-		padding-top: 15px;
-	}
-	
-	.container.py-4 {
-		margin: 0 auto;
-		width: 503px;
-	}
-	input, select {
-		margin-bottom: 1rem;
-		height: 40px;
-	}
-	
-	input[type="number"]::-webkit-outer-spin-button,
-	input[type="number"]::-webkit-inner-spin-button {
-		-webkit-appearance: none;
-		margin: 0;
-	}
-</style>
+	<link rel="stylesheet" th:href="@{/css/join/join.css}">
 
-</head>
-<body>
+	<!-- ***** Blog Area Start ***** -->
 	<section class="bg-light">
 		<div class="container py-4">
-			<div align="center" style="margin: 10px auto;">
-				<span class="text-dark h1">회원가입</span>
+			<div align="center" style="height: 50px; margin: 10px auto;">
+				<span class="text-dark h1"></span>
 			</div>
 			<form id="frm" action="/mem/join" method="post">
 				<div class="form-group">
@@ -46,89 +19,101 @@
 				</div>
 				<div class="row">
 					<div class="col-md-6">
-						<input type="text" class="form-control" id="memId" name="memId">
+						<input type="text" class="form-control" id="userId" name="userId">
 					</div>
 					<div class="col-md-6" style="text-align:right">
 						<button type="button" class="btn btn-secondary" id="idChkBtn" onclick="userIdChk();">중복확인</button>
-						<button type="button" class="btn btn-warning" id="changeId" disabled="disabled" onclick="changeId();">변경</button>
+						<button type="button" class="btn btn-warning" id="changeBtn" disabled="disabled" onclick="changeId();">변경</button>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">비밀번호</label>
-					<input type="password" class="form-control" id="memPasswd" name="memPasswd">
+					<input type="password" class="form-control" id="userPasswd" name="userPasswd">
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">비밀번호 확인</label>
-					<input type="password" class="form-control" id="memPasswdConfirm" name="memPasswdConfirm">
+					<input type="password" class="form-control" id="userPasswdConfirm" name="userPasswdConfirm">
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">이름</label>
-					<input type="text" class="form-control" id="memName" name="memName">
+					<input type="text" class="form-control" id="userName" name="userName">
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">성별</label>
-					<select class="form-control" id="memGender" name="memGender">
+					<select class="form-control" id="userGender" name="userGender">
 						<option value="남자">남자</option>
 						<option value="여자">여자</option>
 					</select>
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">생년월일(6자리)</label>
-					<input type="number" class="form-control" id="memBirth" name="memBirth" maxlenght="6" pattern="[0-9]*" style="ime-mode:disabled;">
+					<input type="number" class="form-control" id="userBirth" name="userBirth" maxlenght="6" pattern="[0-9]*" style="ime-mode:disabled;">
 				</div>
 				<div class="form-group">
-					<label class="form-label-mt-4">연락처</label>
-					<input type="text" class="form-control" id="memPhone" name="memPhone">
+					<label class="form-label-mt-4">부서</label>
+					<input type="text" class="form-control" id="userDepart" name="userDepart">
+				</div>
+				<div class="form-group">
+					<label class="form-label-mt-4">직급</label>
+					<input type="text" class="form-control" id="userPosition" name="userPosition">
+				</div>
+				<div class="form-group">
+					<label class="form-label-mt-4">모바일</label>
+					<input type="text" class="form-control" id="userPhone" name="userPhone">
+				</div>
+				<div class="form-group">
+					<label class="form-label-mt-4">직통번호</label>
+					<input type="text" class="form-control" id="userTelephone" name="userTelePhone">
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">메일주소</label>
-				</div>
-				<div class="row">
-					<div class="form-label-mt-4">
-						<input type="text" class="form-control" id="mailId" name="mailId">
-					</div>
-					<div class="col-md-auto" style="padding-top: 5px;">
-						<span style="font-weight: bold;">@</span>
-					</div>
-					<div class="col-md-3">
-						<input type="text" class="form-control" id="mailAddr" name="mailAddr" readonly="readonly">
-					</div>
-					<div class="col-md-4">
-						<select id="mailCheck" name="mailCheck" class="form-control" 
-						  onchange="setEmailAddr(this.options[this.selectedIndex].value);">
-							<option value="none">::선택하세요</option>
-							<option value="etc">직접입력</option>
-							<option value="naver.com">naver.com</option>
-							<option value="daum.net">daum.net</option>
-							<option value="gmail.com">gmail.com</option>
-							<option value="hotmail.com">hotmail.com</option>
-						</select>
+					<div class="row">
+						<div class="col-md-4">
+							<input type="text" class="form-control" id="mailId" name="mailId">
+						</div>
+						<div class="col-md-auto" style="padding-top: 5px;">
+							<span style="font-weight: bold;">@</span>
+						</div>
+						<div class="col-md-3">
+							<input type="text" class="form-control" id="mailAddr" name="mailAddr" readonly="readonly">
+						</div>
+						<div class="col-md-4">
+							<select id="mailCheck" name="mailCheck" class="form-control"
+							  onchange="setEmailAddr(this.options[this.selectedIndex].value);">
+								<option value="none">::선택하세요</option>
+								<option value="etc">직접입력</option>
+								<option value="naver.com">naver.com</option>
+								<option value="daum.net">daum.net</option>
+								<option value="gmail.com">gmail.com</option>
+								<option value="hotmail.com">hotmail.com</option>
+							</select>
+						</div>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">주소</label>
-				</div>
-				<div class="row">
-					<div class="col-md-9" style="text-align:left">
-					<input type="text" class="form-control" style="width: 100px;" id="postCode" name="postCode" readonly="readonly">
-				</div>
-					<div class="col-md-3" style="text-align:right">
-						<button type="button" class="btn btn-info" onclick="searchAddr();">주소찾기</button>
+					<div class="row">
+						<div class="col-md-9" style="text-align:left;">
+						<input type="text" class="form-control" style="margin-bottom: 0.5rem;" id="postCode" name="postCode" readonly="readonly">
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<input type="text" style="width: 100px; margin-bottom: 0.5rem;" id="addr1" name="addr1" readonly="readonly">
+						<div class="col-md-3" style="text-align:right">
+							<button type="button" class="btn btn-info" onclick="searchAddr();">주소찾기</button>
+						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<input type="text" style="width: 100px;" id="addr2" name="addr2">
+					<div class="row">
+						<div class="col-md-12">
+							<input type="text" class="form-control" style="margin-bottom: 0.5rem;" id="addr1" name="addr1" readonly="readonly">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<input type="text" class="form-control" style="" id="addr2" name="addr2">
+						</div>
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">권한</label>
-					<select class="form-control" id="memAuth" name="memAuth">
+					<select class="form-control" id="userAuth" name="userAuth">
 						<option value="ADMIN">관리자</option>
 						<option value="USER">일반이용자</option>
 					</select>		
@@ -143,179 +128,191 @@
 			</form>
 		</div>
 	</section>
-	
-</body>
-<script th:src="@{/webjars/jquery/3.6.4/jquery.js}"></script>
-<script th:src="@{/webjars/bootstrap/4.6.2/js/bootstrap.min.js}"></script>
-<script src="@{/dist/js/adminlte.min.js}"></script>
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script>
-	let isUserIdChk = false;
-	
-	function searchAddr() {
-		//다음 api 사
-		daum.Postcode.lode(function(){
-			//우편번호 객체 생성 후 오
-			new daum.PostCode({
-				
-				oncomplete : function(data) {
-					console.log(data);
-					let fullAddr = '';  //전체주소
-					let extraAddr = '';  //추가 주소
-					
-					//사용자가 도로명주소를 선택한 경우
-					if(data.userSelectedType === 'R') {
-						fullAddr = data.roadAddress;
-						//법정동이 있는 경우
-						if($.trim(data.bname).length > 0) {
-							extraAddr += data.bname;
+	<!-- ***** Blog Area End ***** -->
+
+	<script type="text/javascript">
+		let isUserIdChk = false;
+
+
+		function searchAddr() {
+			//다음 api 사용
+			daum.postcode.load(function(){
+				//우편번호 객체 생성 후 오픈
+				new daum.Postcode({
+					oncomplete : function(data) {
+						console.log(data);
+						let fullAddr = ''; // 전체 주소
+						let extraAddr = ''; // 추가 주소
+						//사용자가 도로명주소를 선택한 경우
+						if(data.userSelectedType === 'R') {
+							fullAddr = data.roadAddress;
+							//법정동이 있는 경우
+							if($.trim(data.bname).length > 0) {
+								extraAddr  += data.bname;
+							}
+						}else {
+							//지번으로 검색했을 경우
+							fullAddr = data.jibunAddress;
 						}
-					}else {
-						//지번으로 검색했을 경우
-						fullAddr = data.jibunAddress;
+						//빌딩 이름이 있을 경우
+						if(data.buildingName !== '') {
+							//추가주소에 내용이 있는 경우는 쉼표처리하고 붙이고, 없으면 그냥 쓴다.
+							extraAddr  += (  extraAddr  !== ''  ?  ',  ' + data.buildingName   :  data.buildingName )
+						}
+						// 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+						fullAddr += (extraAddr !== '' ? ' (' + extraAddr + ')' : '');
+						//우편번호
+						$('#postCode').val(data.zonecode);
+
+						//주소
+						$('#addr1').val(fullAddr);
 					}
-					//빌딩 이름이 있을 경우
-					if(data.buildingName !== ''){
-						//추가 주소에 내용이 있는 경우는 쉼표처리하고 붙이고, 없으면 그냥 쓴다.
-						extraAddr += ( extraAddr !== '' ? ', ' + data.buildingName : data.buildingName)
+				}).open();
+			});
+		}
+
+
+		function changeId(){
+			const isConfirm = confirm('아이디 변경 시\n중복확인을 다시해야합니다\n진행하시겠습니까?');
+			if(isConfirm){
+
+				$('#idChkBtn').prop('disabled', false);
+				$('#changeBtn').prop('disabled', true);
+				isUserIdChk = false;
+			}
+		}
+
+		function userIdChk() {
+			const userId = $('#userId').val();
+			isUserIdChk = false ; // 초기화
+
+			if($.trim(userId).length === 0) {
+				alert('아이디를 입력하십시오.');
+				return false;
+			}
+
+			//ajax 를 통해서 서버로부터 id가 존재하는지 확인
+			$.ajax({
+				url : '/user/join',
+				type : 'get',
+				dataType :'json',
+				data :{
+					userId : userId
+				}
+			}).done(function(data){
+
+				if(data.resultCode === 200) {
+					alert('사용가능한 ID 입니다.');
+					isUserIdChk = true;
+
+					$('#idChkBtn').prop('disabled', true);
+					$('#changeBtn').prop('disabled', false);
+				}else {
+					alert('이미 등록된 ID 입니다.');
+				}
+
+			}).fail(function(xhr, status, error){
+				alert('시스템에 문제가 발생했습니다. 관리자에게 문의하세요.');
+				console.log(status);
+			});
+
+		}
+
+
+		function validated () {
+
+			const inputAll = document.querySelectorAll("input");
+			//유효성 결과를 담을 변수
+			let isValid = true;
+
+
+			if(!isUserIdChk) {
+				alert('아이디 중복체크를 실행해주세요');
+				isValid = false;
+				return false;
+			}
+
+
+			$.each(inputAll,  function(index, obj){
+				//input 의 id 값 가져오기
+				const inputId = $(obj).attr('id');
+				//jquery 객체로 변환
+				checkObj = $('#' + inputId);
+				let message = '';
+
+				if(inputId === 'userId') {
+					message = "아이디를 입력하십시오.";
+				}else if(inputId === 'userPasswd') {
+					message = "패스워드를 입력하십시오";
+				}else if(inputId === 'userPasswdConfirm') {
+					message = "패스워드 확인을 입력하십시오";
+				}else if(inputId === 'userName') {
+					message = "이름을 입력하십시오";
+				}else if(inputId === 'userBirth') {
+					message = "생년월일을 입력하십시오.";
+				}else if(inputId === 'userPhone') {
+					message = "전화번호를 입력하십시오.";
+				}else if(inputId === 'userTelephone') {
+					message = "유선전화번호를 입력하십시오.";
+				}else if(inputId === 'mailId') {
+					message = "메일주소를  입력하십시오.";
+				}else if(inputId === 'mailAddr') {
+					message = "메일서비스 업체를 입력하십시오.";
+				}else if(inputId === 'postCode'  ||  inputId ==='addr1') {
+					message = "우편번호 검색을 해주십시오.";
+				}
+
+
+				if(inputId !== 'addr2') {
+					if(typeof checkObj ==='undefined' || $.trim( checkObj.val() ).length === 0) {
+						alert(message);
+						checkObj.focus();
+						isValid = false;
+						return false;
 					}
-					//조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
-					fullAddr += (extraAddr !== '' ? '(' + extraAddr +')' : '');
-					//우편번호
-					$('#postCode').val(data.zonecode);
-					//주소
-					$('#addr1').val(fullAddr);
 				}
-				
-			}).open();
-		});
-	}
-	
-	function changeId() {
-		const isConfirm = confirm('아이디를 변경하시면\n중복확인을 다시해야합니다.\n진행하시겠습니까?');
-		if(isConfirm){
-			$('#idChkBtn').prop('disabled', false);
-			$('#changeId').prop('disabled', true);
-			isUserIdChk = false;
-		}
-	}
-	
-	function userIdChk() {
-		const memId = $('#memId').val();
-		isUserIdChk = false ; // 초기화
-		
-		if($.trim(memId).lenght === 0) {
-			alert('아이디를 입력하세요');
-			return false;
-		}
-		
-		//ajax 를 통해서 서버로 부터 ID 확인
-		$.ajax({
-			url: '/mem/chk',
-			type: 'get',
-			dataType: 'json',
-			data: {
-				memId : memId
+			});
+
+
+			if( $('#userPasswd').val() !== $('#userPasswdConfirm').val()) {
+				alert('비밀번호 확인이 일치하지 않습니다.!');
+				isValid = false;
+				return false;
 			}
-		}).done(function(data){
-			
-			if(data.resultCode === 200) {
-				alert('사용 가능한 ID입니다.');
-				isUserIdChk = true;
-				
-				$('#idChkBtn').prop('disabled', true);
-				$('#changeBtn').prop('disabled', false);
-			}else {
-				alert('이미 등록된 ID 입니다.');
-			}
-		}).fail(function(xhr, status, error){
-			alert('시스템에 문제가 발생하였습니다. 관리자한테 문의바랍니다.');
-			console.log(status);
-		});
-	}
-	
-	function validated() {
-		
-		const inputAll = document.querySelectorAll("input");
-		//유효성 결과를 담을 변수
-		let isValid = true;
-		
-		if(!isUserIdChk){
-			alert('아이디 중복체크를 실행해 주세요');
-			isValid = false;
-			return false;
+
+
+			return isValid;
 		}
-		
-		$.each(inputAll, function(index, obj){
-			
-			const inputId = $(Obj).attr('id');
-			
-			checkObj = $('#' +inputId);
-			
-			let message = '';
-			
-			if(inputId === 'memId'){
-				message = "아이디를 입력하십시오.";
-			}else if(inputId === 'memPasswd'){
-				message = "패스워드를 입력하십시오.";
-			}else if(inputId === 'memPasswdConfirm'){
-				message = "패스워드 확인을 입력하십시오.";
-			}else if(inputId === 'memName'){
-				message = "이름을 입력하십시오.";
-			}else if(inputId === 'memBirth'){
-				message = "생년월일을 입력하십시오.";
-			}else if(inputId === 'memPhone'){
-				message = "전화번호를 입력하십시오.";
-			}else if(inputId === 'mailId'){
-				message = "메일주소을 입력하십시오.";
-			}else if(inputId === 'mailAddr'){
-				message = "메일서비스 업체를 입력하십시오.";
-			}else if(inputId === 'postCode' || inputId === 'addr1'){
-				message = "우편번호 검색을 해십시오.";
-			}
-			
-			
-			if(inputId != 'addr2') {
-				if(typeof checkObj === 'undefined' || $.trim(checkObj.val() ).length === 0) {
-					alert(message);
-					checkObj.focus();
-					isValid = false;
-					return false;
-				}
-			}
-			
-		});
-		
-		if($('#memPasswd').val() !== $('#memPasswdConfirm').val()){
-			alert('비밀번호가 일치하지 않습니다.');
-			isValid = false;
-			return false;
-		}
-		
-		return isValid;
-	}
-	
-	
-	
-	function getEmailAddr(optionValue) {
-		const mailAddr = $('#mailAddr');
-		mailAddr.attr('readOnly', true);
-		mailAddr.val();
-		
-		if(optionValue === 'etc') {
-			mailAddr.attr('readOnly', false);
-		}else if (optionValue !== "none"){
-			mailAddr.val(optionValue);
+
+
+		function setEmailAddr(optionValue) {
+			const mailAddr = $('#mailAddr');
 			mailAddr.attr('readOnly', true);
+			mailAddr.val('');
+
+			if(optionValue ==='etc'){
+				mailAddr.attr('readOnly', false);
+			}else if (optionValue !== "none") {
+				mailAddr.val(optionValue);
+				mailAddr.attr('readOnly', true);
+			}
 		}
-	}
-	
-	function join() {
-		if(validated()){
-			$('#frm').submit();
-		}		
-	}
-	
-	
-</script>
+
+
+		function join(){
+			if(validated()){
+				$('#frm').submit();
+			}
+		}
+
+		//html 준비가 되면 자동으로 실행
+		$(document).ready(function(){
+			$('.bradcumbTitle').text('유저가입');
+			// console.log();
+
+			initEvt();
+		});
+
+	</script>
+</div>
 </html>

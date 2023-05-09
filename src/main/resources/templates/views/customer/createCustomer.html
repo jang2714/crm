@@ -93,19 +93,25 @@
                   <div class="contact-icon mr-15">
                     <img th:src="@{/img/core-img/map.png}" alt="">
                   </div>
-                  <p>4127/ 5B-C Mislane Road,<br> Gibraltar, UK</p>
+                  <p> Contact: [[${session.user.userName}]]</p>
+                </div>
+                <div class="single-contact-info d-flex">
+                  <div class="contact-icon mr-15">
+                    <img th:src="@{/img/core-img/map.png}" alt="">
+                  </div>
+                  <p> Gender: [[${session.user.userGender == 1 ? '남자' : '여자'}]]</p>
                 </div>
                 <div class="single-contact-info d-flex">
                   <div class="contact-icon mr-15">
                     <img th:src="@{/img/core-img/call.png}" alt="">
                   </div>
-                  <p>Main: 203-808-8613 <br> Office: 203-808-8648</p>
+                  <p> Office: [[${session.user.userTele}]]</p>
                 </div>
                 <div class="single-contact-info d-flex">
                   <div class="contact-icon mr-15">
                     <img th:src="@{/img/core-img/message.png}" alt="">
                   </div>
-                  <p>office@yourbusiness.com</p>
+                  <p>[[${session.user.userEmail}]]</p>
                 </div>
               </div>
             </div>

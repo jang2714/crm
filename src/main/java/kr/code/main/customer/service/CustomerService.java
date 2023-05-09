@@ -1,20 +1,25 @@
 package kr.code.main.customer.service;
 
 import kr.code.main.common.File.service.FileService;
+import kr.code.main.common.comment.domain.Comment;
+import kr.code.main.common.comment.domain.CommentVO;
+import kr.code.main.common.comment.domain.dto.CommentDTO;
+import kr.code.main.common.comment.repository.CommentRepository;
+import kr.code.main.common.exception.AppException;
+import kr.code.main.common.exception.ErrorCode;
 import kr.code.main.customer.domain.CustomerNamecardVO;
 import kr.code.main.customer.domain.CustomerTagVO;
 import kr.code.main.customer.domain.CustomerVO;
 import kr.code.main.customer.domain.dto.CreateRequestDTO;
 import kr.code.main.customer.domain.dto.UpdateRequestDTO;
 import kr.code.main.customer.mapper.CustomerMapper;
+import kr.code.main.user.domain.entity.UserEntity;
+import kr.code.main.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +27,8 @@ public class CustomerService {
 
     private final CustomerMapper customerMapper;
     private final FileService fileService;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     public int getTotalCustomerCount() {
         return customerMapper.getTotalCustomerCount(new HashMap<String, Object>());
@@ -43,14 +50,12 @@ public class CustomerService {
         return customerMapper.getCustomersByTag(params);
     }
 
-    public CustomerVO findByName(String name) {
-        return customerMapper.findByName(name)
-                .orElse(null);
+    public Optional<CustomerVO> findByName(String name) {
+        return customerMapper.findByName(name);
     }
 
-    public CustomerVO findByUid(String customerUid) {
-        return customerMapper.findByUid(customerUid)
-                .orElse(null);
+    public Optional<CustomerVO> findByUid(String customerUid) {
+        return customerMapper.findByUid(customerUid);
     }
 
     public List<CustomerTagVO> getAllCustomerTagById(String customerId) {
@@ -94,6 +99,7 @@ public class CustomerService {
             System.out.println("고객 정보 생성 실패!");
 
             // throws RuntimeException
+            throw new AppException(ErrorCode.INVALID_REQUEST, "알수없는 이유로 고개정보 등록이 실패하였습니다. 다시 시도해주세요.");
         }
 
         return newCustomer;
@@ -155,9 +161,36 @@ public class CustomerService {
         } else {
             System.out.println("고객 정보 수정 실패!");
 
-            // throws RuntimeException
+            throw new AppException(ErrorCode.INVALID_REQUEST, "고객 정보를 수정 할 수 없습니다.");
         }
 
         return customer;
+    }
+
+    public List<CommentVO> getCommentByCustomerUid(String customerUid) {
+
+        List<Comment> list = commentRepository.findAllByCustomerUidOrderByCreateDateDesc(customerUid);
+
+        return list.stream().map( vo -> { return new CommentVO(
+                vo.getWriter().getUserName(), vo.getTitle(), vo.getComment(), vo.getCreateDate()
+        );}).toList();
+    }
+
+    @Transactional
+    public List<CommentVO> registerComment(CommentDTO commentReq) {
+
+        UserEntity user = userRepository.findByUserUid(commentReq.getWriterUid())
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, "코멘트 작성자가 존재하지 않습니다."));
+
+        Comment newComment = Comment.builder()
+                .customerUid(commentReq.getCustomerUid())
+                .writer(user)
+                .title(commentReq.getCommentTitle())
+                .comment(commentReq.getContents())
+                .build();
+
+        commentRepository.save(newComment);
+
+        return getCommentByCustomerUid(commentReq.getCustomerUid());
     }
 }

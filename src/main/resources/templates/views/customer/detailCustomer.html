@@ -42,7 +42,16 @@
               <div class="card-header">Profile Picture</div>
               <div class="card-body text-center">
                 <!-- Profile picture image-->
-                <img class="img-account-profile rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="">
+
+                <th:block th:if="${customer.customerGender == 1}">
+                <img class="img-account-profile rounded-circle mb-2"
+                     src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="">
+                </th:block>
+                <th:block th:if="${customer.customerGender == 2}">
+                  <img class="img-account-profile rounded-circle mb-2"
+                       src="http://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                </th:block>
+
                 <!-- Profile picture help block-->
                 <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                 <!-- Profile picture upload button-->
@@ -78,7 +87,7 @@
                   <!-- Form Group (email address)-->
                   <div class="mb-3">
                     <label class="small mb-1" for="inputEmailAddress">Email address</label>
-                    <input class="form-control" id="inputEmailAddress" type="email" style="color: black;"
+                    <input class="form-control" id="inputEmailAddress" name="email" type="email" style="color: black;"
                            placeholder="Enter your email address" th:value="${customer.customerEmail}">
                   </div>
                   <!-- Form Row-->
@@ -172,42 +181,31 @@
             </div>
 
             <div class="the-timeline">
-              <form role="form" class="post-to-timeline">
-                <textarea class="form-control" style="height: 70px;margin-bottom:10px;" placeholder="Whats on your mind..."></textarea>
-                <div class="row">
-                  <div class="col-sm-6">
-                    <a class="btn btn-sm btn-default"><i class="fa fa-camera"></i></a>
-                    <a class="btn btn-sm btn-default"><i class="fa fa-video-camera"></i></a>
-                    <a class="btn btn-sm btn-default"><i class="fa fa-map-marker"></i></a>
+              <form id="comment-form" role="comment-form" class="post-to-timeline">
+                <input type="hidden" th:value="${customer.customerUid}" id="customerUid" name="customerUid">
+                <input type="hidden" th:value="${session.user.userUid}" id="writerUid" name="writerUid">
+                <input type="hidden" th:value="${session.user.userName}" id="writerName" name="writerName">
+                <div class="container-fluid border">
+                  <div class="mb-1">
+                    <label class="small mb-1" for="commentTitle">Title</label>
+                    <input type="text" class="form-control" id="commentTitle" name="commentTitle" placeholder="title"/>
                   </div>
-                  <div class="col-sm-6 text-right"><button type="submit" class="btn btn-primary">Post</button></div>
+                  <div class="mb-1">
+                    <label class="small mb-1" for="comment">Contents</label>
+                    <textarea class="form-control" id="comment" name="contents" style="height: 70px;margin-bottom:10px;" placeholder="Whats on your mind..."></textarea>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <a class="btn btn-sm btn-default"><i class="fa fa-camera"></i></a>
+                      <a class="btn btn-sm btn-default"><i class="fa fa-video-camera"></i></a>
+                      <a class="btn btn-sm btn-default"><i class="fa fa-map-marker"></i></a>
+                    </div>
+                    <div class="col-sm-6 text-right"><button type="submit" class="btn btn-sm btn-primary mb-1" id="commentPost">Post</button></div>
+                  </div>
                 </div>
               </form>
               <br><br>
-              <ul>
-                <li>
-                  <div class="the-date">
-                    <span>01</span>
-                    <small>Feb</small>
-                  </div>
-                  <h4>Lorem ipsum dolor!</h4>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-                  </p>
-                </li>
-                <li>
-                  <div class="the-date">
-                    <span>31</span>
-                    <small>Jan</small>
-                  </div>
-                  <h4>Yohoo! you can put video here</h4>
-                  <div class="videoWrapper">
-                    <iframe src="//player.vimeo.com/video/85847275?title=0&amp;byline=0&amp;portrait=0"></iframe>
-                  </div>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-                  </p>
-                </li>
+              <ul class="comment the-date">
               </ul>
             </div>
           </div>
@@ -288,6 +286,22 @@
       // location.href="/index";
     }
 
+    function printComments(commentList) {
+      console.log(commentList);
+
+      const html = commentList.map(comment => {
+        return '<li>' +
+                  '<div className="the-date">' +
+                    `<span>${comment.writer}</span>&nbsp;&nbsp;` +
+                    `<small>${comment.createDate}</small>` +
+                  `</div>` +
+                  `<h4>${comment.title}</h4>` +
+                  `<p>${comment.comment}</p>` +
+                `</li>`;
+      });
+      $('.comment.the-date').html(html);
+    }
+
     function requestFiles() {
       const dataParams = {
         customerUid: $('#customerId').val()
@@ -301,11 +315,33 @@
       }).done(function(data) {
         // 텍스트 데이터를 JSON 형태로 변환
         let hasFiles = JSON.parse(data);
-        console.log(hasFiles);
-
         hasFiles.forEach(file => {
           printFiles(file); // 첨부파일 출력 메서드 호출
         })
+
+        $(".noAttach").remove();
+      })
+    }
+
+    function requestComments() {
+      const dataParams = {
+        customerUid: $('#customerId').val()
+      }
+
+      $.ajax({
+        url: "/api/v1/customer/comment",
+        data: dataParams,
+        dataType: "json",
+        type: "get",
+      }).done(function(data) {
+        // 텍스트 데이터를 JSON 형태로 변환
+        // let commentList = JSON.parse(data);
+        // console.log(commentList);
+
+        if (data!= null) {
+          if (data.length > 0)
+          printComments(data);
+        }
 
         $(".noAttach").remove();
       })
@@ -317,6 +353,8 @@
 
       // 첨부파일 목록 얻어오기
       requestFiles();
+      // 댓글 목록 얻어오기
+      requestComments();
 
       // 파일 삭제 버튼 클릭 이벤트
       $(document).on("click", ".delBtn", function (event) {
@@ -355,6 +393,34 @@
             $('#create-result .modal-body').html('고객 정보를 반영했습니다. ');
             // $('#create-result .modal-footer>button')
             $('#create-result').modal('show');
+          },
+          error: function(xhr, status, error) {
+            console.log(xhr, status, error);
+            // 요청이 실패한 경우 처리할 코드
+            $('#create-result .modal-body').html(error);
+            // $('#create-result .modal-footer>button')
+            $('#create-result').modal('show');
+          }
+        });
+      });
+
+      $('#comment-form').submit(function(e) {
+        e.preventDefault();
+        let that = $(this);
+
+        const url = '/api/v1/customer/comment';
+        const method = 'POST';
+        $.ajax({
+          url: url,
+          method: method,
+          data: that.serialize(),
+          success: function(response) {
+            // 요청이 성공한 경우 처리할 코드
+            // const commentList = JSON.parse(response);
+            printComments(response);
+
+            $('#commentTitle').val('');
+            $('#comment').val('');
           },
           error: function(xhr, status, error) {
             console.log(xhr, status, error);

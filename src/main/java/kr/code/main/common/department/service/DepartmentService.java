@@ -14,11 +14,23 @@ public class DepartmentService {
 
     private final DepartmentRepository repository;
 
-    public List<DepartmentVO> GetAllDepartment() {
-        List<Department> departmentList = repository.findAll();
+    private List<DepartmentVO> cachedList = null;
 
-        return departmentList.stream().map( department -> {
+    public List<DepartmentVO> GetAllDepartment() {
+        if (cachedList != null) {
+            if (cachedList.size() == repository.count()) {
+                return cachedList;
+            }
+        }
+
+        List<Department> departmentList = repository.findAll();
+        List<DepartmentVO> result = departmentList.stream().map( department -> {
             return new DepartmentVO(department.getDeptCode(), department.getDeptName());
         }).toList();
+        if (result.size() > 0 && cachedList == null) {
+            cachedList = result;
+        }
+
+        return result;
     }
 }

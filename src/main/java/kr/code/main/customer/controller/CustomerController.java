@@ -3,10 +3,11 @@ package kr.code.main.customer.controller;
 import kr.code.main.common.File.service.FileService;
 import kr.code.main.common.department.domain.DepartmentVO;
 import kr.code.main.common.department.service.DepartmentService;
+import kr.code.main.common.exception.AppException;
+import kr.code.main.common.exception.ErrorCode;
 import kr.code.main.common.position.domain.PositionVO;
 import kr.code.main.common.position.service.PositionService;
 import kr.code.main.customer.domain.CustomerNamecardVO;
-import kr.code.main.customer.domain.CustomerVO;
 import kr.code.main.customer.service.CustomerService;
 import kr.code.main.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -29,7 +31,7 @@ public class CustomerController {
     private final FileService fileService;
 
     @GetMapping("/create")
-    public ModelAndView viewCreateCustomer() {
+    public ModelAndView viewCreateCustomer(HttpServletRequest req) {
 
         ModelAndView mav = new ModelAndView("views/customer/createCustomer");
 
@@ -46,19 +48,10 @@ public class CustomerController {
     public ModelAndView viewDetailsCustomer(@RequestParam(value="uid", required = false) String customerUid) {
         ModelAndView mav = new ModelAndView("views/customer/detailCustomer");
 
-        CustomerVO customer = customerService.findByUid(customerUid);
-        mav.addObject("customer", customer);
-
-        List<PositionVO> positions = positionService.GetAllPosition();
-        mav.addObject("positions", positions);
-
-        List<DepartmentVO> departments = departmentService.GetAllDepartment();
-        mav.addObject("departments", departments);
-
-        // file 처리 필요
-        // ajax로 얻어 오는 방식으로 처리 완료.
-
-        // comment 처리 필요
+        mav.addObject("customer", customerService.findByUid(customerUid)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, "고객 정보를 찾을 수 없습니다.")));
+        mav.addObject("positions", positionService.GetAllPosition());
+        mav.addObject("departments", departmentService.GetAllDepartment());
 
         return mav;
     }

@@ -1,6 +1,10 @@
 package kr.code.main.customer.controller;
 
 import kr.code.main.common.File.service.FileService;
+import kr.code.main.common.comment.domain.CommentVO;
+import kr.code.main.common.comment.domain.dto.CommentDTO;
+import kr.code.main.common.exception.AppException;
+import kr.code.main.common.exception.ErrorCode;
 import kr.code.main.common.tag.domain.Tag;
 import kr.code.main.common.tag.service.TagService;
 import kr.code.main.customer.domain.CustomerNamecardVO;
@@ -9,7 +13,6 @@ import kr.code.main.customer.domain.dto.CreateRequestDTO;
 import kr.code.main.customer.domain.dto.UpdateRequestDTO;
 import kr.code.main.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,21 +47,14 @@ public class CustomerRestController {
     @GetMapping
     public ResponseEntity<Map<String, Object>> findCustomer(@RequestParam(name="name", required=false) String name
                                              ) {
+
+        CustomerVO customer = customerService.findByName(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, "고객 정보를 찾을 수 없습니다."));
+
         Map<String, Object> resultMap = new HashMap<>();
-        HttpStatus httpStatus;
+        resultMap.put("customer", customer);
 
-        CustomerVO customer = customerService.findByName(name);
-        if(customer != null) {
-            resultMap.put("result", "SUCCESS");
-            resultMap.put("customer", customer);
-            httpStatus = HttpStatus.OK;
-        } else {
-            resultMap.put("result", "FAIL");
-            resultMap.put("customer", null);
-            httpStatus = HttpStatus.NOT_FOUND;
-        }
-
-        return new ResponseEntity<>(resultMap, httpStatus);
+        return ResponseEntity.ok(resultMap);
     }
 
     @Transactional
@@ -66,28 +62,22 @@ public class CustomerRestController {
     public ResponseEntity<String> createCustomer(CreateRequestDTO customerReq,
                                                  HttpServletRequest req,
                                                  HttpServletResponse res) throws IOException {
-        CustomerVO customer = null;
 
-        try{
-            // 고객 정보 동록
-            customer = customerService.createCustomer(customerReq);
+        // 고객 정보 동록
+        CustomerVO customer = customerService.createCustomer(customerReq);
 
-            // tag 정보를 생성 및 등록
-            List<Tag> tags = tagService.saveTagsFromCustomerInfo(customer);
+        // tag 정보를 생성 및 등록
+        List<Tag> tags = tagService.saveTagsFromCustomerInfo(customer);
 
-            // 고객 정보 와 tag의 연관관계 등록 (N vs N)
-            String customerId = customer.getCustomerUid();
-            tags.forEach(tag -> {
-                Map<String, Object> linkParams = new HashMap<>();
-                linkParams.put("customerId", customerId);
-                linkParams.put("tagId", tag.getTagId());
+        // 고객 정보 와 tag의 연관관계 등록 (N vs N)
+        String customerId = customer.getCustomerUid();
+        tags.forEach(tag -> {
+            Map<String, Object> linkParams = new HashMap<>();
+            linkParams.put("customerId", customerId);
+            linkParams.put("tagId", tag.getTagId());
 
-                customerService.insertCustomerAndTag(linkParams);
-            });
-
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+            customerService.insertCustomerAndTag(linkParams);
+        });
 
         return ResponseEntity.ok(customer.getCustomerUid());
     }
@@ -113,4 +103,17 @@ public class CustomerRestController {
         return ResponseEntity.ok(toJs);
     }
 
+    @GetMapping(value="comment")
+    public ResponseEntity<List<CommentVO>> getCommentList(@RequestParam(name="customerUid") String customerUid) {
+
+        List<CommentVO> list = customerService.getCommentByCustomerUid(customerUid);
+
+        return ResponseEntity.ok(list);
+    }
+
+    @PostMapping(value="comment")
+    public ResponseEntity<List<CommentVO>> addComment(CommentDTO commentReq) {
+
+        return ResponseEntity.ok(customerService.registerComment(commentReq));
+    }
 }

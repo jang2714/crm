@@ -101,15 +101,15 @@
                 <!--          pagination을 중앙 정렬하게 만든다.-->
                 <div class="d-flex justify-content-center">
                     <ul class="pagination mb-sm-0">
-                        <li class="page-item">
-                            <th:block th:with="nextPage = ${currentPage + 1}" th:if="${hasNextPage eq 'true' }">
-                                <a th:href="@{/customer/list(currentPage=${nextPage})}" class="page-link"><i class="mdi mdi-chevron-left"></i></a>
+                        <li class="page-item mr-5">
+                            <th:block th:with="prevPage = ${currentPage - 1}" th:if="${hasPrevPage eq 'true' }">
+                                <a th:href="@{/customer/list(currentPage=${prevPage})}" class="page-link"><i class="mdi mdi-chevron-left"><i class="mdi mdi-chevron-left"></i></i></a>
                             </th:block>
                         </li>
-                        <li class="page-item active"><a href="#" class="page-link">[[${currentPage}]]</a></li>
-                        <li class="page-item">
-                            <th:block th:with="prevPage = ${currentPage - 1}" th:if="${hasPrevPage eq 'true' }">
-                                <a th:href="@{/customer/list(currentPage=${prevPage})}" class="page-link"><i class="mdi mdi-chevron-right"></i></a>
+                        <li class="page-item active"><a href="#" class="page-link">Current ([[${currentPage}]])</a></li>
+                        <li class="page-item ml-5">
+                            <th:block th:with="nextPage = ${currentPage + 1}" th:if="${hasNextPage eq 'true' }">
+                                <a th:href="@{/customer/list(currentPage=${nextPage})}" class="page-link"><i class="mdi mdi-chevron-right"><i class="mdi mdi-chevron-right"></i></i></a>
                             </th:block>
                         </li>
                     </ul>

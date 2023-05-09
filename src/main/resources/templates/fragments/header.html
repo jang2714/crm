@@ -53,16 +53,16 @@
                                 </div>
                                 <!-- Login/Register btn -->
                                 <div class="login-register-btn">
-                                    <a th:href="@{/user/login}">Login</a>
-                                    <a th:href="@{/user/join}">/ Register</a>
+                                    <th:block th:if="${session.user != null}">
+                                        <a th:href="@{/user/login}" style="color: white;" disabled>[[${session.user.userName}]]</a>
+                                    </th:block>
+                                    <th:block th:if="${session.user == null}">
+                                        <a th:href="@{/user/login}">Login</a>
+                                    </th:block>
+<!--                                    <a th:href="@{/user/login}">Login</a>-->
+                                    <span>&nbsp/&nbsp</span>
+                                    <a th:href="@{/user/join}">Register</a>
                                 </div>
-<!--                                <span class="navbar-text" style="margin-right:10px;">-->
-<!--                                   <a href="javascript:void(0);" onclick="logOut();" th:style="${session.userInfo != null ? 'display:block' : 'display:none'}">로그아웃</a>-->
-<!--                                   <a href="/login" th:style="${session.userInfo == null ? 'display:block' : 'display:none'}">로그인</a>-->
-<!--                               </span>-->
-<!--                                                    <span class="navbar-text" style="margin-right:10px;">-->
-<!--                                    <a href="/mem/join" th:style="${session.userInfo == null ? 'display:block' : 'display:none'}">회원가입</a>-->
-<!--                               </span>-->
                             </div>
                         </nav>
                     </div>

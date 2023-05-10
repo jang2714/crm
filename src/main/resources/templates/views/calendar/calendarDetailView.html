@@ -1,14 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insert title here</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
-    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main_layout}">
+<div layout:fragment="content">
     <style>
         .bg-light{
             height: 1100px;
@@ -19,108 +13,121 @@
             width: 503px;
         }
     </style>
-</head>
 
-<body>
-<section class="bg-light">
-    <div class="container py-4"  >
-        <div align="center" style="margin: 10px auto" >
-            <span class="text-lightblue h4">일정 상세 * [[${resultVO.meetDateYmd}]]</span>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/dist/css/adminlte.min.css}">
+
+    <!-- ***** Blog Area Start ***** -->
+    <section class="blog-area section_padding_0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- page Start -->
+                    <section class="bg-light">
+                        <div class="container py-4"  >
+                            <div align="center" style="margin: 10px auto" >
+                                <span class="text-lightblue h4">일정 상세 * [[${resultVO.meetDateYmd}]]</span>
+                            </div>
+                            <form id="frm" name="frm" method="post" onsubmit="return false;">
+                                <input type="hidden" id="meetId" name="meetId" th:value="${paramVO.meetId}">
+                                <div class="form-group">
+                                    <label for="meetSe" class="form-label-mt-2">구분</label>
+                                    <select id="meetSe" name="meetSe" class="form-control" disabled>
+                                        <option value="">선택</option>
+                                        <option th:each="list : ${CRM01List}" th:value="${list.codeId}" th:text="${list.codeNm}" th:selected="${list.codeId eq resultVO.meetSe}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="meetHhMi" class="form-label-mt-2">시간</label>
+                                    <select id="meetHhMi" name="meetHhMi" class="form-control" disabled>
+                                        <option value="">선택</option>
+                                        <option th:each="list: ${CRM04List}" th:value="${list.codeId}" th:text="${list.codeNm}" th:selected="${list.codeId eq resultVO.meetDateHis}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form">
+                                    <label class="form-label-mt-4">직원</label>
+                                </div>
+                                <div class="row" style="margin-bottom: 1rem">
+                                    <div class="col-md-8" align="left">
+                                        <div th:each="uList: ${userList}">
+                                            <span th:text="${uList.userName}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form">
+                                    <label class="form-label-mt-4">고객</label>
+                                </div>
+                                <div class="row" style="margin-bottom: 1rem">
+                                    <div class="col-md-8" align="left">
+                                        <div th:each="cList: ${custList}">
+                                            <span th:text="${cList.custName}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="meetTitle" class="form-label-mt-4">제목</label>
+                                    <input type="text" class="form-control" id="meetTitle" name="meetTitle" th:value="${resultVO.meetTitle}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="meetCn" class="form-label-mt-4">내용</label>
+                                    <textarea class="form-control" id="meetCn" name="meetCn" rows="5" cols="80" maxlength="4000" th:text="${resultVO.meetCn}" disabled></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="meetLoc" class="form-label-mt-4">장소</label>
+                                    <input type="text" class="form-control" id="meetLoc" name="meetLoc" th:value="${resultVO.meetLoc}" disabled>
+                                </div>
+                                <div class="row" style="margin-top: 5rem" align="center">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-secondary" onclick="javascript:fn_delete();">삭제</button>
+                                        <button type="button" class="btn btn-primary" style="margin-right: 5px" onclick="javascript:fn_back();">목록</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
         </div>
-        <form id="frm" name="frm" method="post" onsubmit="return false;">
-            <input type="hidden" id="meetId" name="meetId" th:value="${paramVO.meetId}">
-            <div class="form-group">
-                <label for="meetSe" class="form-label-mt-2">구분</label>
-                <select id="meetSe" name="meetSe" class="form-control" disabled>
-                    <option value="">선택</option>
-                    <option th:each="list : ${CRM01List}" th:value="${list.codeId}" th:text="${list.codeNm}" th:selected="${list.codeId eq resultVO.meetSe}">
-                    </option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="meetHhMi" class="form-label-mt-2">시간</label>
-                <select id="meetHhMi" name="meetHhMi" class="form-control" disabled>
-                    <option value="">선택</option>
-                    <option th:each="list: ${CRM04List}" th:value="${list.codeId}" th:text="${list.codeNm}" th:selected="${list.codeId eq resultVO.meetDateHis}">
-                    </option>
-                </select>
-            </div>
-            <div class="form">
-                <label class="form-label-mt-4">직원</label>
-            </div>
-            <div class="row" style="margin-bottom: 1rem">
-                <div class="col-md-8" align="left">
-                    <div th:each="uList: ${userList}">
-                        <span th:text="${uList.userName}"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="form">
-                <label class="form-label-mt-4">고객</label>
-            </div>
-            <div class="row" style="margin-bottom: 1rem">
-                <div class="col-md-8" align="left">
-                    <div th:each="cList: ${custList}">
-                        <span th:text="${cList.custName}"></span>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="meetTitle" class="form-label-mt-4">제목</label>
-                <input type="text" class="form-control" id="meetTitle" name="meetTitle" th:value="${resultVO.meetTitle}" disabled>
-            </div>
-            <div class="form-group">
-                <label for="meetCn" class="form-label-mt-4">내용</label>
-                <textarea class="form-control" id="meetCn" name="meetCn" rows="5" cols="80" maxlength="4000" th:text="${resultVO.meetCn}" disabled></textarea>
-            </div>
-            <div class="form-group">
-                <label for="meetLoc" class="form-label-mt-4">장소</label>
-                <input type="text" class="form-control" id="meetLoc" name="meetLoc" th:value="${resultVO.meetLoc}" disabled>
-            </div>
-            <div class="row" style="margin-top: 5rem" align="center">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-secondary" onclick="javascript:fn_delete();">삭제</button>
-                    <button type="button" class="btn btn-primary" style="margin-right: 5px" onclick="javascript:fn_back();">목록</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</section>
-</body>
-<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-<script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>
-<script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
+    </section>
 
-<script>
-    $(document).ready(function () {
+<!--    <script th:src="@{/plugins/jquery/jquery.min.js}"></script>-->
+<!--    <script th:src="@{/plugins/jquery-ui/jquery-ui.min.js}"></script>-->
+<!--    <script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>-->
+    <script>
+        $(document).ready(function () {
+            console.log($('.bradcumbTitle').text('Calendar - detail'));
+        });
 
-    });
-    //일정 등록 삭제
-    function fn_delete() {
-        if(confirm("정말 삭제 하시겠습니까?")) {
-            let params = $('#frm').serialize();
-            let url = '/calendar/calendarDeleteProc';
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: params,
-                dataType: "json",
-                success: function(data) {
-                    $('#frm').attr({
-                        action: '/calendar/calendarView'
-                        ,method: 'post'
-                        ,target: '_self'
-                    }).submit();
-                },
-                error: function(error) {
-                }
-            })
+        //일정 등록 삭제
+        function fn_delete() {
+            if(confirm("정말 삭제 하시겠습니까?")) {
+                let params = $('#frm').serialize();
+                let url = '/calendar/calendarDeleteProc';
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: params,
+                    dataType: "json",
+                    success: function(data) {
+                        $('#frm').attr({
+                            action: '/calendar/calendarView'
+                            ,method: 'post'
+                            ,target: '_self'
+                        }).submit();
+                    },
+                    error: function(error) {
+                    }
+                })
+            }
         }
-    }
 
-    //뒤로(목록화면으로)
-    function fn_back() {
-        location.href='/calendar/calendarView';
-    }
-</script>
+        //뒤로(목록화면으로)
+        function fn_back() {
+            location.href='/calendar/calendarView';
+        }
+    </script>
+</div>
 </html>

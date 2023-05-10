@@ -1,155 +1,179 @@
 <!DOCTYPE html>
-<html >
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main_layout}">
 
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-<style>
-    #calendar {
-        max-width: 1100px;
-        margin: 0 auto;
-    }
-</style>
 
-<script th:src="@{/plugins/jquery/jquery.min.js}"></script>
-<script th:src="@{/plugins/bootstrap/js/bootstrap.min.js}"></script>
-<script th:src="@{/js/index.global.js}"></script>
+<div layout:fragment="content">
+    <style>
+        #calendar {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+    </style>
 
-<form id="frm" name="frm" method="post">
-    <input type="hidden" id="meetId" name="meetId" value="" />
-    <input type="hidden" id="meetDate" name="meetDate" value="" />
+    <script th:src="@{/js/index.global.js}"></script>
 
-    <div id="calendar"></div>
+    <!-- ***** Blog Area Start ***** -->
+    <section class="blog-area section_padding_0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- page Start -->
+                    <div class="row single-blog wow fadeInUp" data-wow-delay="0.2s">
 
-    <div class="container" align="center">
-        <select id="searchType" name="searchType">
-            <option value="">선택</option>
-            <option th:each="list : ${CRM03List}" th:value="${list.codeId}" th:text="${list.codeNm}" th:selected="${list.codeId eq paramVO.searchType}">
-            </option>
-        </select>
-        <input type="text" id="searchKywd" name="searchKywd" th:value="${paramVO.searchKywd}" placeholder="검색어를 입력하세요" />
-        <button type="button" onclick="javascript:fn_search();">검색</button>
-    </div>
+                        <div class="col-12">
+                            <div id="calendar" class="wow fadeInUp" data-wow-delay="0.2s"></div>
 
-</form>
-<script>
-$(document).ready(function () {
-    let d = new Date();
-    let getFullYear = d.getFullYear();
-    let getMonth = d.getMonth()+1;
-    let getDate = d.getDate();
-    let today = getFullYear + addZero(getMonth) + addZero(getDate);
+                            <form id="frm" name="frm" method="post">
+                                <input type="hidden" id="meetId" name="meetId" value="" />
+                                <input type="hidden" id="meetDate" name="meetDate" value="" />
 
-    let params = $('#frm').serialize(); //검색기능을 위한 파라미터
+                                <div class="row mt-2" align="center">
+                                    <div class="col-12 col-md-4">
+                                        <select class="form-control ml-1" id="searchType" name="searchType">
+                                            <option value="">선택</option>
+                                            <option th:each="list : ${CRM03List}" th:value="${list.codeId}" th:text="${list.codeNm}" th:selected="${list.codeId eq paramVO.searchType}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-md-7">
+                                        <input class="form-control" type="text" id="searchKywd" name="searchKywd" th:value="${paramVO.searchKywd}" placeholder="검색어를 입력하세요" />
+                                    </div>
+                                    <div class="col-12 col-md-1">
+                                        <button class="btn btn-primary" type="button" onclick="javascript:fn_search();">검색</button>
+                                    </div>
+                                </div>
 
-    let request = $.ajax({
-    url: "/calendar/calendarProc",
-    method: "POST",
-    dataType: "json",
-    data: params //검색기능을 위한 파라미터
-    });
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ***** Blog Area End ***** -->
 
-    request.done(function (data) {
-    console.log(data);
-    let jsonData = data.resultList;
-    let calendarEl = document.getElementById('calendar');
-    let calendar = new FullCalendar.Calendar(calendarEl, {
-        headerToolbar: {
-            left: 'prev, next today',
-            center: 'title',
-            //right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            right: ''
-        },
-        initialDate: today,
-        navLinks: false, //날짜 선택 안되겠끔
-        selectable: true,
-        selectMirror: true,
-        select: function(arg) {
-            console.log(arg);
-            /* 추가 삭제
-            let title = prompt('Event Title:');
-            if (title) {
-                calendar.addEvent({
-                    title: title,
-                    start: arg.start,
-                    end: arg.end,
-                    allDay: arg.allDay
-                })
+    <script>
+        $(document).ready(function () {
+            console.log($('.bradcumbTitle').text('Calendar'));
+
+            let d = new Date();
+            let getFullYear = d.getFullYear();
+            let getMonth = d.getMonth()+1;
+            let getDate = d.getDate();
+            let today = getFullYear + addZero(getMonth) + addZero(getDate);
+
+            let params = $('#frm').serialize(); //검색기능을 위한 파라미터
+
+            let request = $.ajax({
+                url: "/calendar/calendarProc",
+                method: "POST",
+                dataType: "json",
+                data: params //검색기능을 위한 파라미터
+            });
+
+            request.done(function (data) {
+                console.log(data);
+                let jsonData = data.resultList;
+                let calendarEl = document.getElementById('calendar');
+                let calendar = new FullCalendar.Calendar(calendarEl, {
+                    headerToolbar: {
+                        left: 'prev, next today',
+                        center: 'title',
+                        //right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        right: ''
+                    },
+                    initialDate: today,
+                    navLinks: false, //날짜 선택 안되겠끔
+                    selectable: true,
+                    selectMirror: true,
+                    select: function(arg) {
+                        console.log(arg);
+                        /* 추가 삭제
+                        let title = prompt('Event Title:');
+                        if (title) {
+                            calendar.addEvent({
+                                title: title,
+                                start: arg.start,
+                                end: arg.end,
+                                allDay: arg.allDay
+                            })
+                        }
+                        calendar.unselect()
+                        */
+                        fn_registView(arg.startStr);
+                    },
+                    eventClick: function(arg) {
+                        console.log(arg.event._def.publicId);
+                        //console.log(arg.event._def.extendedProps.meetId);
+                        fn_detailView(arg.event._def.publicId);
+                        /*
+                        if (confirm('Are you sure you want to delete this event?')) {
+                        arg.event.remove()
+                        }
+                        */
+                    },
+                    editable: true,
+                    dayMaxEvents: true, //allow "more" link when too many events
+                    locale: 'ko',
+                    events: jsonData
+                    /*
+                    events: [{id: '11111111', title: 'All Day Event', start: '20230504'}]
+                    */
+                });
+                calendar.render();
+            });
+        });
+        //일정 등록 화면
+        function fn_registView(secDate) {
+            if(!isEmpty(secDate)) {
+                $('#frm #meetDate').val(secDate);
+                $('#frm').attr({
+                    action: '/calendar/calendarRegistView'
+                    ,method: 'post'
+                    ,target: '_self'
+                }).submit();
             }
-            calendar.unselect()
-            */
-            fn_registView(arg.startStr);
-        },
-        eventClick: function(arg) {
-            console.log(arg.event._def.publicId);
-            //console.log(arg.event._def.extendedProps.meetId);
-            fn_detailView(arg.event._def.publicId);
-            /*
-            if (confirm('Are you sure you want to delete this event?')) {
-            arg.event.remove()
+        }
+        //일정 수정(상세) 화면
+        function fn_detailView(seq) {
+            if(!isEmpty(seq)) {
+                $('#frm #meetId').val(seq);
+                $('#frm').attr({
+                    action: '/calendar/calendarDetailView'
+                    ,method: 'post'
+                    ,target: '_self'
+                }).submit();
             }
-            */
-        },
-        editable: true,
-        dayMaxEvents: true, //allow "more" link when too many events
-        locale: 'ko',
-        events: jsonData
-            /*
-            events: [{id: '11111111', title: 'All Day Event', start: '20230504'}]
-            */
-    });
-    calendar.render();
-    });
-});
-//일정 등록 화면
-function fn_registView(secDate) {
-    if(!isEmpty(secDate)) {
-        $('#frm #meetDate').val(secDate);
-        $('#frm').attr({
-            action: '/calendar/calendarRegistView'
-            ,method: 'post'
-            ,target: '_self'
-        }).submit();
-    }
-}
-//일정 수정(상세) 화면
-function fn_detailView(seq) {
-    if(!isEmpty(seq)) {
-        $('#frm #meetId').val(seq);
-        $('#frm').attr({
-            action: '/calendar/calendarDetailView'
-            ,method: 'post'
-            ,target: '_self'
-        }).submit();
-    }
-}
+        }
 
-//검색 기능
-function fn_search() {
-    $('#frm').attr({
-        action: '/calendar/calendarView'
-        ,method: 'post'
-        ,target: '_self'
-    }).submit();
-}
-//10일미만, 10월미만 '0' 추가
-function addZero(date) {
-    if (date < 10) {
-        let zeroDate = ('00' + date).slice(-2);
-        return zeroDate;
-    }
-    return date;
-}
-//validate 공통
-function isEmpty(str) {
-    if(typeof str == "undefined" || str == null || str == "")
-        return true;
-    else
-        return false;
-}
+        //검색 기능
+        function fn_search() {
+            $('#frm').attr({
+                action: '/calendar/calendarView'
+                ,method: 'post'
+                ,target: '_self'
+            }).submit();
+        }
+        //10일미만, 10월미만 '0' 추가
+        function addZero(date) {
+            if (date < 10) {
+                let zeroDate = ('00' + date).slice(-2);
+                return zeroDate;
+            }
+            return date;
+        }
+        //validate 공통
+        function isEmpty(str) {
+            if(typeof str == "undefined" || str == null || str == "")
+                return true;
+            else
+                return false;
+        }
 
-</script>
-</body>
+    </script>
+
+</div>
+
 </html>

@@ -31,6 +31,8 @@ public class CustomerController {
     private final DepartmentService departmentService;
     private final FileService fileService;
 
+    private final int ROWS_PER_PAGE = 8;
+
     @GetMapping("/create")
     public ModelAndView viewCreateCustomer(HttpServletRequest req) {
 
@@ -57,28 +59,6 @@ public class CustomerController {
         return mav;
     }
 
-    @GetMapping("/list")
-    public ModelAndView viewCustomerList(HttpSession session) {
-
-        ModelAndView mav = new ModelAndView("views/customer/listupCustomer");
-
-        session.setAttribute("keyword", null);
-
-        int totalCustomerCount = customerService.getTotalCustomerCount();
-        int rowsPerPage = 8;
-        int currentPage = 1;
-
-        PaginationUtils pagination = new PaginationUtils(totalCustomerCount, rowsPerPage, currentPage);
-        int startRow = pagination.getStartRow();
-        int endRow = pagination.getEndRow();
-
-        List<CustomerNamecardVO> list = customerService.getAllCustomers(startRow, rowsPerPage);
-
-        attachObjectsToModel(currentPage, mav, totalCustomerCount, rowsPerPage, pagination, startRow, endRow, list);
-
-        return mav;
-    }
-
     private void attachObjectsToModel(@RequestParam(value = "currentPage", required = false) int currentPage, ModelAndView mav, int totalCustomerCount, int rowsPerPage, PaginationUtils pagination, int startRow, int endRow, List<CustomerNamecardVO> list) {
         mav.addObject("cardList", list);
         mav.addObject("totalCustomerCount", totalCustomerCount);
@@ -90,14 +70,31 @@ public class CustomerController {
         mav.addObject("hasPrevPage", pagination.hasPreviousPage() ? "true" : "false");
     }
 
+    @GetMapping("/list")
+    public ModelAndView viewCustomerList(HttpSession session) {
+
+        ModelAndView mav = new ModelAndView("views/customer/listupCustomer");
+
+        session.setAttribute("keyword", null);
+
+        int totalCustomerCount = customerService.getTotalCustomerCount();
+        PaginationUtils pagination = new PaginationUtils(totalCustomerCount, ROWS_PER_PAGE, 1);
+        int startRow = pagination.getStartRow();
+        int endRow = startRow + ROWS_PER_PAGE;// pagination.getEndRow();
+
+        List<CustomerNamecardVO> list = customerService.getAllCustomers(startRow, ROWS_PER_PAGE);
+
+        attachObjectsToModel(1, mav, totalCustomerCount, ROWS_PER_PAGE, pagination, startRow, endRow, list);
+
+        return mav;
+    }
+
     @GetMapping("/search")
     public ModelAndView viewCustomerSearch(@RequestParam(value = "search", defaultValue = "") String search,
                                            @RequestParam(value = "currentPage", required = false, defaultValue = "1") int currentPage,
                                            HttpSession session) {
 
         ModelAndView mav = new ModelAndView("views/customer/listupCustomer");
-
-        final int COUNT_PER_PAGE = 8;
 
         // 검색어가 입력된 경우 세션에 저장
         if (search != null) {
@@ -110,28 +107,28 @@ public class CustomerController {
         // 세션에서 검색어를 읽어옴
         String keyword = (String) session.getAttribute("keyword");
         // keyword로 서치하는 경우
-        if (keyword!= null && !keyword.isEmpty()) {
+        if (keyword!= null && !keyword.trim().isEmpty()) {
 
             int totalCustomerCount = customerService.countCustomerBySearchKey(keyword);
 
-            PaginationUtils pagination = new PaginationUtils(totalCustomerCount, COUNT_PER_PAGE, currentPage);
+            PaginationUtils pagination = new PaginationUtils(totalCustomerCount, ROWS_PER_PAGE, currentPage);
             int startRow = pagination.getStartRow();
             int endRow = pagination.getEndRow();
-            List<CustomerNamecardVO> list = customerService.findCustomerBySearchKey(keyword, startRow, endRow);
+            List<CustomerNamecardVO> list = customerService.findCustomerBySearchKey(keyword, startRow, ROWS_PER_PAGE);
 
-            attachObjectsToModel(currentPage, mav, totalCustomerCount, COUNT_PER_PAGE, pagination, startRow, endRow, list);
+            attachObjectsToModel(currentPage, mav, totalCustomerCount, ROWS_PER_PAGE, pagination, startRow, endRow, list);
 
         } else {
             // 서치 없이 목록을 출력 할때
             int totalCustomerCount = customerService.getTotalCustomerCount();
 
-            PaginationUtils pagination = new PaginationUtils(totalCustomerCount, COUNT_PER_PAGE, currentPage);
+            PaginationUtils pagination = new PaginationUtils(totalCustomerCount, ROWS_PER_PAGE, currentPage);
             int startRow = pagination.getStartRow();
             int endRow = pagination.getEndRow();
 
-            List<CustomerNamecardVO> list = customerService.getAllCustomers(startRow, COUNT_PER_PAGE);
+            List<CustomerNamecardVO> list = customerService.getAllCustomers(startRow, ROWS_PER_PAGE);
 
-            attachObjectsToModel(currentPage, mav, totalCustomerCount, COUNT_PER_PAGE, pagination, startRow, endRow, list);
+            attachObjectsToModel(currentPage, mav, totalCustomerCount, ROWS_PER_PAGE, pagination, startRow, endRow, list);
         }
 
         return mav;

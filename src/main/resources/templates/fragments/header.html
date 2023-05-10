@@ -33,13 +33,13 @@
                                             <div class="dropdown-menu" aria-labelledby="moshDropdown">
                                                 <a class="dropdown-item" href="html.html" th:href="@{/customer/create}">고객 정보 생성</a>
                                                 <a class="dropdown-item" href="html.html" th:href="@{/customer/list}">고객 정보 리스트</a>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="javascript:void(0);" th:text="'검색 키워드: '+${session.keyword}" style="color: black">Elements</a>
+<!--                                                <div class="dropdown-divider"></div>-->
+<!--                                                <a class="dropdown-item" href="javascript:void(0);" th:text="'검색 키워드: '+${session.keyword}" style="color: black">Elements</a>-->
                                             </div>
                                     </li>
-                                    <li class="nav-item"><a class="nav-link" th:href="@{/customer/create}">고객 관리</a></li>
+<!--                                    <li class="nav-item"><a class="nav-link" th:href="@{/customer/create}">고객 관리</a></li>-->
                                     <li class="nav-item"><a class="nav-link" th:href="@{/meet}">회의 관리</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="javascript:void(0);" onclick="javascript:menuView('/calendar/calendarView.do');">Calendar(작업중)</a></li>
+                                    <li class="nav-item"><a class="nav-link" th:href="@{/calendar/calendarView}">일정 관리</a></li>
                                     <li class="nav-item"><a class="nav-link" th:href="@{/user/admin}">관리자 페이지</a></li>
                                 </ul>
                                 <!-- Search Form Area Start -->

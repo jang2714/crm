@@ -33,7 +33,17 @@ public class UserController {
     //유저(직원)가입
     @GetMapping("/join")
     public ModelAndView dispJoin() {
-        return new ModelAndView("/views/user/join");
+
+        ModelAndView mav = new ModelAndView("/views/user/join");
+
+        List<PositionVO> positions = positionService.GetAllPosition();
+        mav.addObject("positions", positions);
+
+        List<DepartmentVO> departments = departmentService.GetAllDepartment();
+        mav.addObject("departments", departments);
+
+        return mav;
+
     }
 
     //유저가입 처리

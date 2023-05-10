@@ -13,17 +13,17 @@
 			<div align="center" style="height: 50px; margin: 10px auto;">
 				<span class="text-dark h1"></span>
 			</div>
-			<form id="frm" action="/user/join" method="post">
+			<form id="frm" action="/user/join_result" method="post">
 				<div class="form-group">
 					<label class="form-label-mt-4">아이디</label>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<input type="text" class="form-control" id="userId" name="userId">
-					</div>
-					<div class="col-md-6" style="text-align:right">
-						<button type="button" class="btn btn-secondary" id="idChkBtn" onclick="userIdChk();">중복확인</button>
-						<button type="button" class="btn btn-warning" id="changeBtn" disabled="disabled" onclick="changeId();">변경</button>
+					<div class="row">
+						<div class="col-md-6">
+							<input type="text" class="form-control" id="userId" name="userId">
+						</div>
+						<div class="col-md-6" style="text-align:right">
+							<button type="button" class="btn btn-secondary" id="idChkBtn" onclick="userIdChk();">중복확인</button>
+							<button type="button" class="btn btn-warning" id="changeBtn" disabled="disabled" onclick="changeId();">변경</button>
+						</div>
 					</div>
 				</div>
 				<div class="form-group">
@@ -49,23 +49,33 @@
 					<label class="form-label-mt-4">생년월일(6자리)</label>
 					<input type="number" class="form-control" id="userBirth" name="userBirth" maxlenght="6" pattern="[0-9]*" style="ime-mode:disabled;">
 				</div>
-				<div class="form-group">
-					<label class="form-label-mt-4">부서</label>
-					<input type="text" class="form-control" id="userDepart" name="userDepart">
+				<div class="form-group"> <!--부서 선택-->
+					<label class="form-label-mt-4" for="userDepart">부서</label>
+					<select type="text" class="form-control" id="userDepart" name="department" required>
+						<option value="" selected>부서 선택</option>
+						<th:block th:each="depart : ${departments}">
+							<option th:value="${depart.deptCode}">[[${depart.deptName}]]</option>
+						</th:block>
+					</select>
 				</div>
-				<div class="form-group">
-					<label class="form-label-mt-4">직급</label>
-					<input type="text" class="form-control" id="userPosition" name="userPosition">
+				<div class="form-group">  <!--직급 선택-->
+					<label class="form-label-mt-4" for="userPosition">직급</label>
+					<select class="form-control" id="userPosition" name="position" required>
+						<option value="">직급 선택</option>
+						<th:block th:each="pos : ${positions}">
+							<option th:value="${pos.posCode}">[[${pos.posName}]]</option>
+						</th:block>
+					</select>
 				</div>
-				<div class="form-group">
+				<div class="form-group"> <!--연락처-->
 					<label class="form-label-mt-4">모바일</label>
 					<input type="text" class="form-control" id="userPhone" name="userPhone">
 				</div>
 				<div class="form-group">
-					<label class="form-label-mt-4">직통번호</label>
+					<label class="form-label-mt-4">유선번호</label>
 					<input type="text" class="form-control" id="userTelephone" name="userTele">
 				</div>
-				<div class="form-group">
+				<div class="form-group"> <!--이메일-->
 					<label class="form-label-mt-4">메일주소</label>
 					<div class="row">
 						<div class="col-md-4">
@@ -90,7 +100,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group">
+				<div class="form-group"> <!--주소-->
 					<label class="form-label-mt-4">주소</label>
 					<div class="row">
 						<div class="col-md-9" style="text-align:left;">
@@ -111,7 +121,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group">
+				<div class="form-group"> <!--권한선택-->
 					<label class="form-label-mt-4">권한</label>
 					<select class="form-control" id="userAuth" name="userAuth">
 						<option value="ADMIN">관리자</option>

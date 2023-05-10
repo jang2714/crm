@@ -27,6 +27,36 @@
 
     </select>
 
+    <select id="findCustomerBySearchKey" resultType="kr.code.main.customer.domain.CustomerNamecardVO" parameterType="java.util.Map">
+
+        select c.cust_uid, c.cust_name, c.cust_addr, c.addr_post, c.cust_email, c.phone_number, c.company_name, c.pos_code, c.dept_code
+        FROM tbl_customer c
+        <![CDATA[
+        WHERE c.cust_name LIKE CONCAT('%', #{keyword}, '%') or
+              c.cust_addr LIKE CONCAT('%', #{keyword}, '%') or
+              c.cust_email LIKE CONCAT('%', #{keyword}, '%') or
+              c.phone_number LIKE CONCAT('%', #{keyword}, '%') or
+              c.company_name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY create_date ASC
+        LIMIT #{current}, #{count}
+        ]]>
+
+    </select>
+
+    <select id="countCustomerBySearchKey" parameterType="java.util.Map" resultType="int">
+
+        select count(*)
+        FROM tbl_customer c
+        <![CDATA[
+        WHERE c.cust_name LIKE CONCAT('%', #{keyword}, '%') or
+            c.cust_addr LIKE CONCAT('%', #{keyword}, '%') or
+            c.cust_email LIKE CONCAT('%', #{keyword}, '%') or
+            c.phone_number LIKE CONCAT('%', #{keyword}, '%') or
+            c.company_name LIKE CONCAT('%', #{keyword}, '%')
+        ]]>
+
+    </select>
+
     <insert id="createCustomer" parameterType="kr.code.main.customer.domain.CustomerVO">
 
     insert into tbl_customer

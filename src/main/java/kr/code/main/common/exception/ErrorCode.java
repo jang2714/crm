@@ -11,6 +11,7 @@ public enum ErrorCode {
     USERNAME_DUPLICATED(HttpStatus.CONFLICT, ""),
     USERNAME_NOT_FOUND(HttpStatus.NOT_FOUND, ""),
 
+    INVALID_ACCEPT(HttpStatus.NOT_ACCEPTABLE, ""),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, ""),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "");
 

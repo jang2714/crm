@@ -50,6 +50,19 @@ public class CustomerService {
         return customerMapper.getCustomersByTag(params);
     }
 
+    public int countCustomerBySearchKey(String searchKey) {
+        return customerMapper.countCustomerBySearchKey(searchKey);
+    }
+
+    public List<CustomerNamecardVO> findCustomerBySearchKey(String search, int startRow, int count) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("keyword", search);
+        params.put("current", startRow);
+        params.put("count", count);
+
+        return customerMapper.findCustomerBySearchKey(params);
+    }
+
     public Optional<CustomerVO> findByName(String name) {
         return customerMapper.findByName(name);
     }
@@ -193,4 +206,5 @@ public class CustomerService {
 
         return getCommentByCustomerUid(commentReq.getCustomerUid());
     }
+
 }

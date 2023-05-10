@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
@@ -45,15 +44,12 @@ public class UserService {
         return result.get();
     }
 
-    public boolean updateUserAuth(String userUid, int userAuth) {
-        Optional<UserEntity> user = userRepository.findByUserUid(userUid);
-        if (user.isPresent()) {
-            user.get().setUserAuth(userAuth);
-            userRepository.save(user.get());
-            return true;
-        }
-
-        return false;
+    public void updateUserAuth(String userUid, int userAuth) {
+        userRepository.findByUserUid(userUid)
+                .ifPresent(user -> {
+            user.setUserAuth(userAuth);
+            userRepository.save(user);
+        });
     }
 
     public String doLogin(String userId, String userPasswd) {

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -57,12 +58,15 @@ public class CustomerController {
     }
 
     @GetMapping("/list")
-    public ModelAndView viewCustomerList(@RequestParam(value = "currentPage", required = false) int currentPage) {
+    public ModelAndView viewCustomerList(HttpSession session) {
 
         ModelAndView mav = new ModelAndView("views/customer/listupCustomer");
 
+        session.setAttribute("keyword", null);
+
         int totalCustomerCount = customerService.getTotalCustomerCount();
         int rowsPerPage = 8;
+        int currentPage = 1;
 
         PaginationUtils pagination = new PaginationUtils(totalCustomerCount, rowsPerPage, currentPage);
         int startRow = pagination.getStartRow();
@@ -87,36 +91,47 @@ public class CustomerController {
     }
 
     @GetMapping("/search")
-    public ModelAndView viewCustomerSearch(@RequestParam(value = "search") String search) {
+    public ModelAndView viewCustomerSearch(@RequestParam(value = "search", defaultValue = "") String search,
+                                           @RequestParam(value = "currentPage", required = false, defaultValue = "1") int currentPage,
+                                           HttpSession session) {
 
         ModelAndView mav = new ModelAndView("views/customer/listupCustomer");
 
-        // 서치 없이 목록을 출력 할때
-        if (!search.isEmpty()) {
+        final int COUNT_PER_PAGE = 8;
 
-            List<CustomerNamecardVO> list = customerService.getCustomersByTag(search);
-            int totalCustomerCount = list.size();
-            int rowsPerPage = 8;
-            int pageNo = 1;
+        // 검색어가 입력된 경우 세션에 저장
+        if (search != null) {
+            search.trim();
+            if (!search.isEmpty()) {
+                session.setAttribute("keyword", search);
+            }
+        }
 
-            PaginationUtils pagination = new PaginationUtils(totalCustomerCount, rowsPerPage, pageNo);
+        // 세션에서 검색어를 읽어옴
+        String keyword = (String) session.getAttribute("keyword");
+        // keyword로 서치하는 경우
+        if (keyword!= null && !keyword.isEmpty()) {
+
+            int totalCustomerCount = customerService.countCustomerBySearchKey(keyword);
+
+            PaginationUtils pagination = new PaginationUtils(totalCustomerCount, COUNT_PER_PAGE, currentPage);
             int startRow = pagination.getStartRow();
             int endRow = pagination.getEndRow();
+            List<CustomerNamecardVO> list = customerService.findCustomerBySearchKey(keyword, startRow, endRow);
 
-            attachObjectsToModel(pageNo, mav, totalCustomerCount, rowsPerPage, pagination, startRow, endRow, list);
+            attachObjectsToModel(currentPage, mav, totalCustomerCount, COUNT_PER_PAGE, pagination, startRow, endRow, list);
 
         } else {
-
+            // 서치 없이 목록을 출력 할때
             int totalCustomerCount = customerService.getTotalCustomerCount();
-            int rowsPerPage = 8;
 
-            PaginationUtils pagination = new PaginationUtils(totalCustomerCount, rowsPerPage, 1);
+            PaginationUtils pagination = new PaginationUtils(totalCustomerCount, COUNT_PER_PAGE, currentPage);
             int startRow = pagination.getStartRow();
             int endRow = pagination.getEndRow();
 
-            List<CustomerNamecardVO> list = customerService.getAllCustomers(startRow, rowsPerPage);
+            List<CustomerNamecardVO> list = customerService.getAllCustomers(startRow, COUNT_PER_PAGE);
 
-            attachObjectsToModel(1, mav, totalCustomerCount, rowsPerPage, pagination, startRow, endRow, list);
+            attachObjectsToModel(currentPage, mav, totalCustomerCount, COUNT_PER_PAGE, pagination, startRow, endRow, list);
         }
 
         return mav;

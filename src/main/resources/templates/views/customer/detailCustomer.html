@@ -334,10 +334,6 @@
         dataType: "json",
         type: "get",
       }).done(function(data) {
-        // 텍스트 데이터를 JSON 형태로 변환
-        // let commentList = JSON.parse(data);
-        // console.log(commentList);
-
         if (data!= null) {
           if (data.length > 0)
           printComments(data);
@@ -366,7 +362,7 @@
       // 목록 버튼 누를때
       $(document).on("click", "#cardList", function(e) {
         e.preventDefault();
-        location.href="/customer/list?currentPage=1";
+        location.href="/customer/search?currentPage=1";
       });
 
       // 취소 버튼 누를때

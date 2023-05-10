@@ -127,13 +127,11 @@ public class UserController {
     public ResponseEntity<String> canModifiedAttribute(@RequestParam(name="loginUser") String loginUser,
                                                         @RequestParam(name="targetUser") String targetUser,
                                                         @RequestParam(name="wantAuth") int wantAuth) {
-        boolean modified = false;
         if (userService.CanUserModifiedAuth(loginUser)) {
-            modified = userService.updateUserAuth(targetUser, wantAuth);
+            userService.updateUserAuth(targetUser, wantAuth);
+            return ResponseEntity.ok("success");
         }
-
-        return modified ? ResponseEntity.ok("success") :
-                ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
 
 }

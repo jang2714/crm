@@ -103,13 +103,13 @@
                     <ul class="pagination mb-sm-0">
                         <li class="page-item mr-5">
                             <th:block th:with="prevPage = ${currentPage - 1}" th:if="${hasPrevPage eq 'true' }">
-                                <a th:href="@{/customer/list(currentPage=${prevPage})}" class="page-link"><i class="mdi mdi-chevron-left"><i class="mdi mdi-chevron-left"></i></i></a>
+                                <a th:href="@{/customer/search(currentPage=${prevPage})}" class="page-link"><i class="mdi mdi-chevron-left"><i class="mdi mdi-chevron-left"></i></i></a>
                             </th:block>
                         </li>
                         <li class="page-item active"><a href="#" class="page-link">Current ([[${currentPage}]])</a></li>
                         <li class="page-item ml-5">
                             <th:block th:with="nextPage = ${currentPage + 1}" th:if="${hasNextPage eq 'true' }">
-                                <a th:href="@{/customer/list(currentPage=${nextPage})}" class="page-link"><i class="mdi mdi-chevron-right"><i class="mdi mdi-chevron-right"></i></i></a>
+                                <a th:href="@{/customer/search(currentPage=${nextPage})}" class="page-link"><i class="mdi mdi-chevron-right"><i class="mdi mdi-chevron-right"></i></i></a>
                             </th:block>
                         </li>
                     </ul>

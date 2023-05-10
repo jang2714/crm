@@ -57,6 +57,10 @@ public interface CustomerMapper {
 
     List<CustomerNamecardVO> getCustomersByTag(Map<String, Object> params);
 
+    int findCustomerCountBySearchKey(Map<String, Object> params);
+
+    List<CustomerNamecardVO> findCustomerBySearchKey(Map<String, Object> params);
+
     int createCustomer(CustomerVO customer);
 
     List<CustomerTagVO> getCustomerTagsById(String customerId);
@@ -64,4 +68,6 @@ public interface CustomerMapper {
     int insertCustomerAndTag(Map<String, Object> params);
 
     int updateCustomer(CustomerVO customer);
+
+    int countCustomerBySearchKey(String searchKey);
 }

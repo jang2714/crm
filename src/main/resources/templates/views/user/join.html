@@ -28,7 +28,7 @@
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">비밀번호</label>
-					<input type="password" class="form-control" id="userPasswd" name="userPasswd">
+					<input type="password" class="form-control" id="userPasswd" name="userPw">
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">비밀번호 확인</label>
@@ -63,7 +63,7 @@
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">직통번호</label>
-					<input type="text" class="form-control" id="userTelephone" name="userTelePhone">
+					<input type="text" class="form-control" id="userTelephone" name="userTele">
 				</div>
 				<div class="form-group">
 					<label class="form-label-mt-4">메일주소</label>
@@ -94,7 +94,7 @@
 					<label class="form-label-mt-4">주소</label>
 					<div class="row">
 						<div class="col-md-9" style="text-align:left;">
-						<input type="text" class="form-control" style="margin-bottom: 0.5rem;" id="postCode" name="postCode" readonly="readonly">
+						<input type="text" class="form-control" style="margin-bottom: 0.5rem;" id="postCode" name="addrPost" readonly="readonly">
 					</div>
 						<div class="col-md-3" style="text-align:right">
 							<button type="button" class="btn btn-info" onclick="searchAddr();">주소찾기</button>
@@ -226,19 +226,17 @@
 			//유효성 결과를 담을 변수
 			let isValid = true;
 
-
 			if(!isUserIdChk) {
 				alert('아이디 중복체크를 실행해주세요');
 				isValid = false;
 				return false;
 			}
 
-
 			$.each(inputAll,  function(index, obj){
 				//input 의 id 값 가져오기
 				const inputId = $(obj).attr('id');
 				//jquery 객체로 변환
-				checkObj = $('#' + inputId);
+				const checkObj = $('#' + inputId);
 				let message = '';
 
 				if(inputId === 'userId') {
@@ -259,12 +257,11 @@
 					message = "메일주소를  입력하십시오.";
 				}else if(inputId === 'mailAddr') {
 					message = "메일서비스 업체를 입력하십시오.";
-				}else if(inputId === 'postCode'  ||  inputId ==='addr1') {
+				}else if(inputId === 'postCode' || inputId ==='addr1') {
 					message = "우편번호 검색을 해주십시오.";
 				}
 
-
-				if(inputId !== 'addr2') {
+				if(inputId !== 'addr2' && inputId !== 'search') {
 					if(typeof checkObj ==='undefined' || $.trim( checkObj.val() ).length === 0) {
 						alert(message);
 						checkObj.focus();
@@ -302,7 +299,23 @@
 
 		function join(){
 			if(validated()){
-				$('#frm').submit();
+				// $('#frm').submit();
+
+				$.ajax({
+					url: "/user/join",
+					method: 'post',
+					data: $('#frm').serialize(),
+					dataType: 'text',
+					success: function (response) {
+						alert(response);
+						location.href="/index";
+					},
+					error: function (xhr, status, error) {
+						console.log(xhr, status, error);
+
+						alert('회원가입을 실패 했습니다.');
+					}
+				});
 			}
 		}
 

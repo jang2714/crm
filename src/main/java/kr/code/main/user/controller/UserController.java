@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -37,9 +39,13 @@ public class UserController {
     //유저가입 처리
     @PostMapping("/join")
     @ResponseBody
-    public String execJoin(UserDto userDto) {
+    public String execJoin(@ModelAttribute UserDto userDto,
+                           HttpServletResponse res) throws IOException {
+
         userService.joinUser(userDto);
-        return "redirect:/users/join_result";
+
+//        res.sendRedirect("/index");
+        return "가입하신것을 축하드립니다.!";
     }
 
     @PostMapping("/checkId")

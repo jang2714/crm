@@ -27,10 +27,10 @@
                                     <tbody th:each="user : ${userList}">
                                     <tr th:id="${user.userUid}">
                                         <td>
-                                            <th:block th:if="${user.userGender == 1}">
+                                            <th:block th:if="${user.userGender == '남자'}">
                                                 <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
                                             </th:block>
-                                            <th:block th:if="${user.userGender == 2}">
+                                            <th:block th:if="${user.userGender == '여자'}">
                                                 <img src="https://bootdey.com/img/Content/user_2.jpg" alt="">
                                             </th:block>
                                             <a href="#" class="user-link" th:utext="${user.userName}">Full name</a>
@@ -58,8 +58,8 @@
                                         </td>
                                         <td class="text-center">
                                             <select th:id="'role_'+${user.userUid}" id="userAuth" name="auth" class="label label-default custom-select">
-                                                <option value="1" th:selected="${user.userAuth == 1}">ADMIN</option>
-                                                <option value="2" th:selected="${user.userAuth == 2}">USER</option>
+                                                <option value="1" th:selected="${user.userAuth == 'ADMIN'}">ADMIN</option>
+                                                <option value="2" th:selected="${user.userAuth == 'USER'}">USER</option>
                                             </select>
                                         </td>
                                         <td style="width: 20%;">

@@ -52,12 +52,12 @@ public class MeetingService {
 
         MeetingVO.Meeting updateMeeting = MeetingVO.Meeting
                 .builder()
-                .meet_title(meetingRequest.getMeet_title())
-                .meet_yn(meetingRequest.getMeet_yn())
-                .meet_loc(meetingRequest.getMeet_loc())
-                .meet_user_id(meetingRequest.getMeet_user_id())
-                .last_rst_date(meetingRequest.getLast_rst_date())
-                .last_rst_id(meetingRequest.getLast_rst_id())
+                .meetTitle(meetingRequest.getMeetTitle())
+                .meetYn(meetingRequest.getMeetYn())
+                .meetLoc(meetingRequest.getMeetLoc())
+                .meetUserId(meetingRequest.getMeetUserId())
+                .lastRstDate(meetingRequest.getLastRstDate())
+                .lastRstId(meetingRequest.getLastRstId())
                 .build();
 
         result = mapper.updateMeeting(updateMeeting);
@@ -70,13 +70,13 @@ public class MeetingService {
 
         MeetingVO.Meeting meetingCreate = MeetingVO.Meeting
                                             .builder()
-                                            .meet_title(meetingRequest.getMeet_title())
-                                            .meet_user_id(meetingRequest.getMeet_user_id())
-                                            .meet_date(meetingRequest.getMeet_date())
-                                            .meet_loc(meetingRequest.getMeet_loc())
-                                            .meet_cn(meetingRequest.getMeet_cn())
-                                            .first_rst_id(meetingRequest.getFirst_rst_id())
-                                            .first_rst_date(meetingRequest.getFirst_rst_date())
+                                            .meetTitle(meetingRequest.getMeetTitle())
+                                            .meetUserId(meetingRequest.getMeetUserId())
+                                            .meetDate(meetingRequest.getMeetDate())
+                                            .meetLoc(meetingRequest.getMeetLoc())
+                                            .meetCn(meetingRequest.getMeetCn())
+                                            .firstRstId(meetingRequest.getFirstRstId())
+                                            .firstRstDate(meetingRequest.getFirstRstDate())
                                             .build();
 
         result = mapper.writeMeeting(meetingCreate);

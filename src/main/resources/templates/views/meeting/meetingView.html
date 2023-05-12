@@ -22,16 +22,16 @@
                             </thead>
                             <tbody>
                                 <tr th:each="Meet : ${MeetingList}">
-                                    <td th:text="${Meet.meet_id}"></td>
-                                    <td th:text="${Meet.first_rst_id}"></td>
+                                    <td th:text="${Meet.meetId}"></td>
+                                    <td th:text="${Meet.firstRstId}"></td>
                                     <td>
-                                        <a th:href="@{/meeting/detail/{meetId}(meetId=${Meet.meet_id})}" th:onclick="goDetail([[${Meet.meet_id}]])">
-                                            <span th:text="${Meet.meet_title}"></span>
+                                        <a href="javascript:void(0);" th:onclick="goDetail([[${Meet.meetId}]])">
+                                            <span th:text="${Meet.meetTitle}"></span>
                                         </a>
                                     </td>
-                                    <td th:text="${Meet.meet_date}"></td>
-                                    <td th:text="${Meet.meet_loc}"></td>
-                                    <td th:text="${Meet.meet_loc}"></td>
+                                    <td th:text="${Meet.meetDate}"></td>
+                                    <td th:text="${Meet.meetLoc}"></td>
+                                    <td th:text="${Meet.meetUserId}"></td>
                                 </tr>
                                 <tr th:if="${totalSize == 0}">
                                     <td colspan="6">데이터가 없습니다.</td>
@@ -53,8 +53,8 @@
 
     <script>
 
-        function goDetail(meet_id){
-            location.href = "/meeting/detail?meet_id=" + meet_id;
+        function goDetail(meetId){
+            location.href = "/meeting/detail?meetId=" + meetId;
         }
         function writeMeeting() {
             location.href ="/meeting/write";

@@ -25,18 +25,18 @@ public class MeetingVO {
     @NoArgsConstructor
     public static class Meeting {
 
-        private int meet_id;
-        private String meet_se;
-        private String meet_title;
-        private String meet_cn;
-        private String meet_date;
-        private String meet_loc;
-        private String meet_yn;
-        private String first_rst_date;
-        private String first_rst_id;
-        private String last_rst_date;
-        private String last_rst_id;
-        private String meet_user_id;
+        private int meetId;
+        private String meetSe;
+        private String meetTitle;
+        private String meetCn;
+        private String meetDate;
+        private String meetLoc;
+        private String meetYn;
+        private String firstRstDate;
+        private String firstRstId;
+        private String lastRstDate;
+        private String lastRstId;
+        private String meetUserId;
     }
 
     @Data
@@ -45,16 +45,16 @@ public class MeetingVO {
     @NoArgsConstructor
     public static class MeetingRequest{
 
-        private String meet_title;
-        private String meet_date;
-        private String meet_loc;
-        private String meet_cn;
-        private String meet_user_id;
-        private String meet_yn;
-        private String last_rst_date;
-        private String last_rst_id;
-        private String first_rst_date;
-        private String first_rst_id;
+        private String meetTitle;
+        private String meetDate;
+        private String meetLoc;
+        private String meetCn;
+        private String meetUserId;
+        private String meetYn;
+        private String lastRstDate;
+        private String lastRstId;
+        private String firstRstDate;
+        private String firstRstId;
 
 
     }

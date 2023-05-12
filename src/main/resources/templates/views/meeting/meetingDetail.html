@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main_layout}">
+
+<div layout:fragment="content">
+    <div class="container">
+
+        <div>
+            <p th:text="${'제목 : ' + meeting.meet_title}"></p>
+        </div>
+        <div>
+            <p th:text="${'담당자 : ' + meeting.meet_user_id}"></p>
+        </div>
+        <div>
+            <p th:text="${'참가자 : ' + meeting.meet_user_id}"></p>
+        </div>
+        <div>
+            <p th:text="${'회의 일시 : ' + meeting.meet_date}"></p>
+        </div>
+        <div>
+            <p th:text="${'회의 장소 : ' + meeting.meet_loc}"></p>
+        </div>
+        <div>
+            <p th:text="${meeting.meet_cn}"></p>
+        </div>
+
+        <div>
+            <button type="button" id="listBtn" class="btn btn-primary" onclick="listmeeting()">목록</button>
+            <button type="button" id="updateBtn" class="btn btn-primary" onclick="updatemeeting()">수정</button>
+            <button type="button" id="deleteBtn" class="btn btn-primary" onclick="deletemeeting()" >삭제</button>
+        </div>
+    </div>
+
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+
+        function deletemeeting(){
+            const meet_id = $('#meet_id').val();
+            const isConfirm = confirm('해당 글을 정말 삭제하시겠습니까?');
+
+            if(isConfirm){
+                location.href = '/meeting/delete?meet_id' + meet_id;
+            }
+        }
+
+        function updatemeeting(){
+            const meet_id = $('#meet_id').val();
+            lacation.href = '/meeting/update?meet_id=' + meet_id;
+        }
+
+        function listmeeting(){
+            location.href = '/meeting';
+        }
+
+        $(document).ready(function() {
+            $('.bradcumbTitle').text('회의 상세 보기');
+            /*<![CDATA[*/
+
+            const userType = [[$(meeting.meet_user_se)]];
+            const userId = [[$(meeting.meet_user_id)]];
+            /*]]>*/
+            if(userType == 'SE01') {
+                $.trim('#name').val(userId);
+            }else{
+                $.trim('#user').val(userId);
+            }
+        });
+    </script>
+</div>
+</html>

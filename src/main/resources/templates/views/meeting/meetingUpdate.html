@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main_layout}">
+
+<div layout:fragment="content">
+
+    <div class="container">
+        <form id="writeFrm">
+            <div class="form-group">
+                <label for="title">의제(안건) : </label>
+                <input type="text" id="title" class="form-control" name="title" th:value="${meeting.meet_title}">
+            </div>
+            <div class="form-group">
+                <label for="name">담당자 : </label>
+                <input type="text" id="name" class="form-control" name="name" th:value="${meeting.meet_user_id}">
+            </div>
+            <div class="form-group">
+                <label for="user">참석자 : </label>
+                <input type="text" id="user" class="form-control" name="user" th:value="${meeting.meet_user_id}">
+            </div>
+            <div class="form-group">
+                <label for="date">회의 일시 : </label>
+                <input type="text" id="date" class="form-control" name="date" th:value="${meeting.meet_date}">
+            </div>
+            <div class="form-group">
+                <label for="location">회의 장소 : </label>
+                <input type="text" id="location" class="form-control" name="location" th:value="${meeting.meet_loc}">
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" rows="10" cols="50" id="contents" name="contents" th:value="${meeting.meet_cn}"></textarea>
+            </div>
+        </form>
+
+        <div style="margin-bottom:15px">
+            <button type="button" id="saveBtn" class="btn btn-primary" onclick="writeBtn()">글수정</button>
+            <button type="button" id="cancelBtn" class="btn btn-primary" onclick="cancelBtn()">취소</button>
+        </div>
+    </div>
+
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+
+        function writeBtn(){
+
+            if(validated()){
+                const writeFrm = $('#writeFrm')[0];
+                const formData = new FormData(writeFrm);
+
+                $.ajax({
+                    url : '/meeting/write',
+                    type : 'post',
+                    dataType : 'json',
+                    contentType : false,
+                    porocessData : false,
+                    enctype : 'multipart/form-data',
+                    data : formData
+                }),done(function(result){
+                    if(result.resultCode === 200){
+                        alert('게시글이 등록되었습니다.');
+                    }else{
+                        alert('게시글 등록이 실패하였습니다.');
+                    }
+                    location.href='/meeting?nowPageNumber=1';
+                }).fail(function(xhr, error, status){
+                    console.log(error);
+                });
+            }
+        }
+
+        function validated() {
+
+            const meetTitle = $('#meet_title');
+            const meetContents = $('#meet_contents');
+
+            if($.trim( meetTitle.val()  ).length === 0) {
+                alert('제목을 입력하십시오');
+                meetTitle.focus();
+                return false;
+            }
+
+            if($.trim( meetContents.val()  ).length === 0) {
+                alert('내용을 입력하십시오');
+                meetContents.focus();
+                return false;
+            }
+            return true;
+        }
+
+        function cancelBtn() {
+            const isConfirm = confirm('게시글 수정을 취소하시겠습니까?');
+
+            if(isConfirm){
+                let meet_id = $('#meet_id').val();
+
+                location.href = '/meeting/detail?meet_id=' + meet_id;
+            }
+        }
+
+
+        $(document).ready(function() {
+            $('.bradcumbTitle').text('회의 수정');
+
+            /*<![CDATA[*/
+
+                const userType = [[$(meeting.meet_user_se)]];
+                const userId = [[$(meeting.meet_user_id)]];
+            /*]]>*/
+            if(userType == 'SE01') {
+                $.trim('#name').val(userId);
+            }else{
+                $.trim('#user').val(userId);
+            }
+
+
+        });
+    </script>
+</div>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main_layout}">
+
+<div layout:fragment="content">
+    <div class="container">
+        <form id="writeFrm">
+            <div class="form-group">
+                <label for="title">의제(안건) : </label>
+                <input type="text" id="title" class="form-control" name="title">
+            </div>
+            <div class="form-group">
+                <label for="name">담당자 : </label>
+                <input type="text" id="name" class="form-control" name="name">
+            </div>
+            <div class="form-group">
+                <label for="user">참석자 : </label>
+                <input type="text" id="user" class="form-control" name="user">
+            </div>
+            <div class="form-group">
+                <label for="date">회의 일시 : </label>
+                <input type="text" id="date" class="form-control" name="date">
+            </div>
+            <div class="form-group">
+                <label for="location">회의 장소 : </label>
+                <input type="text" id="location" class="form-control" name="location">
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" rows="10" cols="50" id="contents" name="contents"></textarea>
+            </div>
+        </form>
+
+        <div style="margin-bottom:15px">
+            <button type="button" id="saveBtn" class="btn btn-primary" onclick="writeBtn()">작성하기</button>
+            <button type="button" id="cancelBtn" class="btn btn-primary" onclick="cancelBtn()">취소</button>
+        </div>
+    </div>
+
+
+
+
+
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+
+        function cancelBtn(){
+            const isConfirm = confirm('게시글 등록을 취소하시겠습니까?');
+
+            if(isConfirm){
+                location.href='/meeting?nowPageNumber=1';
+            }
+        }
+
+        function writeBtn(){
+
+            if(validated()){
+                const writeFrm = $('#writeFrm')[0];
+                const formData = new FormData(writeFrm);
+
+                $.ajax({
+                    url : '/meeting/write',
+                    type : 'post',
+                    dataType : 'json',
+                    contentType : false,
+                    porocessData : false,
+                    enctype : 'multipart/form-data',
+                    data : formData
+                }),done(function(result){
+                    if(result.resultCode === 200){
+                        alert('게시글이 등록되었습니다.');
+                    }else{
+                        alert('게시글 등록이 실패하였습니다.');
+                    }
+                    location.href='/meeting?nowPageNumber=1';
+                }).fail(function(xhr, error, status){
+                    console.log(error);
+                });
+            }
+        }
+
+        function validated() {
+
+            const meetTitle = $('#title');
+            const meetContents = $('#contents');
+
+            if($.trim( meetTitle.val()  ).length === 0) {
+                alert('제목을 입력하십시오');
+                meetTitle.focus();
+                return false;
+            }
+
+            if($.trim( meetContents.val()  ).length === 0) {
+                alert('내용을 입력하십시오');
+                meetContents.focus();
+                return false;
+            }
+            return true;
+        }
+
+        $(document).ready(function() {
+            $('.bradcumbTitle').text('회의 작성');
+        });
+    </script>
+</div>
+</html>

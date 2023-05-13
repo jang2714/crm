@@ -7,22 +7,22 @@
     <div class="container">
 
         <div>
-            <p th:text="${'제목 : ' + meeting.meet_title}"></p>
+            <p th:text="${'제목 : ' + meeting.meetTitle}"></p>
         </div>
         <div>
-            <p th:text="${'담당자 : ' + meeting.meet_user_id}"></p>
+            <p th:text="${'담당자 : ' + meeting.meetUserId}"></p>
         </div>
         <div>
-            <p th:text="${'참가자 : ' + meeting.meet_user_id}"></p>
+            <p th:text="${'참가자 : ' + meeting.meetUserId}"></p>
         </div>
         <div>
-            <p th:text="${'회의 일시 : ' + meeting.meet_date}"></p>
+            <p th:text="${'회의 일시 : ' + meeting.meetDate}"></p>
         </div>
         <div>
-            <p th:text="${'회의 장소 : ' + meeting.meet_loc}"></p>
+            <p th:text="${'회의 장소 : ' + meeting.meetLoc}"></p>
         </div>
         <div>
-            <p th:text="${meeting.meet_cn}"></p>
+            <p th:text="${meeting.meetCn}"></p>
         </div>
 
         <div>
@@ -36,17 +36,17 @@
     <script>
 
         function deletemeeting(){
-            const meet_id = $('#meet_id').val();
+            const meetId = $('#meetId').val();
             const isConfirm = confirm('해당 글을 정말 삭제하시겠습니까?');
 
             if(isConfirm){
-                location.href = '/meeting/delete?meet_id' + meet_id;
+                location.href = '/meeting/delete?meetId' + meetId;
             }
         }
 
         function updatemeeting(){
-            const meet_id = $('#meet_id').val();
-            lacation.href = '/meeting/update?meet_id=' + meet_id;
+            const meetId = $('#meetId').val();
+            lacation.href = '/meeting/update?meetId=' + meetId;
         }
 
         function listmeeting(){
@@ -57,8 +57,8 @@
             $('.bradcumbTitle').text('회의 상세 보기');
             /*<![CDATA[*/
 
-            const userType = [[$(meeting.meet_user_se)]];
-            const userId = [[$(meeting.meet_user_id)]];
+            const userType = [[$(meeting.meetUserSe)]];
+            const userId = [[$(meeting.meetUserId)]];
             /*]]>*/
             if(userType == 'SE01') {
                 $.trim('#name').val(userId);

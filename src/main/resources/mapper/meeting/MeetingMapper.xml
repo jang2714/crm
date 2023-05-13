@@ -20,7 +20,7 @@
         <![CDATA[
         select *
         from tbl_meet
-        where meet_id = #{meet_id}
+        where meet_id = #{meetId}
         ]]>
     </select>
 
@@ -28,9 +28,9 @@
 
         insert into tbl_meet(meet_title, meet_cn, meet_date, meet_loc, first_rst_id, first_rst_date)
 
-        values(#{meet_title}, #{ meet_cn}, #{ meet_date}, #{meet_loc}, #{first_rst_id}, #{first_rst_date})
+        values(#{meetTitle}, #{ meetCn}, #{ meetDate}, #{meetLoc}, #{firstRstId}, #{firstRstDate})
 
-        insert into tbl_meet_join(meet_id, use_yn, first_rst_date, first_rst_id, last_rst_date, last_rst_id)
+        insert into tbl_meet_join(meetId, useYn, firstRstDate, firstRstId, lastRstDate, lastRstId)
 
         values(#{meet_id}, #{first_rst_id}, #{first_rst_date}, #{last_rst_date}, #{last_rst_id})
 
@@ -38,7 +38,7 @@
 
     <delete id="deleteMeeting" parameterType="java.util.Map">
 
-    delete from tbl_meet where meet_id = #{meet_id}
+    delete from tbl_meet where meet_id = #{meetId}
 
     </delete>
 
@@ -47,26 +47,26 @@
     update tbl_meet
     <set>
         <if test="meet_title neq null and meet_title neq ''">
-            meet_title = #{meet_title},
+            meet_title = #{meetTitle},
         </if>
         <if test="meet_user_id neq null and meet_title neq ''">
-            meet_user_id = #{meet_user_id},
+            meet_user_id = #{meetUserId},
         </if>
         <if test="meet_user_id neq null and meet_title neq ''">
-            meet_user_id = #{meet_user_id},
+            meet_user_id = #{meetUserId},
         </if>
         <if test="meet_date neq null and meet_title neq ''">
-            meet_date = #{meet_date},
+            meet_date = #{meetDate},
         </if>
         <if test="meet_loc neq null and meet_title neq ''">
-            meet_loc = #{meet_loc},
+            meet_loc = #{meetLoc},
         </if>
         <if test="meet_cn neq null and meet_title neq ''">
-            meet_cn = #{meet_cn},
+            meet_cn = #{meetCn},
         </if>
         update_date = now()
     </set>
-    where meet_id = #{meet_id}
+    where meet_id = #{meetId}
 
     </update>
 

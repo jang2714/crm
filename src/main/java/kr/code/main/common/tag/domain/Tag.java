@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter @Setter
@@ -23,4 +24,10 @@ public class Tag implements Serializable {
     public Tag(String title) {
         this.tagTitle = title;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tagTitle);
+    }
+
 }

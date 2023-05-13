@@ -34,7 +34,7 @@ public class UserController {
     @GetMapping("/join")
     public ModelAndView dispJoin() {
 
-        ModelAndView mav = new ModelAndView("/views/user/join");
+        ModelAndView mav = new ModelAndView("views/user/join");
 
         List<PositionVO> positions = positionService.GetAllPosition();
         mav.addObject("positions", positions);
@@ -67,7 +67,7 @@ public class UserController {
     // 로그인 페이지
     @GetMapping("/login")
     public ModelAndView dispLogin() {
-        return new ModelAndView("/views/user/loginForm");
+        return new ModelAndView("views/user/loginForm");
     }
 
     // 로그인 처리
@@ -86,7 +86,7 @@ public class UserController {
     // 로그인 결과
     @GetMapping("/login/result")
     public ModelAndView dispLoginResult() {
-        return new ModelAndView("/index");
+        return new ModelAndView("index");
     }
 
     // 로그아웃 결과
@@ -98,13 +98,13 @@ public class UserController {
     // 내 정보 페이지
     @GetMapping("/info")
     public ModelAndView dispMyinfo() {
-        return new ModelAndView("/views/user/myinfo");
+        return new ModelAndView("views/user/myinfo");
     }
 
     // 권한 페이지
     @GetMapping("/admin")
     public ModelAndView dispAdmin() {
-        ModelAndView mav = new ModelAndView("/views/user/admin");
+        ModelAndView mav = new ModelAndView("views/user/admin");
 
         List<UserEntity> users = userService.findAllUser();
         if (users.size() > 0) {

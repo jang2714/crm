@@ -56,7 +56,6 @@ public class MeetingVO {
         private String firstRstDate;
         private String firstRstId;
 
-
     }
 
 

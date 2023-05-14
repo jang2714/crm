@@ -24,7 +24,7 @@ spring:
     encoding: UTF-8
     servlet:
       content-type: text/html
-    prefix: file:src/main/resources/templates/
+    prefix: classpath:/templates/
     suffix: .html
     
   devtools:
@@ -56,4 +56,4 @@ logging:
 
 file:
   upload:
-    path: /Users/timeless/WebApp/Upload/
+    path: /root/webapp/Uploads

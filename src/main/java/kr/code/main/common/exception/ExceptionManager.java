@@ -1,6 +1,5 @@
-package com.winbros.gjoinlogin.exception;
+package kr.code.main.common.exception;
 
-import kr.code.main.common.exception.AppException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
